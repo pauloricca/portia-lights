@@ -7,10 +7,12 @@ import board
 import neopixel
 import argparse
 import math
+import threading
+import os
 
 LED_COUNT = 50
-#LED_PIN = board.D18 # PWM (pin 12)
 LED_PIN = board.D10 # 10 uses SPI /dev/spidev0.0 (pin 19)
+#LED_PIN = board.D18 # PWM (pin 12) - needs to be run with sudo
 
 # 1 means overblowing is linear, less means it takes higher values to get to full white
 # Different overblow ratios per channel so we can control how it per channel.
@@ -19,13 +21,18 @@ OVERBLOW_BLEED_RATIO_R = 1
 OVERBLOW_BLEED_RATIO_G = .5
 OVERBLOW_BLEED_RATIO_B = .2
 
-def clamp(n, minn, maxn):
-    return max(min(maxn, n), minn)
-
 pixels = neopixel.NeoPixel(LED_PIN, n=LED_COUNT, pixel_order=neopixel.GRB, auto_write=False)
-
 leds = [[0, 0, 0] for i in range(LED_COUNT)]
 
+def playAudioFileSync():
+    os.system("aplay temple.wav")
+
+def startAudio():
+    t = threading.Thread(target=playAudioFileSync)
+    t.start()
+
+def clamp(n, minn, maxn):
+    return max(min(maxn, n), minn)
 
 def render():
     for i in range(LED_COUNT):
@@ -36,6 +43,7 @@ def render():
     print(pixels[0])
     pixels.show()
 
+startAudio()
 
 phaser = 0
 phaseg = 0
