@@ -10,7 +10,9 @@ import math
 import threading
 import os
 
-LED_COUNT = 50
+AUDIO_FILE = "temple.wav"
+
+LED_COUNT = 300
 LED_PIN = board.D10 # 10 uses SPI /dev/spidev0.0 (pin 19)
 #LED_PIN = board.D18 # PWM (pin 12) - needs to be run with sudo
 
@@ -25,7 +27,7 @@ pixels = neopixel.NeoPixel(LED_PIN, n=LED_COUNT, pixel_order=neopixel.GRB, auto_
 leds = [[0, 0, 0] for i in range(LED_COUNT)]
 
 def playAudioFileSync():
-    os.system("aplay temple.wav")
+    os.system("aplay '" + AUDIO_FILE + "'")
 
 def startAudio():
     t = threading.Thread(target=playAudioFileSync)
@@ -51,13 +53,12 @@ phaseb = 0
 
 # Main loop
 while True:
-    phaser += 0.02
-    phaseg += 0.01
-    phaseb += 0.005
+    phaser += 0.2
+    phaseg += 0.1
+    phaseb += 0.05
     for i in range(LED_COUNT):
         valuer = 55 + 255 * math.sin(phaser + i / 10)
         valueg = 55 + 255 * math.sin(phaseg + i / 6)
         valueb = 55 + 255 * math.sin(phaseb + i / 4)
         leds[i] = (valuer, valueg, valueb)
     render()
-    time.sleep(1 / 120)
