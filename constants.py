@@ -1,8 +1,9 @@
-import board
+#import board
 
 AUDIO_FILE = "temple.wav"
+CONFIG_FILE = "config.json"
 
-LED_COUNT = 200
+LED_COUNT = 18
 #LED_PIN = board.D10 # 10 uses SPI /dev/spidev0.0 (pin 19)
 #LED_PIN = board.D18 # PWM (pin 12) - needs to be run with sudo
 
