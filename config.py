@@ -53,6 +53,7 @@ def config(pixelCoords: list[tuple[float, float, float]], pixels: PixelStrip):
     previousIndex = 0
     indexOfPreviousSetPoint = -1 # Used to interpolate between this point and next of set coords
     cancelled = False
+    referential = (0, 0, 0)
     while currentIndex < LED_COUNT:
         pixels.setPixelColor(previousIndex, Color(0, 0, 0))
         pixels.setPixelColor(currentIndex, Color(0, 255, 0))
@@ -60,32 +61,38 @@ def config(pixelCoords: list[tuple[float, float, float]], pixels: PixelStrip):
         # pixels[currentIndex] = (0, 255, 0)
         pixels.show()
 
-        userInput = input("Enter coordinates x y z for pixel " + str(currentIndex) + " (e.g. 10 -5 12), Enter to skip and interpolate or 'cancel' to leave config:\n")
+        userInput = input("Enter X Y Z for pixel " + str(currentIndex) + ", Enter to skip and interpolate, r X Y Z to set new referential coordinates, or 'c' to cancel config:\n")
 
         if userInput is "":
             previousIndex = currentIndex
             currentIndex += 1
-        elif userInput == "cancel":
+        elif userInput == "c":
             currentIndex = LED_COUNT
             cancelled = True
             print("Cancelling...")
         else:
             try:
                 coords = userInput.split(" ")
-                x = float(coords[0])
-                y = float(coords[1])
-                z = float(coords[2])
 
-                pixelCoords[currentIndex] = (x, y, z)
+                # Setting new referential
+                if coords[0] == "r":
+                    print("New referential set")
+                    referential = (float(coords[1]), float(coords[2]), float(coords[3]))
+                else:
+                    x = float(coords[0]) + referential[0]
+                    y = float(coords[1]) + referential[1]
+                    z = float(coords[2]) + referential[2]
 
-                # Do we need to interpolate?
-                if (indexOfPreviousSetPoint is not -1 and indexOfPreviousSetPoint < currentIndex - 1):
-                    print("Interpolating from " + str(indexOfPreviousSetPoint) + " to " + str(currentIndex))
-                    interpolateCoords(pixelCoords, indexOfPreviousSetPoint, currentIndex)
+                    pixelCoords[currentIndex] = (x, y, z)
 
-                indexOfPreviousSetPoint = currentIndex
-                previousIndex = currentIndex
-                currentIndex += 1
+                    # Do we need to interpolate?
+                    if (indexOfPreviousSetPoint is not -1 and indexOfPreviousSetPoint < currentIndex - 1):
+                        print("Interpolating from " + str(indexOfPreviousSetPoint) + " to " + str(currentIndex))
+                        interpolateCoords(pixelCoords, indexOfPreviousSetPoint, currentIndex)
+
+                    indexOfPreviousSetPoint = currentIndex
+                    previousIndex = currentIndex
+                    currentIndex += 1
             except Exception as e:
                 print("Invalid coordinates.")
                 print(e)

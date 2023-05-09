@@ -15,8 +15,10 @@ from constants import *
 from config import config, loadConfig
 from utils import playAudio
 from render import render
+
 from programmes.colourWave import colourWave
 from programmes.coordsTest import coordsTest
+from programmes.sparksProgramme import sparksProgramme
 
 # class TestBuf(adafruit_pixelbuf.PixelBuf):
 #    called = False
@@ -38,16 +40,24 @@ leds: list[tuple[float, float, float]] = [(0, 0, 0) for _ in range(LED_COUNT)]
 # Holds the coordinates for each pixel
 pixelCoords = loadConfig()
 
+lastFrameTime = time.time()
+
 playAudio(AUDIO_FILE)
 
 # Main loop
 while True:
+    thisFrameTime = time.time()
+    frameTime = thisFrameTime - lastFrameTime
+    lastFrameTime = thisFrameTime
+    print(frameTime)
+
     # Change mode to config
     if keyboard.is_pressed("enter"):
         config(pixelCoords, pixels)
 
-    colourWave(leds)
-    #coordsTest(leds, pixelCoords)
+    #colourWave(leds)
+    #coordsTest(leds, pixelCoords, frameTime)
+    sparksProgramme(leds, pixelCoords, frameTime)
 
     render(leds, pixels)
-    time.sleep(0.02)
+    time.sleep(SLEEP_TIME_PER_FRAME)
