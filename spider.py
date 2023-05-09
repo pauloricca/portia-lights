@@ -16,6 +16,7 @@ from config import config, loadConfig
 from utils import playAudio
 from render import render
 from programmes.colourWave import colourWave
+from programmes.coordsTest import coordsTest
 
 # class TestBuf(adafruit_pixelbuf.PixelBuf):
 #    called = False
@@ -46,6 +47,7 @@ while True:
         config(pixelCoords, pixels)
 
     colourWave(leds)
+    #coordsTest(leds, pixelCoords)
 
     render(leds, pixels)
     time.sleep(0.02)

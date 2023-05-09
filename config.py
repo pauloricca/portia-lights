@@ -19,7 +19,7 @@ def loadConfig():
     except:
         return getEmptyPixelCoords()
 
-def interpolateCoords(pixelCoords: list, fromIndex: int, toIndex: int):
+def interpolateCoords(pixelCoords: list[tuple[float, float, float]], fromIndex: int, toIndex: int):
     try:
         nSteps = toIndex - fromIndex
         xStep = (pixelCoords[toIndex][0] - pixelCoords[fromIndex][0]) / nSteps
@@ -35,7 +35,7 @@ def interpolateCoords(pixelCoords: list, fromIndex: int, toIndex: int):
         print("Error interpolating.")
         print(e)
 
-def config(pixelCoords: list, pixels: PixelStrip):
+def config(pixelCoords: list[tuple[float, float, float]], pixels: PixelStrip):
     # Make all leds red for one second (to indicate config and to allow E key to be depressed)
     for i in range(LED_COUNT): pixels.setPixelColor(i, Color(255, 0, 0))
     # for i in range(LED_COUNT): pixels[i] = (0, 255, 0)
