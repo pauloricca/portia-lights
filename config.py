@@ -1,7 +1,7 @@
-import neopixel
+#import neopixel
 import time
 import json
-#from rpi_ws281x import PixelStrip, Color
+from rpi_ws281x import PixelStrip, Color
 
 from constants import *
 from utils import getEmptyPixelCoords
@@ -35,17 +35,17 @@ def interpolateCoords(pixelCoords: list[tuple[float, float, float]], fromIndex: 
         print("Error interpolating.")
         print(e)
 
-def config(pixelCoords: list[tuple[float, float, float]], pixels: neopixel.NeoPixel):
+def config(pixelCoords: list[tuple[float, float, float]], pixels: PixelStrip):
     # Make all leds red for one second (to indicate config and to allow E key to be depressed)
-    # for i in range(LED_COUNT): pixels.setPixelColor(i, Color(255, 0, 0))
-    for i in range(LED_COUNT): pixels[i] = (255, 0, 0)
+    for i in range(LED_COUNT): pixels.setPixelColor(i, Color(255, 0, 0))
+    # for i in range(LED_COUNT): pixels[i] = (255, 0, 0)
     pixels.show()
 
     time.sleep(1)
 
     # Clear all leds
-    # for i in range(LED_COUNT): pixels.setPixelColor(i, Color(0, 0, 0))
-    for i in range(LED_COUNT): pixels[i] = (0, 0, 0)
+    for i in range(LED_COUNT): pixels.setPixelColor(i, Color(0, 0, 0))
+    # for i in range(LED_COUNT): pixels[i] = (0, 0, 0)
     pixels.show()
 
     # Start Config
@@ -55,15 +55,15 @@ def config(pixelCoords: list[tuple[float, float, float]], pixels: neopixel.NeoPi
     cancelled = False
     referential = (0, 0, 0)
     while currentIndex < LED_COUNT:
-        # pixels.setPixelColor(previousIndex, Color(0, 0, 0))
-        # pixels.setPixelColor(currentIndex, Color(0, 255, 0))
-        pixels[previousIndex] = (0, 0, 0)
-        pixels[currentIndex] = (0, 255, 0)
+        pixels.setPixelColor(previousIndex, Color(0, 0, 0))
+        pixels.setPixelColor(currentIndex, Color(0, 255, 0))
+        # pixels[previousIndex] = (0, 0, 0)
+        # pixels[currentIndex] = (0, 255, 0)
         pixels.show()
 
         userInput = input("Enter X Y Z for pixel " + str(currentIndex) + ", Enter to skip and interpolate, r X Y Z to set new referential coordinates, or 'c' to cancel config:\n")
 
-        if userInput is "":
+        if userInput == "":
             previousIndex = currentIndex
             currentIndex += 1
         elif userInput == "c":
@@ -86,7 +86,7 @@ def config(pixelCoords: list[tuple[float, float, float]], pixels: neopixel.NeoPi
                     pixelCoords[currentIndex] = (x, y, z)
 
                     # Do we need to interpolate?
-                    if (indexOfPreviousSetPoint is not -1 and indexOfPreviousSetPoint < currentIndex - 1):
+                    if (indexOfPreviousSetPoint != -1 and indexOfPreviousSetPoint < currentIndex - 1):
                         print("Interpolating from " + str(indexOfPreviousSetPoint) + " to " + str(currentIndex))
                         interpolateCoords(pixelCoords, indexOfPreviousSetPoint, currentIndex)
 

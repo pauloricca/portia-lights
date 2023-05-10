@@ -33,7 +33,7 @@ def sparksProgramme(
             "radius": 0,
             "lastRadius": 0,
             "centre": getRandomPointInSpace(),
-            "colour": getRandomColour(brightness = 1)
+            "colour": getRandomColour(brightness = 2)
         })
 
     for i in range(LED_COUNT):

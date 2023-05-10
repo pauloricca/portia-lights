@@ -1,14 +1,14 @@
-import board
+# import board
 
 AUDIO_FILE = "temple.wav"
 CONFIG_FILE = "config.json"
 
 LED_COUNT = 18
-LED_PIN = board.D10 # 10 uses SPI /dev/spidev0.0 (pin 19)
+# LED_PIN = board.D10 # 10 uses SPI /dev/spidev0.0 (pin 19)
 #LED_PIN = board.D18 # PWM (pin 12) - needs to be run with sudo
 
 #LED_PIN = 18          # GPIO pin connected to the pixels (18 uses PWM!).
-#LED_PIN = 10        # GPIO pin connected to the pixels (10 uses SPI /dev/spidev0.0).
+LED_PIN = 10        # GPIO pin connected to the pixels (10 uses SPI /dev/spidev0.0).
 LED_FREQ_HZ = 800000  # LED signal frequency in hertz (usually 800khz)
 LED_DMA = 10          # DMA channel to use for generating signal (try 10)
 LED_BRIGHTNESS = 255  # Set to 0 for darkest and 255 for brightest
