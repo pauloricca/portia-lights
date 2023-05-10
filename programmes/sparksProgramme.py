@@ -20,14 +20,14 @@ def sparksProgramme(
         else:
             spark["life"] -= frameTime
             spark["lastRadius"] = spark["radius"]
-            spark["radius"] += frameTime * 30
+            spark["radius"] += frameTime * 15
     
     # Remove dead sparks
     for spark in sparksToRemove:
         sparksProgramme.sparks.remove(spark)
 
     # Add new sparks
-    if random() < frameTime:
+    if random() < frameTime * 0.5:
         sparksProgramme.sparks.append({
             "life": 2,
             "radius": 0,
@@ -39,9 +39,9 @@ def sparksProgramme(
     for i in range(LED_COUNT):
         coords = pixelCoords[i]
 
-        r = leds[i][0] * (1 - frameTime * 20)
-        g = leds[i][1] * (1 - frameTime * 20)
-        b = leds[i][2] * (1 - frameTime * 20)
+        r = leds[i][0] * (1 - frameTime * 10)
+        g = leds[i][1] * (1 - frameTime * 10)
+        b = leds[i][2] * (1 - frameTime * 10)
 
         for spark in sparksProgramme.sparks:
             distanceSquared = getDistanceSquared(coords, spark["centre"])
