@@ -24,5 +24,5 @@ def receiveEvents():
                         break
 
 def startSlave():
-    waitForNetworkThread = threading.Thread(target=receiveEvents)
+    waitForNetworkThread = threading.Thread(target=receiveEvents, daemon=True)
     waitForNetworkThread.start()

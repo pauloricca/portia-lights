@@ -41,9 +41,9 @@ leds: list[tuple[float, float, float]] = [(0, 0, 0) for _ in range(LED_COUNT)]
 # Holds the coordinates for each pixel
 pixelCoords = loadConfig()
 # playAudio(AUDIO_FILE)
-# startSlave()
 
-master = Master()
+startSlave()
+# master = Master()
 
 lastFrameTime = time.time()
 
