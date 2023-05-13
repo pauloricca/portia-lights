@@ -2,6 +2,8 @@ import socket
 import time
 import threading
 import subprocess
+import json
+
 from constants import *
 
 # TODO: Add Thread locks around messages and slaveIps
@@ -11,10 +13,15 @@ class Master:
     def __init__(self):
         # List of slaves with ip, lastSeenAt, messageBuffer
         self.slaves = []
-        self.start()
         self.messages = []
 
-    def discoverSlaves(self):
+        slaveDiscoveryThread = threading.Thread(target=self.__slaveDiscoveryCycle, daemon=True)
+        slaveDiscoveryThread.start()
+
+        messageSendingThread = threading.Thread(target=self.__messageSendingCycle, daemon=True)
+        messageSendingThread.start()
+
+    def __slaveDiscoveryCycle(self):
         while True:
             print("Scanning network...")
             output = subprocess.check_output(("arp", "-a")).decode("ascii")
@@ -66,14 +73,24 @@ class Master:
             time.sleep(DISCOVERY_CYCLE_TIME_SECONDS)
 
 
-    def sendMessages(self):
+    def __messageSendingCycle(self):
         while True:
+            for slave in self.slaves:
+                messagesToRetry = []
+                for message in slave['messages']:
+                    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                        try:
+                            s.connect((slave['ip'], PORT))
+                            print("sending message: " + message)
+                            s.sendall(str.encode(message))
+                            s.close()
+                        except Exception as e:
+                            print(e)
+                            messagesToRetry.append(message)
+                slave['messages'] = messagesToRetry
+
             time.sleep(SEND_MESSAGES_CYCLE_TIME_SECONDS)
 
-
-    def start(self):
-        discoverSlavesThread = threading.Thread(target=self.discoverSlaves, daemon=True)
-        discoverSlavesThread.start()
-
-        sendMessagesThread = threading.Thread(target=self.sendMessages, daemon=True)
-        sendMessagesThread.start()
+    def sendMessage(self, message):
+        for slave in self.slaves:
+            slave['messages'].append(json.dumps(message))
