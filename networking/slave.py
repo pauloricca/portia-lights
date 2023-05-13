@@ -43,7 +43,3 @@ class Slave:
                                     print("Error parsing message: " + message)
                                     print(e)
                             connectionOpen = False
-
-    def __startSlave(self):
-        waitForNetworkThread = threading.Thread(target=self.__receiveToMessagesCycle, daemon=True)
-        waitForNetworkThread.start()
