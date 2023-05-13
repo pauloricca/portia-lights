@@ -1,6 +1,5 @@
 import threading
 import os
-import subprocess
 import math
 from colorsys import hsv_to_rgb
 
@@ -8,13 +7,10 @@ from random import random
 from constants import *
 
 def _playAudioFileSync(file):
-    #os.system("aplay '" + file + "'")
-    #os.system("dd if='" + file + "' | aplay")
-    #subprocess.run("dd if='" + file + "' | aplay", shell=True)
-    os.system("su -c 'aplay temple.wav' admin")
+    os.system("aplay '" + file + "'")
 
 def playAudio(file):
-    t = threading.Thread(target=_playAudioFileSync, args=(file,))
+    t = threading.Thread(target=_playAudioFileSync, args=(file,), daemon=True)
     t.start()
 
 def clamp(n, minn, maxn):

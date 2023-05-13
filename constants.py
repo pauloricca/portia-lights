@@ -29,3 +29,8 @@ SPACE_BOUNDING_BOX = [
     [-2, 10],
     [0, 0]
 ]
+
+PORT = 65432  # The port used by the master/slaves communication sockets
+DISCOVERY_CYCLE_TIME_SECONDS = 5
+SEND_MESSAGES_CYCLE_TIME_SECONDS = 0.05
+NETWORK_RETRY_TIME_SECONDS = 10

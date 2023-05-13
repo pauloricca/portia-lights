@@ -14,6 +14,8 @@ from constants import *
 from config import config, loadConfig
 from utils import playAudio
 from render import render
+from networking.slave import startSlave
+from networking.master import Master
 
 from programmes.colourWave import colourWave
 from programmes.coordsTest import coordsTest
@@ -38,10 +40,12 @@ leds: list[tuple[float, float, float]] = [(0, 0, 0) for _ in range(LED_COUNT)]
 
 # Holds the coordinates for each pixel
 pixelCoords = loadConfig()
+# playAudio(AUDIO_FILE)
+# startSlave()
+
+master = Master()
 
 lastFrameTime = time.time()
-
-playAudio(AUDIO_FILE)
 
 framecount = 0
 totalFrameTime = 0
@@ -51,7 +55,7 @@ while True:
     thisFrameTime = time.time()
     frameTime = thisFrameTime - lastFrameTime
     lastFrameTime = thisFrameTime
-    print(str(int(1/frameTime)) + "fps")
+    #print(str(int(1/frameTime)) + "fps")
 
     ## Average frame time
     # totalFrameTime += frameTime
