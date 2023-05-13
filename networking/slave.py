@@ -1,5 +1,5 @@
 import socket
-import time
+import json
 import threading
 
 PORT = 65432
@@ -20,8 +20,15 @@ def receiveEvents():
                     if data:
                         message += data.decode('ascii')
                     else:
-                        print(message)
-                        break
+                        if message != '':
+                            try:
+                                event = json.loads(message)
+                                print("New event:")
+                                print(event)
+                            except Exception as e:
+                                print(e)
+                                print("Error parsing message: " + message)
+                            break
 
 def startSlave():
     waitForNetworkThread = threading.Thread(target=receiveEvents, daemon=True)

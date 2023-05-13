@@ -31,4 +31,4 @@ $ sudo ./spider.py
 
 # When installing new libraries
 
-$ pip freeze > requirements.txt
+$ pip3 freeze > requirements.txt
