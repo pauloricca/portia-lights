@@ -4,26 +4,40 @@ import threading
 import subprocess
 import json
 
-from constants import *
-
 # TODO: Add Thread locks around messages and slaveIps
 
 class Master:
 
-    def __init__(self):
+    # Times in seconds
+    def __init__(
+            self,
+            port = 63277,
+            discoveryCycleTime=5,
+            sendRetryTime=0.2,
+            forgetSlaveTime=30,
+            verbose=False,
+            macAddressStartMask=''
+        ):
         # List of slaves with ip, lastSeenAt, messageBuffer
         self.slaves = []
         self.messages = []
+        self.port = port
+        self.discoveryCycleTime = discoveryCycleTime
+        self.sendRetryTime = sendRetryTime
+        self.forgetSlaveTime = forgetSlaveTime
+        self.verbose = verbose
+        self.macAddressStartMask = macAddressStartMask
 
         slaveDiscoveryThread = threading.Thread(target=self.__slaveDiscoveryCycle, daemon=True)
         slaveDiscoveryThread.start()
 
+    def __startMessageSendingCycle(self):
         messageSendingThread = threading.Thread(target=self.__messageSendingCycle, daemon=True)
         messageSendingThread.start()
 
     def __slaveDiscoveryCycle(self):
         while True:
-            print("Scanning network...")
+            self.verbose and print("Scanning network...")
             output = subprocess.check_output(("arp", "-a")).decode("ascii")
 
             # Output will be in this format, each device on a line:
@@ -34,15 +48,14 @@ class Master:
             potentialSlaveIps = []
             for outputLine in outputLines:
                 lineParts = outputLine.split(' ')
-                # Raspberry pis have mac addresses starting with b8
-                if len(lineParts) >= 4 and lineParts[3].startswith('b8'):
+                if len(lineParts) >= 4 and lineParts[3].startswith(self.macAddressStartMask):
                     potentialSlaveIps.append(lineParts[1].replace('(', '').replace(')', ''))
 
             # Check potential slaves, add new ones with open port, update lastSeenAt on known ones
             for potentialSlaveIp in potentialSlaveIps:
                 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     try:
-                        s.connect((potentialSlaveIp, PORT))
+                        s.connect((potentialSlaveIp, self.port))
                         s.close()
 
                         haveSlaveAlready = False
@@ -55,42 +68,47 @@ class Master:
                             self.slaves.append({
                                 'ip': potentialSlaveIp,
                                 'lastSeenAt': time.time(),
-                                'messages': [],
+                                'messageBuffer': [],
                             })
                     except: {}
             
             # Forget slaves we haven't seen in a while
             slavesToKeep = []
             for slave in self.slaves:
-                if slave['lastSeenAt'] > time.time() - FORGET_SLAVES_AFTER_SECONDS:
+                if slave['lastSeenAt'] > time.time() - self.forgetSlaveTime:
                     slavesToKeep.append(slave)
             
             self.slaves = slavesToKeep
 
-            print('slaves: ')
-            print(self.slaves)
+            self.verbose and print('slaves: ')
+            self.verbose and print(self.slaves)
 
-            time.sleep(DISCOVERY_CYCLE_TIME_SECONDS)
+            time.sleep(self.discoveryCycleTime)
 
 
     def __messageSendingCycle(self):
-        while True:
+        stillHaveMessagesToSend = True
+        while stillHaveMessagesToSend:
+            stillHaveMessagesToSend = False
             for slave in self.slaves:
                 messagesToRetry = []
-                for message in slave['messages']:
+                for message in slave['messageBuffer']:
                     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                         try:
-                            s.connect((slave['ip'], PORT))
-                            print("sending message: " + message)
+                            s.connect((slave['ip'], self.port))
+                            self.verbose and print("sending message '" + message + "' to " + slave['ip'])
                             s.sendall(str.encode(message))
                             s.close()
-                        except Exception as e:
-                            print(e)
+                            slave['lastSeenAt'] = time.time()
+                        except:
+                            stillHaveMessagesToSend = True
                             messagesToRetry.append(message)
-                slave['messages'] = messagesToRetry
+                slave['messageBuffer'] = messagesToRetry
 
-            time.sleep(SEND_MESSAGES_CYCLE_TIME_SECONDS)
+            time.sleep(self.sendRetryTime)
 
     def sendMessage(self, message):
         for slave in self.slaves:
-            slave['messages'].append(json.dumps(message))
+            slave['messageBuffer'].append(json.dumps(message))
+
+        self.__startMessageSendingCycle()
