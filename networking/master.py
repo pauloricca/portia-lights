@@ -40,9 +40,9 @@ class Master:
 
                         haveSlaveAlready = False
                         for slave in self.slaves:
-                            if slave.ip == potentialSlaveIp:
+                            if slave['ip'] == potentialSlaveIp:
                                 haveSlaveAlready = True
-                                slave.lastSeenAt = time.time()
+                                slave['lastSeenAt'] = time.time()
                         
                         if not haveSlaveAlready:
                             self.slaves.append({
@@ -50,11 +50,18 @@ class Master:
                                 'lastSeenAt': time.time(),
                                 'messages': [],
                             })
-                    except:
-                        potentialSlaveIps.remove(potentialSlaveIp)
+                    except: {}
+            
+            # Forget slaves we haven't seen in a while
+            slavesToKeep = []
+            for slave in self.slaves:
+                if slave['lastSeenAt'] > time.time() - FORGET_SLAVES_AFTER_SECONDS:
+                    slavesToKeep.append(slave)
+            
+            self.slaves = slavesToKeep
 
-            self.slaves = potentialSlaveIps
-            print(potentialSlaveIps)
+            print('slaves: ')
+            print(self.slaves)
 
             time.sleep(DISCOVERY_CYCLE_TIME_SECONDS)
 
