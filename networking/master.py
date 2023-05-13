@@ -12,11 +12,11 @@ class Master:
     def __init__(
             self,
             port = 63277,
-            discoveryCycleTime=5,
-            sendRetryTime=0.2,
-            forgetSlaveTime=30,
-            verbose=False,
-            macAddressStartMask=''
+            discoveryCycleTime = 5,
+            sendRetryTime = 0.2,
+            forgetSlaveTime = 30,
+            verbose = False,
+            macAddressStartMask = ''
         ):
         # List of slaves with ip, lastSeenAt, messageBuffer
         self.slaves = []

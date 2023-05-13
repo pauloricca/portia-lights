@@ -14,7 +14,7 @@ from constants import *
 from config import config, loadConfig
 from utils import playAudio
 from render import render
-from networking.slave import startSlave
+from networking.slave import Slave
 from networking.master import Master
 
 from programmes.colourWave import colourWave
@@ -42,7 +42,10 @@ leds: list[tuple[float, float, float]] = [(0, 0, 0) for _ in range(LED_COUNT)]
 pixelCoords = loadConfig()
 # playAudio(AUDIO_FILE)
 
-startSlave()
+def onMessageHandler(message):
+    print(message)
+
+slave = Slave(onMessage = onMessageHandler)
 # master = Master()
 
 lastFrameTime = time.time()

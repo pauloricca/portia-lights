@@ -5,7 +5,7 @@ import time
 from networking.master import Master
 
 # Raspberry pis have mac addresses starting with b8
-master = Master(macAddressStartMask='b8', verbose=True)
+master = Master(macAddressStartMask = 'b8', verbose = True)
 
 while True: 
     time.sleep(10)
