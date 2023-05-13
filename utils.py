@@ -38,3 +38,6 @@ def getRandomPointInSpace():
 def getRandomColour(brightness = 0.5):
     rgbColour = hsv_to_rgb(random(), 1, brightness)
     return (rgbColour[0] * 255, rgbColour[1] * 255, rgbColour[2] * 255)
+
+def getBlankLEDsBuffer():
+    return [[0, 0, 0] for _ in range(LED_COUNT)]

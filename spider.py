@@ -12,14 +12,14 @@ import keyboard
 
 from constants import *
 from config import config, loadConfig
-from utils import playAudio
+from utils import playAudio, getBlankLEDsBuffer
 from render import render
 from networking.slave import Slave
 from networking.master import Master
 
 from programmes.colourWave import colourWave
 from programmes.coordsTest import coordsTest
-from programmes.sparksProgramme import sparksProgramme
+from programmes.sparksProgramme import SparksProgramme
 
 # class TestBuf(adafruit_pixelbuf.PixelBuf):
 #    called = False
@@ -35,9 +35,6 @@ pixels = PixelStrip(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BR
 # Intialize the library (must be called once before other functions).
 pixels.begin()
 
-# Holds pre-rendered pixel rgb values, from 0 to 500 (0: black, 255: full saturation, 500: white)
-leds: list[tuple[float, float, float]] = [(0, 0, 0) for _ in range(LED_COUNT)]
-
 # Holds the coordinates for each pixel
 pixelCoords = loadConfig()
 # playAudio(AUDIO_FILE)
@@ -52,6 +49,8 @@ lastFrameTime = time.time()
 
 framecount = 0
 totalFrameTime = 0
+
+sparksProgramme = SparksProgramme()
 
 # Main loop
 while True:
@@ -69,9 +68,22 @@ while True:
     if keyboard.is_pressed("enter"):
         config(pixelCoords, pixels)
 
+    # Holds pre-rendered pixel rgb values, from 0 to 500 (0: black, 255: full saturation, 500: white)
+    leds: list[list] = getBlankLEDsBuffer()
+
+    events = []
+    
     #colourWave(leds)
     #coordsTest(leds, pixelCoords, frameTime)
-    sparksProgramme(leds, pixelCoords, frameTime)
+    sparksProgrammeLeds = sparksProgramme.render(pixelCoords, frameTime, events)
+
+    for i, led in enumerate(leds):
+        led[0] += sparksProgrammeLeds[i][0]
+        led[1] += sparksProgrammeLeds[i][0]
+        led[2] += sparksProgrammeLeds[i][0]
+
+    
+    sparksProgrammeLeds
 
     render(leds, pixels)
     time.sleep(SLEEP_TIME_PER_FRAME)
