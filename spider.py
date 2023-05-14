@@ -19,6 +19,7 @@ from networking.master import Master
 
 from programmes.sparksProgramme import SparksProgramme
 from programmes.colourNoiseProgramme import ColourNoiseProgramme
+from programmes.programme import Programme
 
 # class TestBuf(adafruit_pixelbuf.PixelBuf):
 #    called = False
@@ -49,8 +50,10 @@ lastFrameTime = time.time()
 framecount = 0
 totalFrameTime = 0
 
-sparksProgramme = SparksProgramme()
-colourNoiseProgramme = ColourNoiseProgramme()
+programmes: list[Programme] = [
+    SparksProgramme(),
+    ColourNoiseProgramme()
+]
 
 if (LED_COUNT > len(ledCoords)): ledCoords = config(ledStrip)
 
@@ -74,17 +77,13 @@ while True:
     leds: list[list] = getBlankLEDsBuffer()
 
     events = []
-    
-    sparksProgramme.render(ledCoords, frameTime, events)
-    colourNoiseProgramme.render(ledCoords, frameTime, events)
 
-    for i, led in enumerate(leds):
-        led[0] += sparksProgramme.leds[i][0]
-        led[1] += sparksProgramme.leds[i][1]
-        led[2] += sparksProgramme.leds[i][1]
-        led[0] += colourNoiseProgramme.leds[i][0]
-        led[1] += colourNoiseProgramme.leds[i][1]
-        led[2] += colourNoiseProgramme.leds[i][2]
+    for programme in programmes:
+        programme.render(ledCoords, frameTime, events)
+        for i, led in enumerate(leds):
+            led[0] += programme.leds[i][0]
+            led[1] += programme.leds[i][1]
+            led[2] += programme.leds[i][1]
 
     render(leds, ledStrip)
 
@@ -93,3 +92,5 @@ while True:
     sleepTime = renderTime - (1 / TARGET_FPS)
     # print(sleepTime)
     # if sleepTime > 0: time.sleep(sleepTime)
+
+    # time.sleep(0.01)

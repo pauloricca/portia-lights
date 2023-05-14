@@ -24,6 +24,7 @@ cryptography==3.3.2
 cupshelpers==1.0
 dbus-python==1.2.16
 distro==1.5.0
+distro-info==1.0
 docutils==0.16
 drumhat==0.1.0
 envirophat==1.0.0
@@ -48,10 +49,13 @@ mote==0.0.4
 motephat==0.0.3
 mypy==0.812
 mypy-extensions==0.4.3
+noise==1.2.3
 numpy==1.19.5
 oauthlib==3.1.0
+packaging==23.1
 pantilthat==0.0.7
 parso==0.8.1
+perlin-noise==1.12
 pexpect==4.8.0
 pgzero==1.2
 phatbeat==0.1.1
@@ -63,9 +67,11 @@ piexif==1.1.3
 piglow==1.2.5
 pigpio==1.78
 Pillow==8.1.2
+pip-check-reqs==2.4.4
 psutil==5.8.0
 pycairo==1.16.2
 pycups==2.0.1
+pycurl==7.43.0.6
 pydub==0.25.1
 pyftdi==0.54.0
 pygame==1.9.6
@@ -111,7 +117,8 @@ toml==0.10.1
 touchphat==0.0.1
 twython==3.8.2
 typed-ast==1.4.2
-typing-extensions==4.5.0
+typing_extensions==4.5.0
+unattended-upgrades==0.1
 unicornhathd==0.0.4
 urllib3==1.26.5
 v4l2-python3==0.3.1

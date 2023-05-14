@@ -8,10 +8,10 @@ class SparksProgramme(Programme):
     def __init__(self):
         super().__init__()
         self.sparks = [] # list of dict with life, radius, lastRadius, colour and centre
-        self.propagationSpeed = 100
+        self.propagationSpeed = 70
         self.sparkProbability = 0.5
         self.brightness = 2
-        self.fadeByDistance = 0.05
+        self.fadeByDistance = 0.02
     
     def render(
             self,
