@@ -36,7 +36,7 @@ ledStrip.begin()
 
 # Holds the coordinates for each pixel
 ledCoords = loadConfig()
-# playAudio(AUDIO_FILE)
+playAudio(AUDIO_FILE)
 
 def onMessageHandler(message):
     print(message)
@@ -76,7 +76,7 @@ while True:
     events = []
     
     sparksProgramme.render(ledCoords, frameTime, events)
-    # colourNoiseProgramme.render(ledCoords, frameTime, events)
+    colourNoiseProgramme.render(ledCoords, frameTime, events)
 
     for i, led in enumerate(leds):
         led[0] += sparksProgramme.leds[i][0]

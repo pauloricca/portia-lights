@@ -31,13 +31,12 @@ class ColourNoiseProgramme(Programme):
                 # self.phase
             ])
             brightness = self.brightness * self.noise([
-                ledCoords[i][0] * self.scale + self.phase, 
-                ledCoords[i][1] * self.scale + self.phase, 
+                ledCoords[i][0] * self.scale + self.phase + 100, 
+                ledCoords[i][1] * self.scale + self.phase + 100, 
                 # ledCoords[i][2] * self.scale, 
-                self.phase + 100
+                # self.phase + 100
             ])
             rgb = hsv_to_rgb(hue, self.saturation, brightness)
-            # rgb = (hue, self.saturation, brightness)
             led[0] = rgb[0] * 255
             led[1] = rgb[1] * 255
             led[2] = rgb[2] * 255
