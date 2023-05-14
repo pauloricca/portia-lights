@@ -11,10 +11,10 @@ class Programme(ABC):
     @abstractmethod
     def render(
         self,
-        pixelCoords: list[list],
+        ledCoords: list[list],
         frameTime: float,
         events: list,
-    ) -> list[list]:
+    ):
         raise NotImplementedError("Please Implement this method")
     
     # darken all leds by amount (0 to 1)

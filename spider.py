@@ -11,15 +11,14 @@ from rpi_ws281x import PixelStrip
 import keyboard
 
 from constants import *
-from config import config, loadConfig
+from config import config, loadConfig, saveConfig
 from utils import playAudio, getBlankLEDsBuffer
 from render import render
 from networking.slave import Slave
 from networking.master import Master
 
-from programmes.colourWave import colourWave
-from programmes.coordsTest import coordsTest
 from programmes.sparksProgramme import SparksProgramme
+from programmes.colourNoiseProgramme import ColourNoiseProgramme
 
 # class TestBuf(adafruit_pixelbuf.PixelBuf):
 #    called = False
@@ -27,16 +26,16 @@ from programmes.sparksProgramme import SparksProgramme
 #    def show(self):
 #        self.called = True
 
-# pixels = neopixel.NeoPixel(LED_PIN, n=LED_COUNT, pixel_order=neopixel.GRB, auto_write=False)
-# pixels = TestBuf(byteorder="GRB", size=LED_COUNT, auto_write=False)
+# ledStrip = neopixel.NeoPixel(LED_PIN, n=LED_COUNT, pixel_order=neopixel.GRB, auto_write=False)
+# ledStrip = TestBuf(byteorder="GRB", size=LED_COUNT, auto_write=False)
 
 # Create NeoPixel object with appropriate configuration.
-pixels = PixelStrip(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
+ledStrip = PixelStrip(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
 # Intialize the library (must be called once before other functions).
-pixels.begin()
+ledStrip.begin()
 
 # Holds the coordinates for each pixel
-pixelCoords = loadConfig()
+ledCoords = loadConfig()
 # playAudio(AUDIO_FILE)
 
 def onMessageHandler(message):
@@ -51,13 +50,16 @@ framecount = 0
 totalFrameTime = 0
 
 sparksProgramme = SparksProgramme()
+colourNoiseProgramme = ColourNoiseProgramme()
+
+if (LED_COUNT > len(ledCoords)): ledCoords = config(ledStrip)
 
 # Main loop
 while True:
     thisFrameTime = time.time()
     frameTime = thisFrameTime - lastFrameTime
     lastFrameTime = thisFrameTime
-    #print(str(int(1/frameTime)) + "fps")
+    print(str(int(1/frameTime)) + "fps")
 
     ## Average frame time
     # totalFrameTime += frameTime
@@ -66,24 +68,28 @@ while True:
 
     # Change mode to config
     if keyboard.is_pressed("enter"):
-        config(pixelCoords, pixels)
+        ledCoords = config(ledStrip)
 
     # Holds pre-rendered pixel rgb values, from 0 to 500 (0: black, 255: full saturation, 500: white)
     leds: list[list] = getBlankLEDsBuffer()
 
     events = []
     
-    #colourWave(leds)
-    #coordsTest(leds, pixelCoords, frameTime)
-    sparksProgrammeLeds = sparksProgramme.render(pixelCoords, frameTime, events)
+    sparksProgramme.render(ledCoords, frameTime, events)
+    # colourNoiseProgramme.render(ledCoords, frameTime, events)
 
     for i, led in enumerate(leds):
-        led[0] += sparksProgrammeLeds[i][0]
-        led[1] += sparksProgrammeLeds[i][0]
-        led[2] += sparksProgrammeLeds[i][0]
+        led[0] += sparksProgramme.leds[i][0]
+        led[1] += sparksProgramme.leds[i][1]
+        led[2] += sparksProgramme.leds[i][1]
+        led[0] += colourNoiseProgramme.leds[i][0]
+        led[1] += colourNoiseProgramme.leds[i][1]
+        led[2] += colourNoiseProgramme.leds[i][2]
 
-    
-    sparksProgrammeLeds
+    render(leds, ledStrip)
 
-    render(leds, pixels)
-    time.sleep(SLEEP_TIME_PER_FRAME)
+    renderTime = time.time() - thisFrameTime
+
+    sleepTime = renderTime - (1 / TARGET_FPS)
+    # print(sleepTime)
+    # if sleepTime > 0: time.sleep(sleepTime)

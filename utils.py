@@ -16,8 +16,8 @@ def playAudio(file):
 def clamp(n, minn, maxn):
     return max(min(maxn, n), minn)
 
-def getEmptyPixelCoords():
-    return [(math.inf, math.inf, math.inf) for _ in range(LED_COUNT)]
+def getEmptyledCoords():
+    return [(0, 0, 0) for _ in range(LED_COUNT)]
 
 def getDistanceSquared(a: tuple[float, float, float], b: tuple[float, float, float]):
     return (b[0] - a[0]) * (b[0] - a[0]) + (b[1] - a[1]) * (b[1] - a[1]) + (b[2] - a[2]) * (b[2] - a[2])

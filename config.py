@@ -4,10 +4,10 @@ import json
 from rpi_ws281x import PixelStrip, Color
 
 from constants import *
-from utils import getEmptyPixelCoords
+from utils import getEmptyledCoords
 
-def saveConfig(pixelCoords):
-    configJson = json.dumps(pixelCoords)
+def saveConfig(ledCoords):
+    configJson = json.dumps(ledCoords)
     f = open(CONFIG_FILE, "w")
     f.write(configJson)
 
@@ -17,36 +17,38 @@ def loadConfig():
         configJson = f.read()
         return json.loads(configJson)
     except:
-        return getEmptyPixelCoords()
+        return getEmptyledCoords()
 
-def interpolateCoords(pixelCoords: list[tuple[float, float, float]], fromIndex: int, toIndex: int):
+def interpolateCoords(ledCoords: list[tuple[float, float, float]], fromIndex: int, toIndex: int):
     try:
         nSteps = toIndex - fromIndex
-        xStep = (pixelCoords[toIndex][0] - pixelCoords[fromIndex][0]) / nSteps
-        yStep = (pixelCoords[toIndex][1] - pixelCoords[fromIndex][1]) / nSteps
-        zStep = (pixelCoords[toIndex][2] - pixelCoords[fromIndex][2]) / nSteps
+        xStep = (ledCoords[toIndex][0] - ledCoords[fromIndex][0]) / nSteps
+        yStep = (ledCoords[toIndex][1] - ledCoords[fromIndex][1]) / nSteps
+        zStep = (ledCoords[toIndex][2] - ledCoords[fromIndex][2]) / nSteps
         for step in range(1, nSteps):
-            pixelCoords[fromIndex + step] = (
-                pixelCoords[fromIndex][0] + step * xStep,
-                pixelCoords[fromIndex][1] + step * yStep,
-                pixelCoords[fromIndex][2] + step * zStep,
+            ledCoords[fromIndex + step] = (
+                ledCoords[fromIndex][0] + step * xStep,
+                ledCoords[fromIndex][1] + step * yStep,
+                ledCoords[fromIndex][2] + step * zStep,
             )
     except Exception as e:
         print("Error interpolating.")
         print(e)
 
-def config(pixelCoords: list[tuple[float, float, float]], pixels: PixelStrip):
+def config(ledStrip: PixelStrip):
+    ledCoords = getEmptyledCoords()
+
     # Make all leds red for one second (to indicate config and to allow E key to be depressed)
-    for i in range(LED_COUNT): pixels.setPixelColor(i, Color(255, 0, 0))
-    # for i in range(LED_COUNT): pixels[i] = (255, 0, 0)
-    pixels.show()
+    for i in range(LED_COUNT): ledStrip.setPixelColor(i, Color(255, 0, 0))
+    # for i in range(LED_COUNT): ledStrip[i] = (255, 0, 0)
+    ledStrip.show()
 
     time.sleep(1)
 
     # Clear all leds
-    for i in range(LED_COUNT): pixels.setPixelColor(i, Color(0, 0, 0))
-    # for i in range(LED_COUNT): pixels[i] = (0, 0, 0)
-    pixels.show()
+    for i in range(LED_COUNT): ledStrip.setPixelColor(i, Color(0, 0, 0))
+    # for i in range(LED_COUNT): ledStrip[i] = (0, 0, 0)
+    ledStrip.show()
 
     # Start Config
     currentIndex = 0
@@ -55,11 +57,11 @@ def config(pixelCoords: list[tuple[float, float, float]], pixels: PixelStrip):
     cancelled = False
     referential = (0, 0, 0)
     while currentIndex < LED_COUNT:
-        pixels.setPixelColor(previousIndex, Color(0, 0, 0))
-        pixels.setPixelColor(currentIndex, Color(0, 255, 0))
-        # pixels[previousIndex] = (0, 0, 0)
-        # pixels[currentIndex] = (0, 255, 0)
-        pixels.show()
+        ledStrip.setPixelColor(previousIndex, Color(0, 0, 0))
+        ledStrip.setPixelColor(currentIndex, Color(0, 255, 0))
+        # ledStrip[previousIndex] = (0, 0, 0)
+        # ledStrip[currentIndex] = (0, 255, 0)
+        ledStrip.show()
 
         userInput = input("Enter X Y Z for pixel " + str(currentIndex) + ", Enter to skip and interpolate, r X Y Z to set new referential coordinates, or 'c' to cancel config:\n")
 
@@ -83,12 +85,12 @@ def config(pixelCoords: list[tuple[float, float, float]], pixels: PixelStrip):
                     y = float(coords[1]) + referential[1]
                     z = float(coords[2]) + referential[2]
 
-                    pixelCoords[currentIndex] = (x, y, z)
+                    ledCoords[currentIndex] = (x, y, z)
 
                     # Do we need to interpolate?
                     if (indexOfPreviousSetPoint != -1 and indexOfPreviousSetPoint < currentIndex - 1):
                         print("Interpolating from " + str(indexOfPreviousSetPoint) + " to " + str(currentIndex))
-                        interpolateCoords(pixelCoords, indexOfPreviousSetPoint, currentIndex)
+                        interpolateCoords(ledCoords, indexOfPreviousSetPoint, currentIndex)
 
                     indexOfPreviousSetPoint = currentIndex
                     previousIndex = currentIndex
@@ -99,8 +101,10 @@ def config(pixelCoords: list[tuple[float, float, float]], pixels: PixelStrip):
     
     if not cancelled:
         print("Config complete.")
-        saveConfig(pixelCoords)
+        saveConfig(ledCoords)
     else:
         print("Config cancelled.")
-        pixelCoords = loadConfig()
+        ledCoords = loadConfig()
+    
+    return ledCoords
     
