@@ -74,14 +74,9 @@ class Master:
                         if not haveSlaveAlready:
                             self.slaves.append(SlaveInfo(ip = potentialSlaveIp, lastSeenAt = time.time()))
                     except: {}
-            
+
             # Forget slaves we haven't seen in a while
-            slavesToKeep = []
-            for slave in self.slaves:
-                if slave.lastSeenAt > time.time() - self.forgetSlaveTime:
-                    slavesToKeep.append(slave)
-            
-            self.slaves = slavesToKeep
+            self.slaves = [slave for slave in self.slaves if slave.lastSeenAt > time.time() - self.forgetSlaveTime]
 
             self.verbose and print('slaves: ')
             self.verbose and print(self.slaves)

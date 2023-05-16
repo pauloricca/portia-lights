@@ -30,20 +30,15 @@ class SparksProgramme(Programme):
             events,
         ):
         super().fade(frameTime * 10)
-
-        # Sparks life cycle
-        sparksToRemove = []
-        for spark in self.sparks:
-            if spark.life < 0:
-                sparksToRemove.append(spark)
-            else:
-                spark.life -= frameTime
-                spark.lastRadius = spark.radius
-                spark.radius += frameTime * self.propagationSpeed
     
         # Remove dead sparks
-        for spark in sparksToRemove:
-            self.sparks.remove(spark)
+        self.sparks = [spark for spark in self.sparks if spark.life > 0]
+
+        # Sparks life cycle
+        for spark in self.sparks:
+            spark.life -= frameTime
+            spark.lastRadius = spark.radius
+            spark.radius += frameTime * self.propagationSpeed
 
         # Add new sparks
         if random() < frameTime * self.sparkProbability:
