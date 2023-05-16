@@ -3,7 +3,7 @@ import time
 import threading
 import subprocess
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 # TODO: Add Thread locks around messages and slaveIps
 
@@ -11,7 +11,7 @@ from dataclasses import dataclass
 class SlaveInfo:
     ip: str
     lastSeenAt: float
-    messageBuffer: list[str] = []
+    messageBuffer: list[str] = field(default_factory=list)
 
 class Master:
     slaves: list[SlaveInfo]
