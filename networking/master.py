@@ -3,10 +3,18 @@ import time
 import threading
 import subprocess
 import json
+from dataclasses import dataclass
 
 # TODO: Add Thread locks around messages and slaveIps
 
+@dataclass
+class SlaveInfo:
+    ip: str
+    lastSeenAt: float
+    messageBuffer: list[str] = []
+
 class Master:
+    slaves: list[SlaveInfo]
 
     # Times in seconds
     def __init__(
@@ -18,7 +26,6 @@ class Master:
             verbose = False,
             macAddressStartMask = ''
         ):
-        # List of slaves with ip, lastSeenAt, messageBuffer
         self.slaves = []
         self.messages = []
         self.port = port
@@ -60,22 +67,18 @@ class Master:
 
                         haveSlaveAlready = False
                         for slave in self.slaves:
-                            if slave['ip'] == potentialSlaveIp:
+                            if slave.ip == potentialSlaveIp:
                                 haveSlaveAlready = True
-                                slave['lastSeenAt'] = time.time()
+                                slave.lastSeenAt = time.time()
                         
                         if not haveSlaveAlready:
-                            self.slaves.append({
-                                'ip': potentialSlaveIp,
-                                'lastSeenAt': time.time(),
-                                'messageBuffer': [],
-                            })
+                            self.slaves.append(SlaveInfo(ip = potentialSlaveIp, lastSeenAt = time.time()))
                     except: {}
             
             # Forget slaves we haven't seen in a while
             slavesToKeep = []
             for slave in self.slaves:
-                if slave['lastSeenAt'] > time.time() - self.forgetSlaveTime:
+                if slave.lastSeenAt > time.time() - self.forgetSlaveTime:
                     slavesToKeep.append(slave)
             
             self.slaves = slavesToKeep
@@ -92,23 +95,23 @@ class Master:
             stillHaveMessagesToSend = False
             for slave in self.slaves:
                 messagesToRetry = []
-                for message in slave['messageBuffer']:
+                for message in slave.messageBuffer:
                     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                         try:
-                            s.connect((slave['ip'], self.port))
-                            self.verbose and print("sending message '" + message + "' to " + slave['ip'])
+                            s.connect((slave.ip, self.port))
+                            self.verbose and print("sending message '" + message + "' to " + slave.ip)
                             s.sendall(str.encode(message))
                             s.close()
-                            slave['lastSeenAt'] = time.time()
+                            slave.lastSeenAt = time.time()
                         except:
                             stillHaveMessagesToSend = True
                             messagesToRetry.append(message)
-                slave['messageBuffer'] = messagesToRetry
+                slave.messageBuffer = messagesToRetry
 
             time.sleep(self.sendRetryTime)
 
     def sendMessage(self, message):
         for slave in self.slaves:
-            slave['messageBuffer'].append(json.dumps(message))
+            slave.messageBuffer.append(json.dumps(message))
 
         self.__startMessageSendingCycle()
