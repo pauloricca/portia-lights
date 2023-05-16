@@ -11,7 +11,7 @@ from rpi_ws281x import PixelStrip
 import keyboard
 
 from constants import *
-from config import config, loadConfig, saveConfig
+from config import config, loadConfig
 from utils import playAudio, getBlankLEDsBuffer
 from render import render
 from networking.slave import Slave
@@ -83,7 +83,7 @@ while True:
         for i, led in enumerate(leds):
             led[0] += programme.leds[i][0]
             led[1] += programme.leds[i][1]
-            led[2] += programme.leds[i][1]
+            led[2] += programme.leds[i][2]
 
     render(leds, ledStrip)
 
