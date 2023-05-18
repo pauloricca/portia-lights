@@ -4,17 +4,19 @@ import json
 from rpi_ws281x import PixelStrip, Color
 
 from constants import *
-from utils import getEmptyledCoords
+from utils import getEmptyledCoords, getAbsolutePath
 
 def saveConfig(ledCoords):
     configJson = json.dumps(ledCoords)
-    f = open(CONFIG_FILE, "w")
+    f = open(getAbsolutePath(CONFIG_FILE), "w")
     f.write(configJson)
+    f.close()
 
 def loadConfig():
     try:
-        f = open(CONFIG_FILE, "r")
+        f = open(getAbsolutePath(CONFIG_FILE), "r")
         configJson = f.read()
+        f.close()
         return json.loads(configJson)
     except:
         return getEmptyledCoords()

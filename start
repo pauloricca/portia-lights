@@ -1,0 +1,25 @@
+#!/bin/bash
+
+SCRIPT_DIR=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+SCRIPT_PATH="$SCRIPT_DIR/spider.py"
+
+echo "DATA: $SCRIPT_PATH"
+
+# Check if the script is already running
+if [ -f "$SCRIPT_DIR/daemon.pid" ]; then
+  PID=$(cat "$SCRIPT_DIR/daemon.pid")
+  if ps -p $PID > /dev/null; then
+    echo "Spider is already running with PID $PID, stopping it first"
+    sudo kill $PID
+    sudo rm "$SCRIPT_DIR/daemon.pid"
+  else
+    echo "PID file exists but Spider is not running, removing PID file"
+    sudo rm "$SCRIPT_DIR/daemon.pid"
+  fi
+fi
+
+# Start the script as a daemon
+nohup sudo python3 $SCRIPT_PATH > /dev/null 2>&1 &
+echo $! > "$SCRIPT_DIR/daemon.pid"
+
+echo "Spider started as a daemon with PID $(cat $SCRIPT_DIR/daemon.pid)"

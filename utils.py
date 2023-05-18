@@ -9,8 +9,8 @@ from constants import *
 def _playAudioFileSync(file):
     os.system("aplay '" + file + "'")
 
-def playAudio(file):
-    t = threading.Thread(target=_playAudioFileSync, args=(file,), daemon=True)
+def playAudio():
+    t = threading.Thread(target=_playAudioFileSync, args=(getAbsolutePath(AUDIO_FILE),), daemon=True)
     t.start()
 
 def clamp(n, minn, maxn):
@@ -41,3 +41,6 @@ def getRandomColour(brightness = 0.5):
 
 def getBlankLEDsBuffer():
     return [[0, 0, 0] for _ in range(LED_COUNT)]
+
+def getAbsolutePath(relativePath: str):
+    return os.path.join(os.path.dirname(__file__), relativePath)

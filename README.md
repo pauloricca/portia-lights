@@ -27,8 +27,17 @@ $ sudo aplay -l
 
 # Running
 
-$ sudo ./spider.py
+$ ./start
+$ ./stop
 
 # When installing new libraries
 
 $ pip3 freeze > requirements.txt
+
+# Add script to boot
+
+$ sudo crontab -e
+
+Add line:
+
+@reboot /home/admin/spider/start

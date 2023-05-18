@@ -37,7 +37,7 @@ ledStrip.begin()
 
 # Holds the coordinates for each pixel
 ledCoords = loadConfig()
-playAudio(AUDIO_FILE)
+playAudio()
 
 def onMessageHandler(message):
     print(message)
@@ -62,7 +62,7 @@ while True:
     thisFrameTime = time.time()
     frameTime = thisFrameTime - lastFrameTime
     lastFrameTime = thisFrameTime
-    print(str(int(1/frameTime)) + "fps")
+    #print(str(int(1/frameTime)) + "fps")
 
     ## Average frame time
     # totalFrameTime += frameTime
@@ -89,7 +89,8 @@ while True:
 
     renderTime = time.time() - thisFrameTime
 
-    sleepTime = renderTime - (1 / TARGET_FPS)
+    # TODO: fix target fps sleep time
+    # sleepTime = renderTime - (1 / TARGET_FPS)
     # print(sleepTime)
     # if sleepTime > 0: time.sleep(sleepTime)
 

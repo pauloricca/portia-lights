@@ -1,0 +1,12 @@
+#!/bin/bash
+
+SCRIPT_DIR=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+
+# Stop the script by killing the process with the stored PID
+if [ -f "$SCRIPT_DIR/daemon.pid" ]; then
+  sudo kill $(cat "$SCRIPT_DIR/daemon.pid")
+  sudo rm "$SCRIPT_DIR/daemon.pid"
+  echo "Spider stopped successfully"
+else
+  echo "Spider is not running"
+fi
