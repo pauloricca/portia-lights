@@ -2,6 +2,7 @@ from colorsys import hsv_to_rgb
 
 from programmes.programme import Programme
 from noise import snoise3
+import time
 
 class ColourNoiseProgramme(Programme):
 
@@ -14,7 +15,7 @@ class ColourNoiseProgramme(Programme):
         self.brightnessNoiseScale = 0.02
         self.speed = 0.1
     
-    def render(
+    def step(
             self,
             ledCoords,
             frameTime,
@@ -24,12 +25,13 @@ class ColourNoiseProgramme(Programme):
         self.phase += frameTime * self.speed
         
         for i, led in enumerate(self.leds):
+            # noise gives values [-1, 1] adding 1 we get [0, 2],to get hues gradients red - violet - red
             hue = snoise3(
                 ledCoords[i][0] * self.hueNoiseScale, 
                 ledCoords[i][1] * self.hueNoiseScale, 
                 # ledCoords[i][2] * self.hueNoiseScale, 
                 self.phase
-            ) * .5 + .5
+            ) + 1
             brightness = self.brightness * snoise3(
                 ledCoords[i][0] * self.brightnessNoiseScale, 
                 ledCoords[i][1] * self.brightnessNoiseScale, 

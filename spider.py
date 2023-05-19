@@ -12,10 +12,11 @@ import keyboard
 
 from constants import *
 from config import config, loadConfig
-from utils import playAudio, getBlankLEDsBuffer
+from utils import getBlankLEDsBuffer
 from render import render
 from networking.slave import Slave
 from networking.master import Master
+from events import EventManager
 
 from programmes.sparksProgramme import SparksProgramme
 from programmes.colourNoiseProgramme import ColourNoiseProgramme
@@ -37,7 +38,6 @@ ledStrip.begin()
 
 # Holds the coordinates for each pixel
 ledCoords = loadConfig()
-playAudio()
 
 def onMessageHandler(message):
     print(message)
@@ -45,8 +45,9 @@ def onMessageHandler(message):
 slave = Slave(onMessage = onMessageHandler)
 # master = Master()
 
-lastFrameTime = time.time()
+eventManager = EventManager()
 
+lastFrameTime = time.time()
 framecount = 0
 totalFrameTime = 0
 
@@ -76,10 +77,10 @@ while True:
     # Holds pre-rendered pixel rgb values, from 0 to 500 (0: black, 255: full saturation, 500: white)
     leds: list[list] = getBlankLEDsBuffer()
 
-    events = []
+    events = eventManager.getEvents()
 
     for programme in programmes:
-        programme.render(ledCoords, frameTime, events)
+        programme.step(ledCoords, frameTime, events)
         for i, led in enumerate(leds):
             led[0] += programme.leds[i][0]
             led[1] += programme.leds[i][1]

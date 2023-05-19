@@ -2,6 +2,7 @@
 
 AUDIO_FILE = "temple.wav"
 CONFIG_FILE = "config.json"
+MAIN_SEQUENCE_FILE = "main.sequence"
 
 LED_COUNT = 200
 # LED_PIN = board.D10 # 10 uses SPI /dev/spidev0.0 (pin 19)

@@ -1,6 +1,7 @@
 from random import random
 from utils import getDistanceSquared, getRandomPointInSpace, getRandomColour
 from dataclasses import dataclass
+from events import EVENT_TYPES
 
 from programmes.programme import Programme
 
@@ -23,13 +24,20 @@ class SparksProgramme(Programme):
         self.brightness = 2
         self.fadeByDistance = 0.02
     
-    def render(
+    def step(
             self,
             ledCoords,
             frameTime,
             events,
         ):
         super().fade(frameTime * 10)
+
+        for event in events:
+            if event.type == EVENT_TYPES.BOOM:
+                self.sparks.append(Spark(
+                centre = getRandomPointInSpace(),
+                colour = getRandomColour(brightness = self.brightness),
+            ))
     
         # Remove dead sparks
         self.sparks = [spark for spark in self.sparks if spark.life > 0]
@@ -39,13 +47,6 @@ class SparksProgramme(Programme):
             spark.life -= frameTime
             spark.lastRadius = spark.radius
             spark.radius += frameTime * self.propagationSpeed
-
-        # Add new sparks
-        if random() < frameTime * self.sparkProbability:
-            self.sparks.append(Spark(
-                centre = getRandomPointInSpace(),
-                colour = getRandomColour(brightness = self.brightness),
-            ))
 
         for i, led in enumerate(self.leds):
             for spark in self.sparks:
