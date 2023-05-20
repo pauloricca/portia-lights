@@ -72,7 +72,7 @@ class EventManager:
         self.eventBackLog = self.mainSequence.getEvents()
     
     # Selects events from the back log that should happen now, processes global events and returns the others
-    def getEvents(self):
+    def popEvents(self):
         currentTime = time.time()
         currentEvents: list[Event] = []
         futureEvents: list[Event] = []

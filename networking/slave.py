@@ -1,21 +1,28 @@
 import socket
 import json
 import threading
+from events import Event
 
 class Slave:
+    events: list[Event]
 
     def __init__(
             self,
             port = 63277,
             verbose = False,
-            onMessage = None
         ):
         self.port = port
         self.verbose = verbose
-        self._onMessageCallback = onMessage
+        self.events = []
         
         waitForNetworkThread = threading.Thread(target=self.__receiveToMessagesCycle, daemon=True)
         waitForNetworkThread.start()
+    
+    def popEvents(self):
+        poppedEvents = self.events
+        self.events = []
+        return poppedEvents
+        
 
     def __receiveToMessagesCycle(self):
         while True:
@@ -35,11 +42,17 @@ class Slave:
                         else:
                             if message != '':
                                 try:
-                                    messageObj = json.loads(message)
-                                    if self._onMessageCallback: self._onMessageCallback(messageObj)
+                                    messageObj = json.loads(message, object_hook=asEvent)
+                                    self.events.append(messageObj)
                                     self.verbose and print("New event:")
                                     self.verbose and print(messageObj)
                                 except Exception as e:
                                     print("Error parsing message: " + message)
                                     print(e)
                             connectionOpen = False
+
+def asEvent(jdict: dict):
+    if 'type' not in jdict:
+        return jdict
+    else:
+        return Event(type=jdict['type'], params=jdict['params'] if 'params' in jdict else {})

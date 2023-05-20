@@ -1,5 +1,8 @@
 # import board
 
+# MODE = "MASTER"
+MODE = "SLAVE"
+
 AUDIO_FILE = "temple.wav"
 CONFIG_FILE = "config.json"
 MAIN_SEQUENCE_FILE = "main.sequence"

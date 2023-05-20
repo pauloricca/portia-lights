@@ -16,7 +16,7 @@ from utils import getBlankLEDsBuffer
 from render import render
 from networking.slave import Slave
 from networking.master import Master
-from events import EventManager
+from events import EventManager, Event
 
 from programmes.sparksProgramme import SparksProgramme
 from programmes.colourNoiseProgramme import ColourNoiseProgramme
@@ -39,13 +39,15 @@ ledStrip.begin()
 # Holds the coordinates for each pixel
 ledCoords = loadConfig()
 
-def onMessageHandler(message):
-    print(message)
+eventManager:EventManager
+slave: Slave
+master: Master
 
-slave = Slave(onMessage = onMessageHandler)
-# master = Master()
-
-eventManager = EventManager()
+if MODE == 'SLAVE':
+    slave = Slave()
+else:
+    master = Master()
+    eventManager = EventManager()
 
 lastFrameTime = time.time()
 framecount = 0
@@ -76,15 +78,23 @@ while True:
 
     # Holds pre-rendered pixel rgb values, from 0 to 500 (0: black, 255: full saturation, 500: white)
     leds: list[list] = getBlankLEDsBuffer()
+    
+    events: list[Event]
 
-    events = eventManager.getEvents()
+    if MODE == 'SLAVE':
+        events = slave.popEvents()
+    else:
+        events = eventManager.popEvents()
+        for event in events: master.sendMessage(event)
 
+    # Run programme cycles and add their output to the main render buffer
     for programme in programmes:
         programme.step(ledCoords, frameTime, events)
-        for i, led in enumerate(leds):
-            led[0] += programme.leds[i][0]
-            led[1] += programme.leds[i][1]
-            led[2] += programme.leds[i][2]
+        if programme.brightness > 0:
+            for i, led in enumerate(leds):
+                led[0] += programme.leds[i][0]
+                led[1] += programme.leds[i][1]
+                led[2] += programme.leds[i][2]
 
     render(leds, ledStrip)
 
