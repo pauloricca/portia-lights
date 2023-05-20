@@ -1,8 +1,8 @@
 import platform
 # import board
 
-# MODE = "MASTER"
-MODE = "SLAVE"
+MODE = "MASTER"
+# MODE = "SLAVE"
 
 # "Linux" / "Darwin" / "Windows"
 PLATFORM = platform.system()

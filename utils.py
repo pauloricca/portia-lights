@@ -8,13 +8,11 @@ from random import random
 from constants import *
 
 def _playAudioFileSync(file):
-    playCommand = 'aplay' if PLATFORM == 'LINUX' else 'afplay'
+    playCommand = 'aplay' if PLATFORM == 'Linux' else 'afplay'
     try: subprocess.call(("killall", playCommand), stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
     except: pass
     try: subprocess.call((playCommand, file), stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
     except: pass
-    # os.system("killall " + playCommand)
-    # os.system(playCommand + " '" + file + "'")
 
 def playAudio():
     t = threading.Thread(target=_playAudioFileSync, args=(getAbsolutePath(AUDIO_FILE),), daemon=True)
