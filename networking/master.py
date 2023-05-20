@@ -5,6 +5,8 @@ import subprocess
 import json
 from dataclasses import dataclass, field
 
+from events import Event
+
 # TODO: Add Thread locks around messages and slaveIps
 
 @dataclass
@@ -105,8 +107,11 @@ class Master:
 
             time.sleep(self.sendRetryTime)
 
-    def sendMessage(self, message):
-        for slave in self.slaves:
-            slave.messageBuffer.append(json.dumps(message))
+    def pushEvents(self, events: list[Event]):
+        for event in events:
+            message = json.dumps({ "type": event.type, "params": event.params })
+            for slave in self.slaves:
+                slave.messageBuffer.append(message)
 
-        self.__startMessageSendingCycle()
+        if len(events) > 0:
+            self.__startMessageSendingCycle()

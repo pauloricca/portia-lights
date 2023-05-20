@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 
 import time
+from events import EventManager
 
 from networking.master import Master
 
 # Raspberry pis have mac addresses starting with b8
-master = Master(macAddressStartMask = 'b8', verbose = True)
+master = Master(macAddressStartMask = 'b8', verbose = False)
+eventManager = EventManager()
 
 while True: 
-    time.sleep(10)
-    master.sendMessage({"event": "BAM", "arg": 1})
+    events = eventManager.popEvents()
+    master.pushEvents(events)
+    time.sleep(0.1)

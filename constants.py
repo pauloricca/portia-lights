@@ -1,7 +1,11 @@
+import platform
 # import board
 
 # MODE = "MASTER"
 MODE = "SLAVE"
+
+# "Linux" / "Darwin" / "Windows"
+PLATFORM = platform.system()
 
 AUDIO_FILE = "temple.wav"
 CONFIG_FILE = "config.json"

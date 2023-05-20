@@ -27,6 +27,7 @@ class EventSequence:
 
     # Loads a sequence from file in the format:
     # EVENT_TIMESTAMP EVENT_TYPE PARAM=VALUE PARAM=VALUE
+    # Lines starting with # will be ignored
     def loadFromFile(self, filePath: str):
         f = open(filePath, "r")
         fileContents = f.read()
@@ -35,29 +36,30 @@ class EventSequence:
 
         self.events = []
         for line in lines:
-            lineParts = line.split(' ')
-            eventType = ''
-            eventTime: float = 0
-            params = {}
-            for i, part in enumerate(lineParts):
-                if i == 0: eventTime = float(part)
-                elif i == 1: eventType = part
-                else:
-                    paramParts = part.split('=')
-                    params[paramParts[0]] = paramParts[1]
-            self.events.append(Event(
-                type=eventType,
-                atTime=eventTime,
-                params=params,
-            ))
-        pass
+            if not line.startswith('#'):
+                lineParts = line.split(' ')
+                eventType = ''
+                eventTime: float = 0
+                params = {}
+                for i, part in enumerate(lineParts):
+                    if i == 0: eventTime = float(part)
+                    elif i == 1: eventType = part
+                    else:
+                        paramParts = part.split('=')
+                        params[paramParts[0]] = paramParts[1]
+                self.events.append(Event(
+                    type=eventType,
+                    atTime=eventTime,
+                    params=params,
+                ))
     
-    # Gets a copy of the events with timestamps relative to startTime (defaults to now)
-    def getEvents(self, startTime: float = time.time()):
+    # Gets a copy of the events with timestamps relative to the current time
+    def getEvents(self):
+        currentTime = time.time()
         events: list[Event] = []
         for event in self.events:
             eventCopy = copy.deepcopy(event)
-            eventCopy.atTime += startTime
+            eventCopy.atTime += currentTime
             events.append(eventCopy)
         return events
 
@@ -82,8 +84,9 @@ class EventManager:
                     playAudio()
                     pass
                 elif event.type == EVENT_TYPES.PLAY_MAIN_SEQUENCE:
-                    for newEvent in self.mainSequence.getEvents():
-                        futureEvents.append(newEvent) 
+                    sequenceEvents = self.mainSequence.getEvents()
+                    for newEvent in sequenceEvents:
+                        futureEvents.append(newEvent)
                     pass
                 else:
                     currentEvents.append(event)

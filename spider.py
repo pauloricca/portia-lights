@@ -85,7 +85,7 @@ while True:
         events = slave.popEvents()
     else:
         events = eventManager.popEvents()
-        for event in events: master.sendMessage(event)
+        master.pushEvents(events)
 
     # Run programme cycles and add their output to the main render buffer
     for programme in programmes:
