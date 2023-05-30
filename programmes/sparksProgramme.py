@@ -1,4 +1,3 @@
-from random import random
 from utils import getDistanceSquared, getRandomPointInSpace, getRandomColour
 from dataclasses import dataclass
 from events import EVENT_TYPES
@@ -15,14 +14,20 @@ class Spark:
 
 class SparksProgramme(Programme):
     sparks: list[Spark]
+    fadeByDistance: float
+    propagationSpeed: float
 
-    def __init__(self):
+    def __init__(
+        self,
+        propagationSpeed=100,
+        brightness=2,
+        fadeByDistance=.02
+    ):
         super().__init__()
+        self.propagationSpeed = propagationSpeed
+        self.brightness = brightness
+        self.fadeByDistance = fadeByDistance
         self.sparks = []
-        self.propagationSpeed = 100
-        self.sparkProbability = 0.3
-        self.brightness = 2
-        self.fadeByDistance = 0.02
     
     def step(
             self,

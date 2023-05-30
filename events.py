@@ -3,11 +3,13 @@ import time
 import copy
 from constants import *
 from utils import getAbsolutePath, playAudio
+import json
 
 # Event names
 class EVENT_TYPES:
     PLAY_AUDIO = 'PLAY_AUDIO'
     PLAY_MAIN_SEQUENCE = 'PLAY_MAIN_SEQUENCE'
+    CLOCK_SYNC = 'CLOCK_SYNC'
     BOOM = 'BOOM'
     WOOSH = 'WOOSH'
 
@@ -19,6 +21,13 @@ class Event:
     atTime: float = None # Timestamp of the event
     every: float = None # Interval between repetitions (in seconds), if repeating
     repeatTimes: int = 0 # Number of times to repeat the event
+
+    def __repr__(self):
+        return json.dumps({
+                 "type": self.type,
+                 "atTime": self.atTime,
+                 "params": self.params 
+            })
 
 
 @dataclass
@@ -65,20 +74,26 @@ class EventSequence:
 
 
 class EventManager:
-    eventBackLog: list[Event]
+    localEventQueue: list[Event]
+    slaveEventQueue: list[Event]
     mainSequence: EventSequence
 
     def __init__(self):
-        self.mainSequence = EventSequence()
-        self.mainSequence.loadFromFile(getAbsolutePath(MAIN_SEQUENCE_FILE))
-        self.eventBackLog = self.mainSequence.getEvents()
+        if MODE == 'MASTER':
+            self.mainSequence = EventSequence()
+            self.mainSequence.loadFromFile(getAbsolutePath(MAIN_SEQUENCE_FILE))
+            self.localEventQueue = self.mainSequence.getEvents()
+            self.slaveEventQueue = self.mainSequence.getEvents()
+        else:
+            self.localEventQueue = []
     
-    # Selects events from the back log that should happen now, processes global events and returns the others
-    def popEvents(self):
-        currentTime = time.time()
+    # Selects events from the local (or slave) queue that should happen now,
+    # processes global events and returns the others
+    def popEvents(self, popFromSlaveQueue=False):
+        currentTime = time.time() + (SLAVE_ADVANCE_NOTICE_TIME if popFromSlaveQueue else 0)
         currentEvents: list[Event] = []
         futureEvents: list[Event] = []
-        for event in self.eventBackLog:
+        for event in (self.localEventQueue if not popFromSlaveQueue else self.slaveEventQueue):
             if event.atTime <= currentTime:
                 if event.type == EVENT_TYPES.PLAY_AUDIO:
                     playAudio()
@@ -92,5 +107,16 @@ class EventManager:
                     currentEvents.append(event)
             else:
                 futureEvents.append(event)
-        self.eventBackLog = futureEvents
+        
+        if not popFromSlaveQueue:
+            self.localEventQueue = futureEvents
+        else:
+            self.slaveEventQueue = futureEvents
+        
         return currentEvents
+
+    def pushEvents(self, events: list[Event]):
+        for event in events:
+            self.localEventQueue.append(event)
+            if MODE == 'MASTER':
+                self.slaveEventQueue.append(event)

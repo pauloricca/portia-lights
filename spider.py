@@ -4,7 +4,6 @@
 # adafruit-circuitpython-pixelbuf https://github.com/adafruit/Adafruit_CircuitPython_Pixelbuf
 
 import time
-import argparse
 #import neopixel
 #import adafruit_pixelbuf
 from rpi_ws281x import PixelStrip
@@ -16,7 +15,7 @@ from utils import getBlankLEDsBuffer
 from render import render
 from networking.slave import Slave
 from networking.master import Master
-from events import EventManager, Event
+from events import EventManager
 
 from programmes.sparksProgramme import SparksProgramme
 from programmes.colourNoiseProgramme import ColourNoiseProgramme
@@ -37,17 +36,19 @@ ledStrip = PixelStrip(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_
 ledStrip.begin()
 
 # Holds the coordinates for each pixel
-ledCoords = loadConfig()
+try:
+    ledCoords = loadConfig()
+except:
+    ledCoords = config(ledStrip)
 
-eventManager:EventManager
+eventManager = EventManager()
 slave: Slave
 master: Master
 
 if MODE == 'SLAVE':
-    slave = Slave()
+    slave = Slave(verbose=True)
 else:
     master = Master()
-    eventManager = EventManager()
 
 lastFrameTime = time.time()
 framecount = 0
@@ -57,8 +58,6 @@ programmes: list[Programme] = [
     SparksProgramme(),
     ColourNoiseProgramme()
 ]
-
-if (LED_COUNT > len(ledCoords)): ledCoords = config(ledStrip)
 
 # Main loop
 while True:
@@ -78,14 +77,15 @@ while True:
 
     # Holds pre-rendered pixel rgb values, from 0 to 500 (0: black, 255: full saturation, 500: white)
     leds: list[list] = getBlankLEDsBuffer()
-    
-    events: list[Event]
 
-    if MODE == 'SLAVE':
-        events = slave.popEvents()
+    if MODE == 'MASTER':
+        # Send events to slaves
+        master.pushEvents(eventManager.popEvents(popFromSlaveQueue=True))
     else:
-        events = eventManager.popEvents()
-        master.pushEvents(events)
+        # Add events received from master
+        eventManager.pushEvents(slave.popEvents())
+    
+    events = eventManager.popEvents()
 
     # Run programme cycles and add their output to the main render buffer
     for programme in programmes:
