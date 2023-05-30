@@ -37,3 +37,8 @@ SPACE_BOUNDING_BOX = [
     [0, 64],
     [0, 0]
 ]
+
+# Amount of time, in seconds, that events are send in advance to slaves
+# Too short and we lose real-time event responses, too long and slaves might not have been
+# online where future events were sent
+SLAVE_ADVANCE_NOTICE_TIME = 2

@@ -1,10 +1,16 @@
 import socket
 import json
 import threading
-from events import Event
+import time
+
+from events import Event, EVENT_TYPES
 
 class Slave:
+    port: int
+    verbose: bool
     events: list[Event]
+    # Master time minus local time. We use this to change the times when we receive events.
+    masterTimeDiff: int
 
     def __init__(
             self,
@@ -14,6 +20,7 @@ class Slave:
         self.port = port
         self.verbose = verbose
         self.events = []
+        self.masterTimeDiff = 0
         
         waitForNetworkThread = threading.Thread(target=self.__receiveToMessagesCycle, daemon=True)
         waitForNetworkThread.start()
@@ -42,17 +49,30 @@ class Slave:
                         else:
                             if message != '':
                                 try:
-                                    messageObj = json.loads(message, object_hook=asEvent)
-                                    self.events.append(messageObj)
+                                    event: Event = json.loads(message, object_hook=asEvent)
+
+                                    # Consume clock sync events
+                                    if event.type == EVENT_TYPES.CLOCK_SYNC:
+                                        self.masterTimeDiff = event.params['time'] - time.time()
+                                    else:
+                                        # Adjust event times to compensate master time difference
+                                        if event.atTime: event.atTime -= self.masterTimeDiff
+                                        self.events.append(event)
+
                                     self.verbose and print("New event:")
-                                    self.verbose and print(messageObj)
+                                    self.verbose and print(event)
                                 except Exception as e:
                                     print("Error parsing message: " + message)
                                     print(e)
                             connectionOpen = False
 
-def asEvent(jdict: dict):
-    if 'type' not in jdict:
-        return jdict
+# Convert event dict converted from json to Event object
+def asEvent(jsonEventDict: dict):
+    if 'type' not in jsonEventDict:
+        return jsonEventDict
     else:
-        return Event(type=jdict['type'], params=jdict['params'] if 'params' in jdict else {})
+        return Event(
+            type=jsonEventDict['type'],
+            atTime=jsonEventDict['atTime'] if 'atTime' in jsonEventDict else None,
+            params=jsonEventDict['params'] if 'params' in jsonEventDict else {}
+        )

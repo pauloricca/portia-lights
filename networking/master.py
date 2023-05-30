@@ -5,7 +5,7 @@ import subprocess
 import json
 from dataclasses import dataclass, field
 
-from events import Event
+from events import Event, EVENT_TYPES
 
 # TODO: Add Thread locks around messages and slaveIps
 
@@ -65,6 +65,8 @@ class Master:
                 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     try:
                         s.connect((potentialSlaveIp, self.port))
+                        # Send clock sync message when discovering potential slaves
+                        s.sendall(str.encode(Event(type=EVENT_TYPES.CLOCK_SYNC, params={time: time.time()})))
                         s.close()
 
                         haveSlaveAlready = False
@@ -109,7 +111,11 @@ class Master:
 
     def pushEvents(self, events: list[Event]):
         for event in events:
-            message = json.dumps({ "type": event.type, "params": event.params })
+            message = json.dumps({
+                 "type": event.type,
+                 "atTime": event.atTime,
+                 "params": event.params 
+            })
             for slave in self.slaves:
                 slave.messageBuffer.append(message)
 
