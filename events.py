@@ -3,6 +3,7 @@ import time
 import copy
 from constants import *
 from utils import getAbsolutePath, playAudio
+import json
 
 # Event names
 class EVENT_TYPES:
@@ -20,6 +21,13 @@ class Event:
     atTime: float = None # Timestamp of the event
     every: float = None # Interval between repetitions (in seconds), if repeating
     repeatTimes: int = 0 # Number of times to repeat the event
+
+    def __repr__(self):
+        return json.dumps({
+                 "type": self.type,
+                 "atTime": self.atTime,
+                 "params": self.params 
+            })
 
 
 @dataclass

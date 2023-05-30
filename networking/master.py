@@ -66,7 +66,7 @@ class Master:
                     try:
                         s.connect((potentialSlaveIp, self.port))
                         # Send clock sync message when discovering potential slaves
-                        s.sendall(str.encode(Event(type=EVENT_TYPES.CLOCK_SYNC, params={time: time.time()})))
+                        s.sendall(str.encode(str(Event(type=EVENT_TYPES.CLOCK_SYNC, params={"time": time.time()}))))
                         s.close()
 
                         haveSlaveAlready = False
@@ -77,7 +77,8 @@ class Master:
                         
                         if not haveSlaveAlready:
                             self.slaves.append(SlaveInfo(ip = potentialSlaveIp, lastSeenAt = time.time()))
-                    except: {}
+                    except Exception as e:
+                        self.verbose and print(e)
 
             # Forget slaves we haven't seen in a while
             self.slaves = [slave for slave in self.slaves if slave.lastSeenAt > time.time() - self.forgetSlaveTime]
@@ -111,11 +112,7 @@ class Master:
 
     def pushEvents(self, events: list[Event]):
         for event in events:
-            message = json.dumps({
-                 "type": event.type,
-                 "atTime": event.atTime,
-                 "params": event.params 
-            })
+            message = str(event)
             for slave in self.slaves:
                 slave.messageBuffer.append(message)
 
