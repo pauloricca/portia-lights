@@ -12,14 +12,14 @@ def saveConfig(ledCoords):
     f.write(configJson)
     f.close()
 
+# Will raise exception if config not found or of incorrect length
 def loadConfig():
-    try:
-        f = open(getAbsolutePath(CONFIG_FILE), "r")
-        configJson = f.read()
-        f.close()
-        return json.loads(configJson)
-    except:
-        return getEmptyledCoords()
+    f = open(getAbsolutePath(CONFIG_FILE), "r")
+    configJson = f.read()
+    f.close()
+    loadedConfig = json.loads(configJson)
+    if (LED_COUNT > len(loadedConfig)): raise Exception('Wrong config length')
+    return loadedConfig
 
 def interpolateCoords(ledCoords: list[tuple[float, float, float]], fromIndex: int, toIndex: int):
     try:

@@ -71,10 +71,13 @@ class EventManager:
     mainSequence: EventSequence
 
     def __init__(self):
-        self.mainSequence = EventSequence()
-        self.mainSequence.loadFromFile(getAbsolutePath(MAIN_SEQUENCE_FILE))
-        self.localEventQueue = self.mainSequence.getEvents()
-        self.slaveEventQueue = self.mainSequence.getEvents()
+        if MODE == 'MASTER':
+            self.mainSequence = EventSequence()
+            self.mainSequence.loadFromFile(getAbsolutePath(MAIN_SEQUENCE_FILE))
+            self.localEventQueue = self.mainSequence.getEvents()
+            self.slaveEventQueue = self.mainSequence.getEvents()
+        else:
+            self.localEventQueue = []
     
     # Selects events from the local (or slave) queue that should happen now,
     # processes global events and returns the others
@@ -106,5 +109,6 @@ class EventManager:
 
     def pushEvents(self, events: list[Event]):
         for event in events:
-            self.localEventQueue.push(event)
-            self.slaveEventQueue.push(event)
+            self.localEventQueue.append(event)
+            if MODE == 'MASTER':
+                self.slaveEventQueue.append(event)

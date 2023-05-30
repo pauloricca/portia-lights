@@ -1,8 +1,8 @@
 import platform
 # import board
 
-MODE = "MASTER"
-# MODE = "SLAVE"
+# MODE = "MASTER"
+MODE = "SLAVE"
 
 # "Linux" / "Darwin" / "Windows"
 PLATFORM = platform.system()
@@ -33,9 +33,9 @@ OVERBLOW_BLEED_RATIO_G = .5
 OVERBLOW_BLEED_RATIO_B = .2
 
 SPACE_BOUNDING_BOX = [
-    [0, 56],
-    [0, 64],
-    [0, 0]
+    [0, 120],
+    [0, 0],
+    [0, 60]
 ]
 
 # Amount of time, in seconds, that events are send in advance to slaves

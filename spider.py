@@ -36,14 +36,17 @@ ledStrip = PixelStrip(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_
 ledStrip.begin()
 
 # Holds the coordinates for each pixel
-ledCoords = loadConfig()
+try:
+    ledCoords = loadConfig()
+except:
+    ledCoords = config(ledStrip)
 
 eventManager = EventManager()
 slave: Slave
 master: Master
 
 if MODE == 'SLAVE':
-    slave = Slave()
+    slave = Slave(verbose=True)
 else:
     master = Master()
 
@@ -55,8 +58,6 @@ programmes: list[Programme] = [
     SparksProgramme(),
     ColourNoiseProgramme()
 ]
-
-if (LED_COUNT > len(ledCoords)): ledCoords = config(ledStrip)
 
 # Main loop
 while True:
