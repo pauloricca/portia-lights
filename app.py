@@ -15,7 +15,7 @@ class App:
     programmeManager: ProgrammeManager
     slave: Slave
     master: Master
-    ledStrip: list[tuple[float, float, float]]
+    ledCoords: list[tuple[float, float, float]]
     isMaster: bool
     isLightController: bool
 
@@ -70,9 +70,15 @@ class App:
         
         if self.isLightController:
             # Enter Config when pressing Enter key
-            if keyboard.is_pressed("enter"): self.ledCoords = config(self.ledStrip)
+            if keyboard.is_pressed("enter"): self.ledCoords = config(self.renderer)
 
-            self.renderer.render(self.programmeManager.renderProgrammes(self.eventManager.popEvents()))
+            self.renderer.render(
+                self.programmeManager.renderProgrammes(
+                    self.eventManager.popEvents(),
+                    self.ledCoords,
+                    self.frameTime
+                )
+            )
 
             # TODO: fix target fps sleep time
             # renderTime = time.time() - self.thisFrameTime

@@ -17,13 +17,13 @@ class ProgrammeManager():
             ColourNoiseProgramme(saturation=0, hueNoiseScale=.05, speed=10, brightnessNoiseScale=.4, brightness=0.004),
         ]
     
-    def renderProgrammes(self, events: list[Event]):
+    def renderProgrammes(self, events: list[Event], ledCoords: list[tuple[float, float, float]], frameTime: float):
         # Holds pre-rendered pixel rgb values, from 0 to 500 (0: black, 255: full saturation, 500: white)
         leds: list[list] = getBlankLEDsBuffer()
 
         # Run programme cycles and add their output to the main render buffer
         for programme in self.programmes:
-            programme.step(self.ledCoords, self.frameTime, events)
+            programme.step(ledCoords, frameTime, events)
             if programme.brightness > 0:
                 for i, led in enumerate(leds):
                     led[0] += programme.leds[i][0]
