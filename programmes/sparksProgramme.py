@@ -1,6 +1,6 @@
-from utils import getDistanceSquared, getRandomPointInSpace, getRandomColour
-from dataclasses import dataclass
 from events import EVENT_TYPES
+from utils import getDistanceSquared
+from dataclasses import dataclass
 
 from programmes.programme import Programme
 
@@ -38,10 +38,10 @@ class SparksProgramme(Programme):
         super().fade(frameTime * 10)
 
         for event in events:
-            if event.type == EVENT_TYPES.BOOM:
+            if event.type == EVENT_TYPES.SPARK:
                 self.sparks.append(Spark(
-                centre = getRandomPointInSpace(),
-                colour = getRandomColour(brightness = self.brightness),
+                centre = event.params["centre"],
+                colour = event.params["colour"],
             ))
     
         # Remove dead sparks

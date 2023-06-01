@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 import time
 import copy
 from constants import *
-from utils import getAbsolutePath, playAudio
+from utils import getAbsolutePath, getRandomColour, getRandomPointInSpace, playAudio
 import json
 
 # Event names
@@ -12,6 +12,7 @@ class EVENT_TYPES:
     CLOCK_SYNC = 'CLOCK_SYNC'
     BOOM = 'BOOM'
     WOOSH = 'WOOSH'
+    SPARK = 'SPARK'
 
 
 @dataclass
@@ -19,8 +20,8 @@ class Event:
     type: str # Event identifier
     params: dict = field(default_factory=dict) # Dict of event params, specific to each event
     atTime: float = None # Timestamp of the event
-    every: float = None # Interval between repetitions (in seconds), if repeating
-    repeatTimes: int = 0 # Number of times to repeat the event
+    # every: float = None # Interval between repetitions (in seconds), if repeating
+    # repeatTimes: int = 0 # Number of times to repeat the event
 
     def __repr__(self):
         return json.dumps({
@@ -77,13 +78,18 @@ class EventManager:
     localEventQueue: list[Event]
     slaveEventQueue: list[Event]
     mainSequence: EventSequence
+    isMaster: bool
 
-    def __init__(self):
-        if MODE == 'MASTER':
+    def __init__(self, isMaster: bool):
+        self.isMaster = isMaster
+
+        if self.isMaster:
             self.mainSequence = EventSequence()
             self.mainSequence.loadFromFile(getAbsolutePath(MAIN_SEQUENCE_FILE))
-            self.localEventQueue = self.mainSequence.getEvents()
-            self.slaveEventQueue = self.mainSequence.getEvents()
+            self.localEventQueue = generateProgrammeEvents(self.mainSequence.getEvents())
+            self.slaveEventQueue = []
+            for event in self.localEventQueue:
+                self.slaveEventQueue.append(event)
         else:
             self.localEventQueue = []
     
@@ -118,5 +124,36 @@ class EventManager:
     def pushEvents(self, events: list[Event]):
         for event in events:
             self.localEventQueue.append(event)
-            if MODE == 'MASTER':
+            
+        if self.isMaster:
+            for event in events:
                 self.slaveEventQueue.append(event)
+    
+    def removeEvents(self, events: list[Event]):
+        for event in events:
+            try: self.localEventQueue.remove(event)
+            except: pass
+            if self.isMaster:
+                try: self.slaveEventQueue.remove(event)
+                except: pass
+
+# Go through the basic sequence events and generate programme events
+def generateProgrammeEvents(events: list[Event]):
+    newEvents: list[Event] = []
+
+    for event in events:
+        # Events to be passed on to the event manager
+        if event.type == EVENT_TYPES.PLAY_AUDIO or event.type == EVENT_TYPES.PLAY_MAIN_SEQUENCE:
+            newEvents.append(event)
+
+        if event.type == EVENT_TYPES.BOOM:
+            newEvents.append(Event(
+                type=EVENT_TYPES.SPARK,
+                atTime=event.atTime,
+                params={
+                    "centre": getRandomPointInSpace(),
+                    "colour": getRandomColour(1),
+                }
+            ))
+    
+    return newEvents
