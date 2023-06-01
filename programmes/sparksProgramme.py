@@ -1,6 +1,5 @@
-from utils import getDistanceSquared, getRandomPointInSpace, getRandomColour
+from utils import getDistanceSquared
 from dataclasses import dataclass
-from events import GLOBAL_EVENT_TYPES
 
 from programmes.programme import Programme
 
@@ -16,6 +15,7 @@ class SparksProgramme(Programme):
     sparks: list[Spark]
     fadeByDistance: float
     propagationSpeed: float
+    SPARK_EVENT = 'SPARK_EVENT' # Params: centre (tuple[float, float, float]) and colour (tuple[float, float, float])
 
     def __init__(
         self,
@@ -38,7 +38,7 @@ class SparksProgramme(Programme):
         super().fade(frameTime * 10)
 
         for event in events:
-            if event.type == 'SPARK_EVENT':
+            if event.type == self.SPARK_EVENT:
                 self.sparks.append(Spark(
                 centre = event.params["centre"],
                 colour = event.params["colour"],

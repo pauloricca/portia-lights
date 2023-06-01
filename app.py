@@ -10,12 +10,8 @@ from networking.master import Master
 from events import EventManager
 from programmes.programme import Programme
 from programmes.programmeManager import ProgrammeManager
-
-try:
-    from programmes.sparksProgramme import SparksProgramme
-    from programmes.colourNoiseProgramme import ColourNoiseProgramme
-except:
-    print("Error importing programmes (not required if app is not light controller)")
+from programmes.sparksProgramme import SparksProgramme
+from programmes.colourNoiseProgramme import ColourNoiseProgramme
 
 class App:
     renderer: Renderer

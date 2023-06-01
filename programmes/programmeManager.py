@@ -1,5 +1,6 @@
 from constants import *
 from events import GLOBAL_EVENT_TYPES, EventManager, Event
+from programmes.sparksProgramme import SparksProgramme
 from utils import getRandomColour, getRandomPointInSpace
 
 # Schedules changes in the programmes in response to events
@@ -17,7 +18,7 @@ class ProgrammeManager():
         for event in unprocessedEvents:
             if event.type == GLOBAL_EVENT_TYPES.BOOM:
                 newEvents.append(Event(
-                    type='SPARK_EVENT',
+                    type=SparksProgramme.SPARK_EVENT,
                     atTime=event.atTime,
                     hasBeenProcessed=True,
                     params={
