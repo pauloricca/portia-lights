@@ -56,7 +56,9 @@ totalFrameTime = 0
 
 programmes: list[Programme] = [
     SparksProgramme(),
-    ColourNoiseProgramme()
+    ColourNoiseProgramme(),
+    ColourNoiseProgramme(saturation=0.35, hueNoiseScale=.05, speed=.1, brightnessNoiseScale=.4),
+    ColourNoiseProgramme(saturation=0, hueNoiseScale=.05, speed=10, brightnessNoiseScale=.4, brightness=0.004),
 ]
 
 # Main loop
