@@ -7,8 +7,8 @@ from programmes.programme import Programme
 @dataclass
 class Spark:
     life = 4
-    radius = 0
-    lastRadius = 0
+    lastRadius: float
+    radius: float
     centre: tuple[float, float, float]
     colour: tuple[float, float, float]
 
@@ -21,7 +21,7 @@ class SparksProgramme(Programme):
         self,
         propagationSpeed=150,
         brightness=5,
-        fadeByDistance=.003
+        fadeByDistance=.001
     ):
         super().__init__()
         self.propagationSpeed = propagationSpeed
@@ -42,10 +42,12 @@ class SparksProgramme(Programme):
                 self.sparks.append(Spark(
                 centre = event.params["centre"],
                 colour = event.params["colour"],
+                radius = 100 if self.propagationSpeed < 0 else 0,
+                lastRadius = 100 if self.propagationSpeed < 0 else 0
             ))
     
         # Remove dead sparks
-        self.sparks = [spark for spark in self.sparks if spark.life > 0]
+        self.sparks = [spark for spark in self.sparks if spark.life > 0 and spark.radius >= 0]
 
         # Sparks life cycle
         for spark in self.sparks:
@@ -58,7 +60,10 @@ class SparksProgramme(Programme):
                 distanceSquared = getDistanceSquared(ledCoords[i], spark.centre)
                 radiusSquared = spark.radius * spark.radius
                 lastRadiusSquared = spark.lastRadius * spark.lastRadius
-                if (distanceSquared < radiusSquared and distanceSquared > lastRadiusSquared):
+                if (
+                    (distanceSquared > radiusSquared and distanceSquared < lastRadiusSquared) or
+                    (distanceSquared < radiusSquared and distanceSquared > lastRadiusSquared)
+                ):
                     led[0] += spark.colour[0] / (distanceSquared * self.fadeByDistance)
                     led[1] += spark.colour[1] / (distanceSquared * self.fadeByDistance)
                     led[2] += spark.colour[2] / (distanceSquared * self.fadeByDistance)

@@ -1,4 +1,5 @@
-from utils import getDistanceSquared, mapToRange
+from colorsys import hsv_to_rgb
+from utils import clamp, getDistanceSquared, mapToRange
 from math import sin, cos
 
 from programmes.programme import Programme
@@ -7,21 +8,30 @@ class RotatingOrbProgramme(Programme):
     angle: float
     fadeByDistance: float
     speed: float
-    radius: float
+    orbRadius: float
+    pathRadius: float
+    zPosition: float
+    hue: float
 
     def __init__(
         self,
-        speed=150,
-        brightness=3,
+        speed=1,
+        brightness=1,
         fadeByDistance=.01,
-        radius=20
+        orbRadius=15,
+        pathRadius=65,
+        zPosition=20,
+        hue=0.2
     ):
         super().__init__()
         self.speed = speed
         self.brightness = brightness
         self.fadeByDistance = fadeByDistance
         self.angle = 0
-        self.radius = radius
+        self.orbRadius = orbRadius
+        self.pathRadius = pathRadius
+        self.zPosition = zPosition
+        self.hue = hue
     
     def step(
             self,
@@ -29,21 +39,24 @@ class RotatingOrbProgramme(Programme):
             frameTime,
             events,
         ):
-        super().fade(frameTime * 10)
+        super().fade(frameTime * 4)
 
         self.angle += frameTime * self.speed
 
-        orbX = 75 * sin(self.angle)
-        orbY = 75 * cos(self.angle)
+        orbX = self.pathRadius * sin(self.angle)
+        orbY = self.pathRadius * cos(self.angle)
 
-        radiusSquared = self.radius * self.radius
+        radiusSquared = self.orbRadius * self.orbRadius
+
+        orbColour = hsv_to_rgb(self.hue, 1, 255)
 
         for i, led in enumerate(self.leds):
-            distanceSquared = getDistanceSquared(ledCoords[i], (orbX, orbY, 10))
+            distanceSquared = getDistanceSquared(ledCoords[i], (orbX, orbY, self.zPosition))
             if distanceSquared < radiusSquared:
-                led[0] = self.brightness * 255
+                for i in range(0, 3):
+                    led[i] = self.brightness * orbColour[i]
             else:
-                led[0] = self.brightness * mapToRange(distanceSquared, 255, 0, radiusSquared, 2 * radiusSquared)
+                radialBrightness = clamp(mapToRange(distanceSquared, 1, 0, radiusSquared, 2 * radiusSquared), 0, 1)
+                for i in range(0, 3):
+                    led[i] = clamp(led[i] + self.brightness * radialBrightness * orbColour[i], 0, 255)
                 
-            led[1] = led[1]
-            led[2] = led[2]
