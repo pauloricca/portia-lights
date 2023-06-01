@@ -3,19 +3,16 @@ import keyboard
 
 from constants import *
 from config import config, loadConfig
-from utils import getBlankLEDsBuffer
+from programmes.programmeManager import ProgrammeManager
 from renderer import Renderer
 from networking.slave import Slave
 from networking.master import Master
 from events import EventManager
-from programmes.programme import Programme
-from programmes.sparksProgramme import SparksProgramme
-from programmes.colourNoiseProgramme import ColourNoiseProgramme
 
 class App:
     renderer: Renderer
     eventManager: EventManager
-    programmes: list[Programme]
+    programmeManager: ProgrammeManager
     slave: Slave
     master: Master
     ledStrip: list[tuple[float, float, float]]
@@ -31,6 +28,7 @@ class App:
         self.isMaster = isMaster
         self.isLightController = isLightController
         self.eventManager = EventManager(self.isMaster)
+        self.programmeManager = ProgrammeManager()
         self.lastFrameTime = time.time()
         self.framecount = 0
         self.totalFrameTime = 0
@@ -49,13 +47,6 @@ class App:
                 self.ledCoords = loadConfig()
             except:
                 self.ledCoords = config(self.renderer)
-
-            self.programmes = [
-                SparksProgramme(),
-                ColourNoiseProgramme(),
-                ColourNoiseProgramme(saturation=0.35, hueNoiseScale=.05, speed=.1, brightnessNoiseScale=.4),
-                ColourNoiseProgramme(saturation=0, hueNoiseScale=.05, speed=10, brightnessNoiseScale=.4, brightness=0.004),
-            ]
 
         while True: self.mainLoop()
     
@@ -81,21 +72,7 @@ class App:
             # Enter Config when pressing Enter key
             if keyboard.is_pressed("enter"): self.ledCoords = config(self.ledStrip)
 
-            # Holds pre-rendered pixel rgb values, from 0 to 500 (0: black, 255: full saturation, 500: white)
-            leds: list[list] = getBlankLEDsBuffer()
-
-            events = self.eventManager.popEvents()
-
-            # Run programme cycles and add their output to the main render buffer
-            for programme in self.programmes:
-                programme.step(self.ledCoords, self.frameTime, events)
-                if programme.brightness > 0:
-                    for i, led in enumerate(leds):
-                        led[0] += programme.leds[i][0]
-                        led[1] += programme.leds[i][1]
-                        led[2] += programme.leds[i][2]
-
-            self.renderer.render(leds)
+            self.renderer.render(self.programmeManager.renderProgrammes(self.eventManager.popEvents()))
 
             # TODO: fix target fps sleep time
             # renderTime = time.time() - self.thisFrameTime
