@@ -18,6 +18,7 @@ class EVENT_TYPES:
     # Programme events
     SPARK = 'SPARK'
     GRITTINESS = 'GRITTINESS'
+    BACKGROUND_COLOUR = 'BACKGROUND_COLOUR'
 
 
 @dataclass
@@ -163,12 +164,22 @@ def generateProgrammeEvents(events: list[Event]):
                 atTime=event.atTime,
                 params={ "level": 0 }
             ))
+            newEvents.append(Event(
+                type=EVENT_TYPES.BACKGROUND_COLOUR,
+                atTime=event.atTime,
+                params={ "brightness": 0.1, "colour": getRandomColour(1), "transition": 1 }
+            ))
         
         elif event.type == EVENT_TYPES.NERVOUS:
             newEvents.append(Event(
                 type=EVENT_TYPES.GRITTINESS,
                 atTime=event.atTime,
                 params={ "level": 1 }
+            ))
+            newEvents.append(Event(
+                type=EVENT_TYPES.BACKGROUND_COLOUR,
+                atTime=event.atTime,
+                params={ "brightness": 0, "transition": 0.2 }
             ))
         
         else:

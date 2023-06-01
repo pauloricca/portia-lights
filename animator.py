@@ -30,7 +30,7 @@ class Animator():
             propertyName=propertyName,
             targetValue=targetValue,
             targetTime=time.time() + duration,
-            step=(targetValue - getattr(object, propertyName)) / duration
+            step=((targetValue - getattr(object, propertyName)) / duration) if duration > 0 else 0
         ))
     
     def animate(self, frameTime: float):
