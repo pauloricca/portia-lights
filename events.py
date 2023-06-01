@@ -142,6 +142,10 @@ def generateProgrammeEvents(events: list[Event]):
     newEvents: list[Event] = []
 
     for event in events:
+        # Events to be passed on to the event manager
+        if event.type == EVENT_TYPES.PLAY_AUDIO or event.type == EVENT_TYPES.PLAY_MAIN_SEQUENCE:
+            newEvents.append(event)
+
         if event.type == EVENT_TYPES.BOOM:
             newEvents.append(Event(
                 type=EVENT_TYPES.SPARK,
