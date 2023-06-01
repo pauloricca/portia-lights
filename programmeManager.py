@@ -1,6 +1,7 @@
 from animator import Animator
 from constants import *
 from events import EVENT_TYPES, Event
+from programmes.axisColourNoiseProgramme import AxisColourNoiseProgramme
 from utils import getBlankLEDsBuffer, mapToRange
 from programmes.programme import Programme
 from programmes.sparksProgramme import SparksProgramme
@@ -15,23 +16,26 @@ class ProgrammeManager():
     fullColourNoise: ColourNoiseProgramme
     paleNoise: ColourNoiseProgramme
     edgeBlink: ColourNoiseProgramme
+    axisNoise: AxisColourNoiseProgramme
     solidColour: SolidColourProgramme
 
     def __init__(self):
         self.animator = Animator()
 
         self.colourSparks = SparksProgramme()
-        self.fullColourNoise = ColourNoiseProgramme()
-        self.paleNoise = ColourNoiseProgramme(saturation=0.35, hueNoiseScale=.05, speed=.1, brightnessNoiseScale=.4)
-        self.edgeBlink = ColourNoiseProgramme(saturation=0, hueNoiseScale=.05, speed=10, brightnessNoiseScale=.4, brightness=0.004)
+        self.fullColourNoise = ColourNoiseProgramme(hueNoiseScale=0.0001, speed=0.03)
+        self.paleNoise = ColourNoiseProgramme(saturation=0.35, hueNoiseScale=.05, speed=.1, brightnessNoiseScale=.4, brightness=0.01)
+        self.edgeBlink = ColourNoiseProgramme(saturation=0.2, hueNoiseScale=.05, speed=10, brightnessNoiseScale=.4, brightness=0.01)
+        self.axisNoise = AxisColourNoiseProgramme(hueNoiseScale=0.2, speedHue=.01, speedBrightness=0.3, brightnessNoiseScale=.01)
         self.solidColour = SolidColourProgramme()
 
         self.programmes = [
             self.colourSparks,
-            self.fullColourNoise,
-            self.paleNoise,
+            # self.fullColourNoise,
+            # self.paleNoise,
             self.edgeBlink,
-            self.solidColour,
+            # self.solidColour,
+            self.axisNoise,
         ]
     
     def renderProgrammes(self, events: list[Event], ledCoords: list[tuple[float, float, float]], frameTime: float):
