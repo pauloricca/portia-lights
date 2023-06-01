@@ -3,11 +3,11 @@ import keyboard
 
 from constants import *
 from config import config, loadConfig
-from programmes.programmeManager import ProgrammeManager
 from renderer import Renderer
 from networking.slave import Slave
 from networking.master import Master
 from events import EventManager
+from programmeManager import ProgrammeManager
 
 class App:
     renderer: Renderer

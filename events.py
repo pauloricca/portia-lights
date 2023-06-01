@@ -7,12 +7,17 @@ import json
 
 # Event names
 class EVENT_TYPES:
+    # General
     PLAY_AUDIO = 'PLAY_AUDIO'
     PLAY_MAIN_SEQUENCE = 'PLAY_MAIN_SEQUENCE'
     CLOCK_SYNC = 'CLOCK_SYNC'
+    # Mood events (get translated into programme events)
     BOOM = 'BOOM'
-    WOOSH = 'WOOSH'
+    CALM = 'CALM'
+    NERVOUS = 'NERVOUS'
+    # Programme events
     SPARK = 'SPARK'
+    GRITTINESS = 'GRITTINESS'
 
 
 @dataclass
@@ -71,7 +76,7 @@ class EventSequence:
             eventCopy = copy.deepcopy(event)
             eventCopy.atTime += currentTime
             events.append(eventCopy)
-        return events
+        return generateProgrammeEvents(events)
 
 
 class EventManager:
@@ -86,7 +91,7 @@ class EventManager:
         if self.isMaster:
             self.mainSequence = EventSequence()
             self.mainSequence.loadFromFile(getAbsolutePath(MAIN_SEQUENCE_FILE))
-            self.localEventQueue = generateProgrammeEvents(self.mainSequence.getEvents())
+            self.localEventQueue = self.mainSequence.getEvents()
             self.slaveEventQueue = []
             for event in self.localEventQueue:
                 self.slaveEventQueue.append(event)
@@ -142,10 +147,6 @@ def generateProgrammeEvents(events: list[Event]):
     newEvents: list[Event] = []
 
     for event in events:
-        # Events to be passed on to the event manager
-        if event.type == EVENT_TYPES.PLAY_AUDIO or event.type == EVENT_TYPES.PLAY_MAIN_SEQUENCE:
-            newEvents.append(event)
-
         if event.type == EVENT_TYPES.BOOM:
             newEvents.append(Event(
                 type=EVENT_TYPES.SPARK,
@@ -155,5 +156,23 @@ def generateProgrammeEvents(events: list[Event]):
                     "colour": getRandomColour(1),
                 }
             ))
+        
+        elif event.type == EVENT_TYPES.CALM:
+            newEvents.append(Event(
+                type=EVENT_TYPES.GRITTINESS,
+                atTime=event.atTime,
+                params={ "level": 0 }
+            ))
+        
+        elif event.type == EVENT_TYPES.NERVOUS:
+            newEvents.append(Event(
+                type=EVENT_TYPES.GRITTINESS,
+                atTime=event.atTime,
+                params={ "level": 1 }
+            ))
+        
+        else:
+            # Add event as is
+            newEvents.append(event)
     
     return newEvents

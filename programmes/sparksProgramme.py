@@ -19,9 +19,9 @@ class SparksProgramme(Programme):
 
     def __init__(
         self,
-        propagationSpeed=100,
-        brightness=2,
-        fadeByDistance=.02
+        propagationSpeed=150,
+        brightness=3,
+        fadeByDistance=.01
     ):
         super().__init__()
         self.propagationSpeed = propagationSpeed

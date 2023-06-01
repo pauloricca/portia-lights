@@ -49,3 +49,7 @@ def getBlankLEDsBuffer():
 
 def getAbsolutePath(relativePath: str):
     return os.path.join(os.path.dirname(__file__), relativePath)
+
+# Maps a value to a min-max range
+def mapToRange(num, outMin, outMax, inMin = 0, inMax = 1):
+  return outMin + (float(num - inMin) / float(inMax - inMin) * (outMax - outMin))
