@@ -78,8 +78,10 @@ class EventManager:
     slaveEventQueue: list[Event]
     mainSequence: EventSequence
 
-    def __init__(self):
-        if MODE == 'MASTER':
+    def __init__(self, app):
+        self.app = app
+
+        if app.isMaster:
             self.mainSequence = EventSequence()
             self.mainSequence.loadFromFile(getAbsolutePath(MAIN_SEQUENCE_FILE))
             self.localEventQueue = self.mainSequence.getEvents()
@@ -118,5 +120,5 @@ class EventManager:
     def pushEvents(self, events: list[Event]):
         for event in events:
             self.localEventQueue.append(event)
-            if MODE == 'MASTER':
+            if self.app.isMaster:
                 self.slaveEventQueue.append(event)

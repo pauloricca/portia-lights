@@ -25,7 +25,7 @@ class Master:
             discoveryCycleTime = 5,
             sendRetryTime = 0.2,
             forgetSlaveTime = 30,
-            verbose = False,
+            isVerbose = False,
             macAddressStartMask = ''
         ):
         self.slaves = []
@@ -34,7 +34,7 @@ class Master:
         self.discoveryCycleTime = discoveryCycleTime
         self.sendRetryTime = sendRetryTime
         self.forgetSlaveTime = forgetSlaveTime
-        self.verbose = verbose
+        self.isVerbose = isVerbose
         self.macAddressStartMask = macAddressStartMask
 
         slaveDiscoveryThread = threading.Thread(target=self.__slaveDiscoveryCycle, daemon=True)
@@ -46,7 +46,7 @@ class Master:
 
     def __slaveDiscoveryCycle(self):
         while True:
-            self.verbose and print("Scanning network...")
+            self.isVerbose and print("Scanning network...")
             output = subprocess.check_output(("arp", "-a")).decode("ascii")
 
             # Output will be in this format, each device on a line:
@@ -78,13 +78,13 @@ class Master:
                         if not haveSlaveAlready:
                             self.slaves.append(SlaveInfo(ip = potentialSlaveIp, lastSeenAt = time.time()))
                     except Exception as e:
-                        self.verbose and print(e)
+                        self.isVerbose and print(e)
 
             # Forget slaves we haven't seen in a while
             self.slaves = [slave for slave in self.slaves if slave.lastSeenAt > time.time() - self.forgetSlaveTime]
 
-            self.verbose and print('slaves: ')
-            self.verbose and print(self.slaves)
+            self.isVerbose and print('slaves: ')
+            self.isVerbose and print(self.slaves)
 
             time.sleep(self.discoveryCycleTime)
 
@@ -99,7 +99,7 @@ class Master:
                     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                         try:
                             s.connect((slave.ip, self.port))
-                            self.verbose and print("sending message '" + message + "' to " + slave.ip)
+                            self.isVerbose and print("sending message '" + message + "' to " + slave.ip)
                             s.sendall(str.encode(message))
                             s.close()
                             slave.lastSeenAt = time.time()

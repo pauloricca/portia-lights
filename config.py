@@ -1,7 +1,10 @@
-#import neopixel
 import time
 import json
-from rpi_ws281x import PixelStrip, Color
+from renderer import Renderer
+try:
+    from rpi_ws281x import Color
+except:
+    print("rpi_ws281x library not present (not required if app is not light controller)")
 
 from constants import *
 from utils import getEmptyledCoords, getAbsolutePath
@@ -37,20 +40,18 @@ def interpolateCoords(ledCoords: list[tuple[float, float, float]], fromIndex: in
         print("Error interpolating.")
         print(e)
 
-def config(ledStrip: PixelStrip):
+def config(renderer: Renderer):
     ledCoords = getEmptyledCoords()
 
     # Make all leds red for one second (to indicate config and to allow E key to be depressed)
-    for i in range(LED_COUNT): ledStrip.setPixelColor(i, Color(255, 0, 0))
-    # for i in range(LED_COUNT): ledStrip[i] = (255, 0, 0)
-    ledStrip.show()
+    for i in range(LED_COUNT): renderer.ledStrip.setPixelColor(i, Color(255, 0, 0))
+    renderer.ledStrip.show()
 
     time.sleep(1)
 
     # Clear all leds
-    for i in range(LED_COUNT): ledStrip.setPixelColor(i, Color(0, 0, 0))
-    # for i in range(LED_COUNT): ledStrip[i] = (0, 0, 0)
-    ledStrip.show()
+    for i in range(LED_COUNT): renderer.ledStrip.setPixelColor(i, Color(0, 0, 0))
+    renderer.ledStrip.show()
 
     # Start Config
     currentIndex = 0
@@ -59,11 +60,9 @@ def config(ledStrip: PixelStrip):
     cancelled = False
     referential = (0, 0, 0)
     while currentIndex < LED_COUNT:
-        ledStrip.setPixelColor(previousIndex, Color(0, 0, 0))
-        ledStrip.setPixelColor(currentIndex, Color(0, 255, 0))
-        # ledStrip[previousIndex] = (0, 0, 0)
-        # ledStrip[currentIndex] = (0, 255, 0)
-        ledStrip.show()
+        renderer.ledStrip.setPixelColor(previousIndex, Color(0, 0, 0))
+        renderer.ledStrip.setPixelColor(currentIndex, Color(0, 255, 0))
+        renderer.ledStrip.show()
 
         userInput = input("Enter X Y Z for pixel " + str(currentIndex) + ", Enter to skip and interpolate, r X Y Z to set new referential coordinates, or 'c' to cancel config:\n")
 

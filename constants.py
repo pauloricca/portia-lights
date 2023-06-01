@@ -1,8 +1,4 @@
 import platform
-# import board
-
-# MODE = "MASTER"
-MODE = "SLAVE"
 
 # "Linux" / "Darwin" / "Windows"
 PLATFORM = platform.system()
@@ -12,8 +8,6 @@ CONFIG_FILE = "config.json"
 MAIN_SEQUENCE_FILE = "main.sequence"
 
 LED_COUNT = 200
-# LED_PIN = board.D10 # 10 uses SPI /dev/spidev0.0 (pin 19)
-#LED_PIN = board.D18 # PWM (pin 12) - needs to be run with sudo
 
 #LED_PIN = 18          # GPIO pin connected to the ledStrip (18 uses PWM!).
 LED_PIN = 10        # GPIO pin connected to the ledStrip (10 uses SPI /dev/spidev0.0).

@@ -7,7 +7,7 @@ from events import Event, EVENT_TYPES
 
 class Slave:
     port: int
-    verbose: bool
+    isVerbose: bool
     events: list[Event]
     # Master time minus local time. We use this to change the times when we receive events.
     masterTimeDiff: int
@@ -15,10 +15,10 @@ class Slave:
     def __init__(
             self,
             port = 63277,
-            verbose = False,
+            isVerbose = False,
         ):
         self.port = port
-        self.verbose = verbose
+        self.isVerbose = isVerbose
         self.events = []
         self.masterTimeDiff = 0
         
@@ -39,7 +39,7 @@ class Slave:
                 s.listen()
                 conn, addr = s.accept()
                 with conn:
-                    self.verbose and print(f"Connected by {addr}")
+                    self.isVerbose and print(f"Connected by {addr}")
                     message = ''
                     connectionOpen = True
                     while connectionOpen:
@@ -59,8 +59,8 @@ class Slave:
                                         if event.atTime: event.atTime -= self.masterTimeDiff
                                         self.events.append(event)
 
-                                    self.verbose and print("New event:")
-                                    self.verbose and print(event)
+                                    self.isVerbose and print("New event:")
+                                    self.isVerbose and print(event)
                                 except Exception as e:
                                     print("Error parsing message: " + message)
                                     print(e)
