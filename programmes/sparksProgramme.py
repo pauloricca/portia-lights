@@ -1,3 +1,4 @@
+from events import EVENT_TYPES
 from utils import getDistanceSquared
 from dataclasses import dataclass
 
@@ -15,7 +16,6 @@ class SparksProgramme(Programme):
     sparks: list[Spark]
     fadeByDistance: float
     propagationSpeed: float
-    SPARK_EVENT = 'SPARK_EVENT' # Params: centre (tuple[float, float, float]) and colour (tuple[float, float, float])
 
     def __init__(
         self,
@@ -38,7 +38,7 @@ class SparksProgramme(Programme):
         super().fade(frameTime * 10)
 
         for event in events:
-            if event.type == self.SPARK_EVENT:
+            if event.type == EVENT_TYPES.SPARK:
                 self.sparks.append(Spark(
                 centre = event.params["centre"],
                 colour = event.params["colour"],

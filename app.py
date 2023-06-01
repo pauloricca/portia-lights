@@ -9,14 +9,12 @@ from networking.slave import Slave
 from networking.master import Master
 from events import EventManager
 from programmes.programme import Programme
-from programmes.programmeManager import ProgrammeManager
 from programmes.sparksProgramme import SparksProgramme
 from programmes.colourNoiseProgramme import ColourNoiseProgramme
 
 class App:
     renderer: Renderer
     eventManager: EventManager
-    programmeManager: ProgrammeManager
     programmes: list[Programme]
     slave: Slave
     master: Master
@@ -32,8 +30,7 @@ class App:
     def __init__(self, isMaster: bool, isLightController=True, isVerbose=False):
         self.isMaster = isMaster
         self.isLightController = isLightController
-        self.eventManager = EventManager(self)
-        self.programmeManager = ProgrammeManager(self.eventManager)
+        self.eventManager = EventManager(self.isMaster)
         self.lastFrameTime = time.time()
         self.framecount = 0
         self.totalFrameTime = 0
@@ -72,8 +69,6 @@ class App:
         # self.totalFrameTime += self.frameTime
         # self.framecount += 1
         # print(str(self.totalFrameTime/self.framecount))
-
-        self.programmeManager.step()
 
         if self.isMaster:
             # Send events to slaves
