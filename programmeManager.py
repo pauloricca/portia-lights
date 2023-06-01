@@ -2,6 +2,7 @@ from animator import Animator
 from constants import *
 from events import EVENT_TYPES, Event
 from programmes.axisColourNoiseProgramme import AxisColourNoiseProgramme
+from programmes.rotatingOrbProgramme import RotatingOrbProgramme
 from utils import getBlankLEDsBuffer, mapToRange
 from programmes.programme import Programme
 from programmes.sparksProgramme import SparksProgramme
@@ -17,6 +18,7 @@ class ProgrammeManager():
     paleNoise: ColourNoiseProgramme
     edgeBlink: ColourNoiseProgramme
     axisNoise: AxisColourNoiseProgramme
+    orb: RotatingOrbProgramme
     solidColour: SolidColourProgramme
 
     def __init__(self):
@@ -33,9 +35,10 @@ class ProgrammeManager():
             self.colourSparks,
             # self.fullColourNoise,
             # self.paleNoise,
-            self.edgeBlink,
+            # self.edgeBlink,
             # self.solidColour,
-            self.axisNoise,
+            # self.axisNoise,
+            self.orb
         ]
     
     def renderProgrammes(self, events: list[Event], ledCoords: list[tuple[float, float, float]], frameTime: float):

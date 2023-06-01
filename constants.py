@@ -28,9 +28,9 @@ OVERBLOW_BLEED_RATIO_G = .5
 OVERBLOW_BLEED_RATIO_B = .2
 
 SPACE_BOUNDING_BOX = [
-    [0, 120],
-    [0, 0],
-    [0, 60]
+    [-80, 80],
+    [-80, 80],
+    [-5, 30]
 ]
 
 # Amount of time, in seconds, that events are send in advance to slaves
