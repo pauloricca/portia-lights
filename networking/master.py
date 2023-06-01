@@ -2,10 +2,9 @@ import socket
 import time
 import threading
 import subprocess
-import json
 from dataclasses import dataclass, field
 
-from events import Event, EVENT_TYPES
+from events import Event, GLOBAL_EVENT_TYPES
 
 # TODO: Add Thread locks around messages and slaveIps
 
@@ -66,7 +65,7 @@ class Master:
                     try:
                         s.connect((potentialSlaveIp, self.port))
                         # Send clock sync message when discovering potential slaves
-                        s.sendall(str.encode(str(Event(type=EVENT_TYPES.CLOCK_SYNC, params={"time": time.time()}))))
+                        s.sendall(str.encode(str(Event(type=GLOBAL_EVENT_TYPES.CLOCK_SYNC, params={"time": time.time()}))))
                         s.close()
 
                         haveSlaveAlready = False

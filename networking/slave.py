@@ -3,7 +3,7 @@ import json
 import threading
 import time
 
-from events import Event, EVENT_TYPES
+from events import Event, GLOBAL_EVENT_TYPES
 
 class Slave:
     port: int
@@ -52,7 +52,7 @@ class Slave:
                                     event: Event = json.loads(message, object_hook=asEvent)
 
                                     # Consume clock sync events
-                                    if event.type == EVENT_TYPES.CLOCK_SYNC:
+                                    if event.type == GLOBAL_EVENT_TYPES.CLOCK_SYNC:
                                         self.masterTimeDiff = event.params['time'] - time.time()
                                     else:
                                         # Adjust event times to compensate master time difference

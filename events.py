@@ -6,7 +6,7 @@ from utils import getAbsolutePath, playAudio
 import json
 
 # Event names
-class EVENT_TYPES:
+class GLOBAL_EVENT_TYPES:
     PLAY_AUDIO = 'PLAY_AUDIO'
     PLAY_MAIN_SEQUENCE = 'PLAY_MAIN_SEQUENCE'
     CLOCK_SYNC = 'CLOCK_SYNC'
@@ -19,8 +19,9 @@ class Event:
     type: str # Event identifier
     params: dict = field(default_factory=dict) # Dict of event params, specific to each event
     atTime: float = None # Timestamp of the event
-    every: float = None # Interval between repetitions (in seconds), if repeating
-    repeatTimes: int = 0 # Number of times to repeat the event
+    # every: float = None # Interval between repetitions (in seconds), if repeating
+    # repeatTimes: int = 0 # Number of times to repeat the event
+    hasBeenProcessed: bool = False # True if it has been dealt with (e.g. other events spawned from it)
 
     def __repr__(self):
         return json.dumps({
@@ -97,10 +98,10 @@ class EventManager:
         futureEvents: list[Event] = []
         for event in (self.localEventQueue if not popFromSlaveQueue else self.slaveEventQueue):
             if event.atTime <= currentTime:
-                if event.type == EVENT_TYPES.PLAY_AUDIO:
+                if event.type == GLOBAL_EVENT_TYPES.PLAY_AUDIO:
                     playAudio()
                     pass
-                elif event.type == EVENT_TYPES.PLAY_MAIN_SEQUENCE:
+                elif event.type == GLOBAL_EVENT_TYPES.PLAY_MAIN_SEQUENCE:
                     sequenceEvents = self.mainSequence.getEvents()
                     for newEvent in sequenceEvents:
                         futureEvents.append(newEvent)
