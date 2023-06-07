@@ -1,15 +1,21 @@
 from constants import *
+from renderers.renderer import Renderer
 try:
     from rpi_ws281x import PixelStrip, Color
 except:
     print("rpi_ws281x library not present (not required if app is not light controller)")
 
-class Renderer:
+class LEDRenderer(Renderer):
     def __init__(self):
+        super().__init__()
         self.ledStrip = PixelStrip(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
         self.ledStrip.begin()
-
-    def render(self, leds: list[tuple[float, float, float]]):
+    
+    def render(
+            self,
+            leds: list[tuple[float, float, float]],
+            ledCoords: list[tuple[float, float, float]]
+        ):
         for i in range(LED_COUNT):
             r = leds[i][0]
             g = leds[i][1]

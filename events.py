@@ -153,7 +153,7 @@ def generateProgrammeEvents(events: list[Event]):
                 type=EVENT_TYPES.SPARK,
                 atTime=event.atTime,
                 params={
-                    "centre": (0, 0, 0), #getRandomPointInSpace(),
+                    "centre": getRandomPointInSpace(),
                     "colour": getRandomColour(1),
                 }
             ))

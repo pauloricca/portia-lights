@@ -25,7 +25,7 @@ class ProgrammeManager():
     def __init__(self):
         self.animator = Animator()
 
-        self.colourSparks = SparksProgramme(propagationSpeed=-150)
+        self.colourSparks = SparksProgramme() # propagationSpeed=-150)
         self.fullColourNoise = ColourNoiseProgramme(hueNoiseScale=0.0001, speed=0.03)
         self.paleNoise = ColourNoiseProgramme(saturation=0.35, hueNoiseScale=.05, speed=.1, brightnessNoiseScale=.4, brightness=0.01)
         self.edgeBlink = ColourNoiseProgramme(saturation=0.2, hueNoiseScale=.05, speed=10, brightnessNoiseScale=.4, brightness=0.01)
@@ -37,7 +37,7 @@ class ProgrammeManager():
         self.programmes = [
             self.colourSparks,
             # self.fullColourNoise,
-            self.paleNoise,
+            # self.paleNoise,
             # self.edgeBlink,
             # self.solidColour,
             # self.axisNoise,
@@ -45,7 +45,12 @@ class ProgrammeManager():
             # self.backOrb,
         ]
     
-    def renderProgrammes(self, events: list[Event], ledCoords: list[tuple[float, float, float]], frameTime: float):
+    def renderProgrammes(
+            self,
+            events: list[Event],
+            ledCoords: list[tuple[float, float, float]],
+            frameTime: float
+        ):
         # Holds pre-rendered pixel rgb values, from 0 to 500 (0: black, 255: full saturation, 500: white)
         leds: list[list] = getBlankLEDsBuffer()
 

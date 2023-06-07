@@ -1,13 +1,9 @@
 import time
 import json
-from renderer import Renderer
-try:
-    from rpi_ws281x import Color
-except:
-    print("rpi_ws281x library not present (not required if app is not light controller)")
 
 from constants import *
 from utils import getEmptyledCoords, getAbsolutePath
+from renderers.renderer import Renderer
 
 def saveConfig(ledCoords):
     configJson = json.dumps(ledCoords)
@@ -44,30 +40,32 @@ def config(renderer: Renderer):
     ledCoords = getEmptyledCoords()
 
     # Make all leds red for one second (to indicate config and to allow E key to be depressed)
-    for i in range(LED_COUNT): renderer.ledStrip.setPixelColor(i, Color(255, 0, 0))
-    renderer.ledStrip.show()
+    # for i in range(LED_COUNT): renderer.ledStrip.setPixelColor(i, Color(255, 0, 0))
+    renderer.render(([(255, 0, 0) for _ in range(LED_COUNT)]), ledCoords)
+    # renderer.ledStrip.show()
 
     time.sleep(1)
 
     # Clear all leds
-    for i in range(LED_COUNT): renderer.ledStrip.setPixelColor(i, Color(0, 0, 0))
-    renderer.ledStrip.show()
+    # for i in range(LED_COUNT): renderer.ledStrip.setPixelColor(i, Color(0, 0, 0))
+    # renderer.ledStrip.show()
 
     # Start Config
     currentIndex = 0
-    previousIndex = 0
+    # previousIndex = 0
     indexOfPreviousSetPoint = -1 # Used to interpolate between this point and next of set coords
     cancelled = False
     referential = (0, 0, 0)
     while currentIndex < LED_COUNT:
-        renderer.ledStrip.setPixelColor(previousIndex, Color(0, 0, 0))
-        renderer.ledStrip.setPixelColor(currentIndex, Color(0, 255, 0))
-        renderer.ledStrip.show()
+        # renderer.ledStrip.setPixelColor(previousIndex, Color(0, 0, 0))
+        # renderer.ledStrip.setPixelColor(currentIndex, Color(0, 255, 0))
+        renderer.render(([(0, 255 if i == currentIndex else 0, 0) for i in range(LED_COUNT)]), ledCoords)
+        # renderer.ledStrip.show()
 
         userInput = input("Enter X Y Z for pixel " + str(currentIndex) + ", Enter to skip and interpolate, r X Y Z to set new referential coordinates, or 'c' to cancel config:\n")
 
         if userInput == "":
-            previousIndex = currentIndex
+            # previousIndex = currentIndex
             currentIndex += 1
         elif userInput == "c":
             currentIndex = LED_COUNT
@@ -94,7 +92,7 @@ def config(renderer: Renderer):
                         interpolateCoords(ledCoords, indexOfPreviousSetPoint, currentIndex)
 
                     indexOfPreviousSetPoint = currentIndex
-                    previousIndex = currentIndex
+                    # previousIndex = currentIndex
                     currentIndex += 1
             except Exception as e:
                 print("Invalid coordinates.")

@@ -3,11 +3,13 @@ import keyboard
 
 from constants import *
 from config import config, loadConfig
-from renderer import Renderer
 from networking.slave import Slave
 from networking.master import Master
 from events import EventManager
 from programmeManager import ProgrammeManager
+from renderers.renderer import Renderer
+from renderers.ledRenderer import LEDRenderer
+from renderers.virtualRenderer import VirtualRenderer
 
 class App:
     renderer: Renderer
@@ -39,14 +41,13 @@ class App:
         else:
             self.slave = Slave(isVerbose=isVerbose)
 
-        if self.isLightController:
-            self.renderer = Renderer()
-
-            # Holds the coordinates for each pixel
-            try:
-                self.ledCoords = loadConfig()
-            except:
-                self.ledCoords = config(self.renderer)
+        self.renderer = LEDRenderer() if self.isLightController else VirtualRenderer()
+        
+        # Holds the coordinates for each pixel
+        try:
+            self.ledCoords = loadConfig()
+        except:
+            self.ledCoords = config(self.renderer)
 
         while True: self.mainLoop()
     
@@ -68,24 +69,22 @@ class App:
             # Add events received from master
             self.eventManager.pushEvents(self.slave.popEvents())
         
-        if self.isLightController:
-            # Enter Config when pressing Enter key
-            if keyboard.is_pressed("enter"): self.ledCoords = config(self.renderer)
+        # Enter Config when pressing Enter key
+        if keyboard.is_pressed("enter"): self.ledCoords = config(self.renderer)
 
-            self.renderer.render(
-                self.programmeManager.renderProgrammes(
-                    self.eventManager.popEvents(),
-                    self.ledCoords,
-                    self.frameTime
-                )
-            )
+        self.renderer.render(
+            self.programmeManager.renderProgrammes(
+                self.eventManager.popEvents(),
+                self.ledCoords,
+                self.frameTime
+            ),
+            self.ledCoords
+        )
 
-            # TODO: fix target fps sleep time
-            # renderTime = time.time() - self.thisFrameTime
-            # sleepTime = renderTime - (1 / TARGET_FPS)
-            # print(sleepTime)
-            # if sleepTime > 0: time.sleep(sleepTime)
+        # TODO: fix target fps sleep time
+        # renderTime = time.time() - self.thisFrameTime
+        # sleepTime = renderTime - (1 / TARGET_FPS)
+        # print(sleepTime)
+        # if sleepTime > 0: time.sleep(sleepTime)
 
-            # time.sleep(0.01)
-        else:
-            time.sleep(0.1)
+        # time.sleep(0.01)
