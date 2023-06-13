@@ -25,6 +25,16 @@ class Animator():
         targetValue: float,
         duration: float
     ):
+        # Remove previous animations on the same object and property
+        existingAnimations = [
+            animation
+            for animation in self.animations 
+            if animation.propertyName == propertyName 
+            and animation.object == object
+        ]
+        for animation in existingAnimations:
+            self.animations.remove(animation)
+        
         self.animations.append(AnimatorItem(
             object=object,
             propertyName=propertyName,

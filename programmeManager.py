@@ -36,7 +36,7 @@ class ProgrammeManager():
 
         self.programmes = [
             self.colourSparks,
-            # self.fullColourNoise,
+            self.fullColourNoise,
             # self.paleNoise,
             # self.edgeBlink,
             # self.solidColour,

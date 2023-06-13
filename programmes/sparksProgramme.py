@@ -15,18 +15,21 @@ class Spark:
 class SparksProgramme(Programme):
     sparks: list[Spark]
     fadeByDistance: float
+    fadeByTime: float
     propagationSpeed: float
 
     def __init__(
         self,
-        propagationSpeed=150,
-        brightness=5,
-        fadeByDistance=.001
+        propagationSpeed=800,
+        brightness=25,
+        fadeByDistance=.002,
+        fadeByTime=4
     ):
         super().__init__()
         self.propagationSpeed = propagationSpeed
         self.brightness = brightness
         self.fadeByDistance = fadeByDistance
+        self.fadeByTime = fadeByTime
         self.sparks = []
     
     def step(

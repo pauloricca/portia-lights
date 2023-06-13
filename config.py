@@ -62,7 +62,7 @@ def config(renderer: Renderer):
         renderer.render(([(0, 255 if i == currentIndex else 0, 0) for i in range(LED_COUNT)]), ledCoords)
         # renderer.ledStrip.show()
 
-        userInput = input("Enter X Y Z for pixel " + str(currentIndex) + ", Enter to skip and interpolate, r X Y Z to set new referential coordinates, or 'c' to cancel config:\n")
+        userInput = input("Enter X Y Z for pixel " + str(currentIndex) + ", Enter to skip and interpolate, r X Y Z to set new referential coordinates, i N to jump to LED index N, or 'c' to cancel config:\n")
 
         if userInput == "":
             # previousIndex = currentIndex
@@ -79,6 +79,12 @@ def config(renderer: Renderer):
                 if coords[0] == "r":
                     print("New referential set")
                     referential = (float(coords[1]), float(coords[2]), float(coords[3]))
+                elif coords[0] == "i":
+                    newIndex = int(coords[1])
+                    # If we go back, we don't want to interpolate positions backwards
+                    if (newIndex < currentIndex):
+                        indexOfPreviousSetPoint = newIndex - 1
+                    currentIndex = newIndex
                 else:
                     x = float(coords[0]) + referential[0]
                     y = float(coords[1]) + referential[1]

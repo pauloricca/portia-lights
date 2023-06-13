@@ -8,7 +8,7 @@ AUDIO_FILE = 'Spider Start Draft Longer.wav'
 CONFIG_FILE = 'config.json'
 MAIN_SEQUENCE_FILE = 'main.sequence'
 
-LED_COUNT = 200
+LED_COUNT = 1000
 
 #LED_PIN = 18          # GPIO pin connected to the ledStrip (18 uses PWM!).
 LED_PIN = 10        # GPIO pin connected to the ledStrip (10 uses SPI /dev/spidev0.0).
@@ -28,8 +28,8 @@ OVERBLOW_BLEED_RATIO_G = .5
 OVERBLOW_BLEED_RATIO_B = .2
 
 SPACE_BOUNDING_BOX = [
-    [-80, 80],
-    [-80, 80],
+    [-180, 180],
+    [-180, 180],
     [-5, 30]
 ]
 
@@ -37,3 +37,5 @@ SPACE_BOUNDING_BOX = [
 # Too short and we lose real-time event responses, too long and slaves might not have been
 # online where future events were sent
 SLAVE_ADVANCE_NOTICE_TIME = 2
+
+VIRTUAL_CAMERA = (0.0,0.0, -800)

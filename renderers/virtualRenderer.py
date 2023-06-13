@@ -24,9 +24,9 @@ class VirtualRenderer(Renderer):
 
         glEnable(GL_DEPTH_TEST)
 
-        gluPerspective(45, self.display[0] / self.display[1], 0.1, 500.0)
+        gluPerspective(45, self.display[0] / self.display[1], 0.1, 50000.0)
 
-        glTranslatef(0.0,0.0, -250)
+        glTranslatef(VIRTUAL_CAMERA[0], VIRTUAL_CAMERA[1], VIRTUAL_CAMERA[2])
     
     def render(
             self,
@@ -35,7 +35,7 @@ class VirtualRenderer(Renderer):
         ):
         for event in pygame.event.get():
             if event.type == pygame.MOUSEMOTION:
-                self.xCamRotation += event.dict["rel"][0]
+                self.xCamRotation -= event.dict["rel"][0]
                 self.zCamRotation += event.dict["rel"][1]
             if event.type == pygame.QUIT:
                 pygame.quit()
