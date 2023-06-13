@@ -3,8 +3,7 @@ import platform
 # "Linux" / "Darwin" / "Windows"
 PLATFORM = platform.system()
 
-# AUDIO_FILE = 'temple.wav'
-AUDIO_FILE = 'Spider Start Draft Longer.wav'
+AUDIO_FILE = 'Andrey Novikov - Spider Consciousness.wav'
 CONFIG_FILE = 'config.json'
 MAIN_SEQUENCE_FILE = 'main.sequence'
 
