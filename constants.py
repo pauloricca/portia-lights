@@ -26,7 +26,8 @@ OVERBLOW_BLEED_RATIO_R = 1
 OVERBLOW_BLEED_RATIO_G = .5
 OVERBLOW_BLEED_RATIO_B = .2
 
-SPACE_BOUNDING_BOX = [
+# Used to generate events in random points of space (can be different to the actual installation bounding box)
+EVENTS_BOUNDING_BOX = [
     [-180, 180],
     [-180, 180],
     [-5, 30]
@@ -37,4 +38,4 @@ SPACE_BOUNDING_BOX = [
 # online where future events were sent
 SLAVE_ADVANCE_NOTICE_TIME = 2
 
-VIRTUAL_CAMERA = (0.0,0.0, -800)
+VIRTUAL_CAMERA = (0, -20, -800)

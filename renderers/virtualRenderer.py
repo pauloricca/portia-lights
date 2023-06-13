@@ -12,11 +12,13 @@ class VirtualRenderer(Renderer):
     xCamRotation: float
     zCamRotation: float
     pointRadius: float
+    isRotating: bool
 
     def __init__(self):
         self.xCamRotation = 0
         self.zCamRotation = 0
         self.pointRadius = 2
+        self.isRotating = False
 
         pygame.init()
         self.display = (800, 600)
@@ -34,10 +36,14 @@ class VirtualRenderer(Renderer):
             ledCoords: list[tuple[float, float, float]]
         ):
         for event in pygame.event.get():
-            if event.type == pygame.MOUSEMOTION:
-                self.xCamRotation -= event.dict["rel"][0]
+            if event.type == pygame.MOUSEMOTION and self.isRotating:
+                self.xCamRotation += event.dict["rel"][0]
                 self.zCamRotation += event.dict["rel"][1]
-            if event.type == pygame.QUIT:
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                self.isRotating = True
+            elif event.type == pygame.MOUSEBUTTONUP:
+                self.isRotating = False
+            elif event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
         

@@ -35,9 +35,9 @@ def getRandomBetween(a: float, b: float):
 
 def getRandomPointInSpace(): 
     return (
-        getRandomBetween(SPACE_BOUNDING_BOX[0][0], SPACE_BOUNDING_BOX[0][1]),
-        getRandomBetween(SPACE_BOUNDING_BOX[1][0], SPACE_BOUNDING_BOX[1][1]),
-        getRandomBetween(SPACE_BOUNDING_BOX[2][0], SPACE_BOUNDING_BOX[2][1]),
+        getRandomBetween(EVENTS_BOUNDING_BOX[0][0], EVENTS_BOUNDING_BOX[0][1]),
+        getRandomBetween(EVENTS_BOUNDING_BOX[1][0], EVENTS_BOUNDING_BOX[1][1]),
+        getRandomBetween(EVENTS_BOUNDING_BOX[2][0], EVENTS_BOUNDING_BOX[2][1]),
     )
 
 def getRandomColour(brightness = 0.5):

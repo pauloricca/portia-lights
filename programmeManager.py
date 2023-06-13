@@ -18,8 +18,10 @@ class ProgrammeManager():
     paleNoise: ColourNoiseProgramme
     edgeBlink: ColourNoiseProgramme
     axisNoise: AxisColourNoiseProgramme
-    frontOrb: RotatingOrbProgramme
-    backOrb: RotatingOrbProgramme
+    leftFrontOrb: RotatingOrbProgramme
+    leftBackOrb: RotatingOrbProgramme
+    rightFrontOrb: RotatingOrbProgramme
+    rightBackOrb: RotatingOrbProgramme
     solidColour: SolidColourProgramme
 
     def __init__(self):
@@ -31,18 +33,22 @@ class ProgrammeManager():
         self.edgeBlink = ColourNoiseProgramme(saturation=0.2, hueNoiseScale=.05, speed=10, brightnessNoiseScale=.4, brightness=0.01)
         self.axisNoise = AxisColourNoiseProgramme(hueNoiseScale=0.2, speedHue=.01, speedBrightness=0.3, brightnessNoiseScale=.01, brightness=0.1)
         self.solidColour = SolidColourProgramme()
-        self.frontOrb = RotatingOrbProgramme(zPosition=25, pathRadius=65, hue=0.1, speed=1)
-        self.backOrb = RotatingOrbProgramme(zPosition=0, pathRadius=30, hue=0.6, speed=-2)
+        self.leftFrontOrb = RotatingOrbProgramme(centre=(-100, 0, 25), pathRadius=65, hue=0.1, speed=1)
+        self.leftBackOrb = RotatingOrbProgramme(centre=(-100, 0, 0), pathRadius=30, hue=0.6, speed=-2)
+        self.rightFrontOrb = RotatingOrbProgramme(centre=(100, 0, 25), pathRadius=65, hue=0.1, speed=-1)
+        self.rightBackOrb = RotatingOrbProgramme(centre=(100, 0, 0), pathRadius=30, hue=0.6, speed=2)
 
         self.programmes = [
             self.colourSparks,
-            self.fullColourNoise,
+            # self.fullColourNoise,
             # self.paleNoise,
             # self.edgeBlink,
             # self.solidColour,
             # self.axisNoise,
-            # self.frontOrb,
-            # self.backOrb,
+            self.leftFrontOrb,
+            self.leftBackOrb,
+            self.rightFrontOrb,
+            self.rightBackOrb,
         ]
     
     def renderProgrammes(

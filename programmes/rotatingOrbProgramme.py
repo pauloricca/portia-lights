@@ -10,7 +10,7 @@ class RotatingOrbProgramme(Programme):
     speed: float
     orbRadius: float
     pathRadius: float
-    zPosition: float
+    centre: list[float, float, float]
     hue: float
 
     def __init__(
@@ -20,7 +20,7 @@ class RotatingOrbProgramme(Programme):
         fadeByDistance=.01,
         orbRadius=15,
         pathRadius=65,
-        zPosition=20,
+        centre=(20, 0, 0),
         hue=0.2
     ):
         super().__init__()
@@ -30,7 +30,7 @@ class RotatingOrbProgramme(Programme):
         self.angle = 0
         self.orbRadius = orbRadius
         self.pathRadius = pathRadius
-        self.zPosition = zPosition
+        self.centre = centre
         self.hue = hue
     
     def step(
@@ -43,15 +43,16 @@ class RotatingOrbProgramme(Programme):
 
         self.angle += frameTime * self.speed
 
-        orbX = self.pathRadius * sin(self.angle)
-        orbY = self.pathRadius * cos(self.angle)
+        orbX = self.centre[0] + self.pathRadius * sin(self.angle)
+        orbY = self.centre[1] + self.pathRadius * cos(self.angle)
+        orbZ = self.centre[2]
 
         radiusSquared = self.orbRadius * self.orbRadius
 
         orbColour = hsv_to_rgb(self.hue, 1, 255)
 
         for i, led in enumerate(self.leds):
-            distanceSquared = getDistanceSquared(ledCoords[i], (orbX, orbY, self.zPosition))
+            distanceSquared = getDistanceSquared(ledCoords[i], (orbX, orbY, orbZ))
             if distanceSquared < radiusSquared:
                 for i in range(0, 3):
                     led[i] = self.brightness * orbColour[i]
