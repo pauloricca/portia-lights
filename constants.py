@@ -5,6 +5,7 @@ PLATFORM = platform.system()
 
 AUDIO_FILE = 'Andrey Novikov - Spider Consciousness.wav'
 CONFIG_FILE = 'config.json'
+HOSTS_FILE = 'hosts'
 MAIN_SEQUENCE_FILE = 'main.sequence'
 
 #LED_PIN = 18          # GPIO pin connected to the ledStrip (18 uses PWM!).
@@ -37,3 +38,5 @@ EVENTS_BOUNDING_BOX = [
 SLAVE_ADVANCE_NOTICE_TIME = 2
 
 VIRTUAL_CAMERA = (0, -20, -800)
+
+RASPI_MAC_ADDRESS_START = 'b8'

@@ -36,7 +36,7 @@ class App:
 
         if self.isMaster:
             # Raspberry pis have mac addresses starting with b8
-            self.master = Master(macAddressStartMask = 'b8', isVerbose=isVerbose)
+            self.master = Master(macAddressStartMask = RASPI_MAC_ADDRESS_START, isVerbose=isVerbose)
         else:
             self.slave = Slave(isVerbose=isVerbose)
         

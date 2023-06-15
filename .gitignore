@@ -3,3 +3,4 @@ __pycache__/
 config.json*
 daemon.pid
 .DS_Store
+hosts

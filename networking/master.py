@@ -3,8 +3,10 @@ import time
 import threading
 import subprocess
 from dataclasses import dataclass, field
+from constants import *
 
 from events import Event, EVENT_TYPES
+from utils import getAbsolutePath
 
 @dataclass
 class SlaveInfo:
@@ -33,6 +35,15 @@ class Master:
         self.forgetSlaveTime = forgetSlaveTime
         self.isVerbose = isVerbose
         self.macAddressStartMask = macAddressStartMask
+        self.manuallyAddedSlaveIps = []
+
+        # Load manually set hosts
+        try:
+            f = open(getAbsolutePath(HOSTS_FILE), "r")
+            self.manuallyAddedSlaveIps = f.read().split('\n')
+            print(self.manuallyAddedSlaveIps)
+        except Exception as e:
+            pass
 
         slaveDiscoveryThread = threading.Thread(target=self.__slaveDiscoveryCycle, daemon=True)
         slaveDiscoveryThread.start()
@@ -51,11 +62,13 @@ class Master:
 
             outputLines = output.split('\n')
 
-            potentialSlaveIps = []
+            potentialSlaveIps = [ip for ip in self.manuallyAddedSlaveIps]
             for outputLine in outputLines:
                 lineParts = outputLine.split(' ')
                 if len(lineParts) >= 4 and lineParts[3].startswith(self.macAddressStartMask):
-                    potentialSlaveIps.append(lineParts[1].replace('(', '').replace(')', ''))
+                    ip = lineParts[1].replace('(', '').replace(')', '')
+                    if not ip in potentialSlaveIps:
+                        potentialSlaveIps.append()
 
             self.isVerbose and print('potential slaves: ')
             self.isVerbose and print(potentialSlaveIps)
