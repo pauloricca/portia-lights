@@ -5,10 +5,11 @@ class SolidColourProgramme(Programme):
 
     def __init__(
             self,
+            ledCount: int,
             colour=[0, 0, 0],
             brightness=0,
         ):
-        super().__init__()
+        super().__init__(ledCount)
         self.brightness = brightness
         self.colour = colour
     

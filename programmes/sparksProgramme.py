@@ -20,12 +20,13 @@ class SparksProgramme(Programme):
 
     def __init__(
         self,
+        ledCount: int,
         propagationSpeed=800,
         brightness=25,
         fadeByDistance=.00002,
         fadeByTime=0.001
     ):
-        super().__init__()
+        super().__init__(ledCount)
         self.propagationSpeed = propagationSpeed
         self.brightness = brightness
         self.fadeByDistance = fadeByDistance

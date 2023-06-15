@@ -30,24 +30,31 @@ class App:
         self.isMaster = isMaster
         self.isLightController = isLightController
         self.eventManager = EventManager(self.isMaster)
-        self.programmeManager = ProgrammeManager()
         self.lastFrameTime = time.time()
         self.framecount = 0
         self.totalFrameTime = 0
 
         if self.isMaster:
             # Raspberry pis have mac addresses starting with b8
-            self.master = Master(macAddressStartMask = '', isVerbose=isVerbose)
+            self.master = Master(macAddressStartMask = 'b8', isVerbose=isVerbose)
         else:
             self.slave = Slave(isVerbose=isVerbose)
-
-        self.renderer = LEDRenderer() if self.isLightController else VirtualRenderer()
         
         # Holds the coordinates for each pixel
+        isConfigInvalid = False
         try:
             self.ledCoords = loadConfig()
+            ledCount = len(self.ledCoords)
         except:
-            self.ledCoords = config(self.renderer)
+            isConfigInvalid = True
+            ledCount = int(input("LED count:\n"))
+
+        self.renderer = LEDRenderer(ledCount) if self.isLightController else VirtualRenderer()
+
+        if (isConfigInvalid):
+            self.ledCoords = config(self.renderer, ledCount)
+
+        self.programmeManager = ProgrammeManager(ledCount)
 
         while True: self.mainLoop()
     
@@ -70,7 +77,7 @@ class App:
             self.eventManager.pushEvents(self.slave.popEvents())
         
         # Enter Config when pressing Enter key
-        if keyboard.is_pressed("enter"): self.ledCoords = config(self.renderer)
+        # if keyboard.is_pressed("enter"): self.ledCoords = config(self.renderer, len(self.ledCoords))
 
         self.renderer.render(
             self.programmeManager.renderProgrammes(

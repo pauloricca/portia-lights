@@ -17,7 +17,6 @@ def loadConfig():
     configJson = f.read()
     f.close()
     loadedConfig = json.loads(configJson)
-    if (LED_COUNT > len(loadedConfig)): raise Exception('Wrong config length')
     return loadedConfig
 
 def interpolateCoords(ledCoords: list[tuple[float, float, float]], fromIndex: int, toIndex: int):
@@ -36,19 +35,13 @@ def interpolateCoords(ledCoords: list[tuple[float, float, float]], fromIndex: in
         print("Error interpolating.")
         print(e)
 
-def config(renderer: Renderer):
-    ledCoords = getEmptyledCoords()
+def config(renderer: Renderer, ledCount: int):
+    ledCoords = getEmptyledCoords(ledCount)
 
     # Make all leds red for one second (to indicate config and to allow E key to be depressed)
-    # for i in range(LED_COUNT): renderer.ledStrip.setPixelColor(i, Color(255, 0, 0))
-    renderer.render(([(255, 0, 0) for _ in range(LED_COUNT)]), ledCoords)
-    # renderer.ledStrip.show()
+    renderer.render(([(255, 0, 0) for _ in range(ledCount)]), ledCoords)
 
     time.sleep(1)
-
-    # Clear all leds
-    # for i in range(LED_COUNT): renderer.ledStrip.setPixelColor(i, Color(0, 0, 0))
-    # renderer.ledStrip.show()
 
     # Start Config
     currentIndex = 0
@@ -56,10 +49,10 @@ def config(renderer: Renderer):
     indexOfPreviousSetPoint = -1 # Used to interpolate between this point and next of set coords
     cancelled = False
     referential = (0, 0, 0)
-    while currentIndex < LED_COUNT:
+    while currentIndex < ledCount:
         # renderer.ledStrip.setPixelColor(previousIndex, Color(0, 0, 0))
         # renderer.ledStrip.setPixelColor(currentIndex, Color(0, 255, 0))
-        renderer.render(([(0, 255 if i == currentIndex else 0, 0) for i in range(LED_COUNT)]), ledCoords)
+        renderer.render(([(0, 255 if i == currentIndex else 0, 0) for i in range(ledCount)]), ledCoords)
         # renderer.ledStrip.show()
 
         userInput = input("Enter X Y Z for pixel " + str(currentIndex) + ", Enter to skip and interpolate, r X Y Z to set new referential coordinates, i N to jump to LED index N, or 'c' to cancel config:\n")
@@ -68,7 +61,7 @@ def config(renderer: Renderer):
             # previousIndex = currentIndex
             currentIndex += 1
         elif userInput == "c":
-            currentIndex = LED_COUNT
+            currentIndex = ledCount
             cancelled = True
             print("Cancelling...")
         else:

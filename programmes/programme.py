@@ -7,8 +7,8 @@ from events import Event
 class Programme(ABC):
     brightness: float
 
-    def __init__(self):
-        self.leds: list[list] = getBlankLEDsBuffer()
+    def __init__(self, ledCount: int):
+        self.leds: list[list] = getBlankLEDsBuffer(ledCount)
 
     # Step programme by frameTime.
     # If brightness is 0, programme may update state but shouldn't render or do expensive calculations.

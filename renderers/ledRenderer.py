@@ -6,9 +6,9 @@ except:
     print("rpi_ws281x library not present (not required if app is not light controller)")
 
 class LEDRenderer(Renderer):
-    def __init__(self):
+    def __init__(self, ledCount: int):
         super().__init__()
-        self.ledStrip = PixelStrip(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
+        self.ledStrip = PixelStrip(ledCount, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
         self.ledStrip.begin()
     
     def render(
@@ -16,7 +16,7 @@ class LEDRenderer(Renderer):
             leds: list[tuple[float, float, float]],
             ledCoords: list[tuple[float, float, float]]
         ):
-        for i in range(LED_COUNT):
+        for i in range(len(leds)):
             r = leds[i][0]
             g = leds[i][1]
             b = leds[i][2]

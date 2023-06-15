@@ -7,8 +7,6 @@ AUDIO_FILE = 'Andrey Novikov - Spider Consciousness.wav'
 CONFIG_FILE = 'config.json'
 MAIN_SEQUENCE_FILE = 'main.sequence'
 
-LED_COUNT = 1000
-
 #LED_PIN = 18          # GPIO pin connected to the ledStrip (18 uses PWM!).
 LED_PIN = 10        # GPIO pin connected to the ledStrip (10 uses SPI /dev/spidev0.0).
 LED_FREQ_HZ = 800000  # LED signal frequency in hertz (usually 800khz)

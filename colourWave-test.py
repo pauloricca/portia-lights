@@ -11,7 +11,7 @@ def colourWave(leds: list[tuple[float, float, float]]):
     colourWave.phaser += 0.2
     colourWave.phaseg += 0.1
     colourWave.phaseb += 0.05
-    for i in range(LED_COUNT):
+    for i in range(len(leds)):
         valuer = 55 + 255 * math.sin(colourWave.phaser + i / 10)
         valueg = 55 + 255 * math.sin(colourWave.phaseg + i / 6)
         valueb = 55 + 255 * math.sin(colourWave.phaseb + i / 4)

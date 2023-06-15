@@ -15,6 +15,7 @@ class RotatingOrbProgramme(Programme):
 
     def __init__(
         self,
+        ledCount: int,
         speed=1,
         brightness=1,
         fadeByDistance=.01,
@@ -23,7 +24,7 @@ class RotatingOrbProgramme(Programme):
         centre=(20, 0, 0),
         hue=0.2
     ):
-        super().__init__()
+        super().__init__(ledCount)
         self.speed = speed
         self.brightness = brightness
         self.fadeByDistance = fadeByDistance

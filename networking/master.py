@@ -57,6 +57,9 @@ class Master:
                 if len(lineParts) >= 4 and lineParts[3].startswith(self.macAddressStartMask):
                     potentialSlaveIps.append(lineParts[1].replace('(', '').replace(')', ''))
 
+            self.isVerbose and print('potential slaves: ')
+            self.isVerbose and print(potentialSlaveIps)
+
             # Check potential slaves, add new ones with open port, update lastSeenAt on known ones
             for potentialSlaveIp in potentialSlaveIps:
                 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:

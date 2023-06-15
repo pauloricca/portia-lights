@@ -21,8 +21,8 @@ def playAudio():
 def clamp(n, minn, maxn):
     return max(min(maxn, n), minn)
 
-def getEmptyledCoords():
-    return [(0, 0, 0) for _ in range(LED_COUNT)]
+def getEmptyledCoords(ledCount: int):
+    return [(0, 0, 0) for _ in range(ledCount)]
 
 def getDistanceSquared(a: tuple[float, float, float], b: tuple[float, float, float]):
     return (b[0] - a[0]) * (b[0] - a[0]) + (b[1] - a[1]) * (b[1] - a[1]) + (b[2] - a[2]) * (b[2] - a[2])
@@ -44,8 +44,8 @@ def getRandomColour(brightness = 0.5):
     rgbColour = hsv_to_rgb(random(), 1, brightness)
     return (rgbColour[0] * 255, rgbColour[1] * 255, rgbColour[2] * 255)
 
-def getBlankLEDsBuffer():
-    return [[0, 0, 0] for _ in range(LED_COUNT)]
+def getBlankLEDsBuffer(ledCount: int):
+    return [[0, 0, 0] for _ in range(ledCount)]
 
 def getAbsolutePath(relativePath: str):
     return os.path.join(os.path.dirname(__file__), relativePath)

@@ -14,6 +14,7 @@ class NoiseThresholdProgramme(Programme):
 
     def __init__(
             self,
+            ledCount: int,
             brightness=1,
             saturation=1,
             hue=.5,
@@ -23,7 +24,7 @@ class NoiseThresholdProgramme(Programme):
             thresholdMax=.6,
             phase=0
         ):
-        super().__init__()
+        super().__init__(ledCount)
         self.brightness = brightness
         self.saturation = saturation
         self.hue = hue

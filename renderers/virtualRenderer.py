@@ -55,7 +55,7 @@ class VirtualRenderer(Renderer):
         glRotatef(self.xCamRotation, 0, 1, 0)
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
 
-        for i in range(LED_COUNT):
+        for i in range(len(ledCoords)):
             r = leds[i][0] / 255
             g = leds[i][1] / 255
             b = leds[i][2] / 255

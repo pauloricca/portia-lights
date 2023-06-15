@@ -12,6 +12,7 @@ class AxisColourNoiseProgramme(Programme):
 
     def __init__(
             self,
+            ledCount: int,
             brightness=.12,
             saturation=1,
             hueScale=.0015,
@@ -19,7 +20,7 @@ class AxisColourNoiseProgramme(Programme):
             hueSpeed=.1,
             brightnessSpeed=.1
         ):
-        super().__init__()
+        super().__init__(ledCount)
         self.brightness = brightness
         self.saturation = saturation
         self.hueScale = hueScale
