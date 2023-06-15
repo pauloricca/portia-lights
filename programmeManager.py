@@ -49,7 +49,7 @@ class ProgrammeManager():
         self.blueNoiseThreshold = NoiseThresholdProgramme(ledCount, hue=0.7, phase=30)
 
         self.programmes = [
-            self.colourSparks,
+            # self.colourSparks,
             # self.inverseColourSparks,
             self.fullColourNoise,
             # self.redNoiseThreshold,
