@@ -1,6 +1,7 @@
+import time
 from animator import Animator
 from constants import *
-from events import EVENT_TYPES, Event
+from events import EVENT_TYPES, Event, EventManager
 from programmes.axisColourNoiseProgramme import AxisColourNoiseProgramme
 from programmes.noiseThresholdProgramme import NoiseThresholdProgramme
 from programmes.rotatingOrbProgramme import RotatingOrbProgramme
@@ -27,9 +28,11 @@ class ProgrammeManager():
     solidColour: SolidColourProgramme
     redNoiseThreshold: NoiseThresholdProgramme
     blueNoiseThreshold: NoiseThresholdProgramme
+    isMaster: bool
 
-    def __init__(self, ledCount: int):
+    def __init__(self, ledCount: int, isMaster: bool):
         self.animator = Animator()
+        self.isMaster = isMaster
 
         self.colourSparks = SparksProgramme(ledCount)
         self.inverseColourSparks = SparksProgramme(ledCount, propagationSpeed=-150)
@@ -48,9 +51,9 @@ class ProgrammeManager():
         self.programmes = [
             self.colourSparks,
             # self.inverseColourSparks,
-            # self.fullColourNoise,
-            self.redNoiseThreshold,
-            self.blueNoiseThreshold,
+            self.fullColourNoise,
+            # self.redNoiseThreshold,
+            # self.blueNoiseThreshold,
             # self.paleNoise,
             # self.edgeBlink,
             # self.solidColour,
@@ -65,11 +68,13 @@ class ProgrammeManager():
             self,
             events: list[Event],
             ledCoords: list[tuple[float, float, float]],
-            frameTime: float
+            frameTime: float,
+            eventManager: EventManager,
         ):
         # Holds pre-rendered pixel rgb values, from 0 to 500 (0: black, 255: full saturation, 500: white)
         leds: list[list] = getBlankLEDsBuffer(len(ledCoords))
 
+        # Pre-Programme Events
         for event in events:
 
             if event.type == EVENT_TYPES.GRITTINESS:
@@ -83,6 +88,11 @@ class ProgrammeManager():
                 if "colour" in event.params:
                     self.solidColour.colour = event.params["colour"]
                 self.animator.createAnimation(self.solidColour, "brightness", brightness, transition)
+            
+            if event.type == EVENT_TYPES.PHASES_SYNC and not self.isMaster:
+                self.fullColourNoise.huePhase = event.params['fullColourNoise.huePhase']
+                self.fullColourNoise.brightnessPhase = event.params['fullColourNoise.brightnessPhase']
+
         
         self.animator.animate(frameTime)
 
@@ -94,5 +104,18 @@ class ProgrammeManager():
                     led[0] += programme.leds[i][0]
                     led[1] += programme.leds[i][1]
                     led[2] += programme.leds[i][2]
+        
+        # Post-programme Events
+        for event in events:
+
+            if event.type == EVENT_TYPES.SYNC_PHASES and self.isMaster:
+                eventManager.pushEvents([Event(
+                    type=EVENT_TYPES.PHASES_SYNC,
+                    atTime=time.time(),
+                    params={
+                        'fullColourNoise.huePhase': self.fullColourNoise.huePhase,
+                        'fullColourNoise.brightnessPhase': self.fullColourNoise.brightnessPhase,
+                    },
+                )])
         
         return leds

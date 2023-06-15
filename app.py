@@ -54,7 +54,7 @@ class App:
         if (isConfigInvalid):
             self.ledCoords = config(self.renderer, ledCount)
 
-        self.programmeManager = ProgrammeManager(ledCount)
+        self.programmeManager = ProgrammeManager(ledCount, self.isMaster)
 
         while True: self.mainLoop()
     
@@ -79,14 +79,19 @@ class App:
         # Enter Config when pressing Enter key
         # if keyboard.is_pressed("enter"): self.ledCoords = config(self.renderer, len(self.ledCoords))
 
-        self.renderer.render(
-            self.programmeManager.renderProgrammes(
-                self.eventManager.popEvents(),
-                self.ledCoords,
-                self.frameTime
-            ),
-            self.ledCoords
-        )
+        try:
+            self.renderer.render(
+                self.programmeManager.renderProgrammes(
+                    self.eventManager.popEvents(),
+                    self.ledCoords,
+                    self.frameTime,
+                    self.eventManager
+                ),
+                self.ledCoords
+            )
+        except Exception as e:
+            print("Error Rendering.")
+            print(e)
 
         # TODO: fix target fps sleep time
         # renderTime = time.time() - self.thisFrameTime

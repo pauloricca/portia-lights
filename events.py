@@ -11,6 +11,8 @@ class EVENT_TYPES:
     PLAY_AUDIO = 'PLAY_AUDIO'
     PLAY_MAIN_SEQUENCE = 'PLAY_MAIN_SEQUENCE'
     CLOCK_SYNC = 'CLOCK_SYNC'
+    SYNC_PHASES = 'SYNC_PHASES'
+    PHASES_SYNC = 'PHASES_SYNC'
     # Mood events (get translated into programme events)
     BOOM = 'BOOM'
     CALM = 'CALM'

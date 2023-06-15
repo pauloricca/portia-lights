@@ -40,7 +40,7 @@ class Master:
         # Load manually set hosts
         try:
             f = open(getAbsolutePath(HOSTS_FILE), "r")
-            self.manuallyAddedSlaveIps = f.read().split('\n')
+            self.manuallyAddedSlaveIps = [line for line in f.read().split('\n') if len(line) > 0]
             print(self.manuallyAddedSlaveIps)
         except Exception as e:
             pass
@@ -68,10 +68,7 @@ class Master:
                 if len(lineParts) >= 4 and lineParts[3].startswith(self.macAddressStartMask):
                     ip = lineParts[1].replace('(', '').replace(')', '')
                     if not ip in potentialSlaveIps:
-                        potentialSlaveIps.append()
-
-            self.isVerbose and print('potential slaves: ')
-            self.isVerbose and print(potentialSlaveIps)
+                        potentialSlaveIps.append(ip)
 
             # Check potential slaves, add new ones with open port, update lastSeenAt on known ones
             for potentialSlaveIp in potentialSlaveIps:
@@ -91,7 +88,7 @@ class Master:
                         if not haveSlaveAlready:
                             self.slaves.append(SlaveInfo(ip = potentialSlaveIp, lastSeenAt = time.time()))
                     except Exception as e:
-                        self.isVerbose and print(e)
+                        self.isVerbose and print(potentialSlaveIp + ': ' + str(e))
 
             # Forget slaves we haven't seen in a while
             self.slaves = [slave for slave in self.slaves if slave.lastSeenAt > time.time() - self.forgetSlaveTime]
