@@ -6,8 +6,6 @@ from dataclasses import dataclass, field
 
 from events import Event, EVENT_TYPES
 
-# TODO: Add Thread locks around messages and slaveIps
-
 @dataclass
 class SlaveInfo:
     ip: str

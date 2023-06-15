@@ -5,27 +5,27 @@ from noise import snoise3, snoise2
 
 class AxisColourNoiseProgramme(Programme):
     saturation: float
-    hueNoiseScale: float
-    brightnessNoiseScale: float
-    speedHue: float
-    speedBrightness: float
+    hueScale: float
+    brightnessScale: float
+    hueSpeed: float
+    brightnessSpeed: float
 
     def __init__(
             self,
             brightness=.12,
             saturation=1,
-            hueNoiseScale=.0015,
-            brightnessNoiseScale=.02,
-            speedHue=.1,
-            speedBrightness=.1
+            hueScale=.0015,
+            brightnessScale=.02,
+            hueSpeed=.1,
+            brightnessSpeed=.1
         ):
         super().__init__()
         self.brightness = brightness
         self.saturation = saturation
-        self.hueNoiseScale = hueNoiseScale
-        self.brightnessNoiseScale = brightnessNoiseScale
-        self.speedHue = speedHue
-        self.speedBrightness = speedBrightness
+        self.hueScale = hueScale
+        self.brightnessScale = brightnessScale
+        self.hueSpeed = hueSpeed
+        self.brightnessSpeed = brightnessSpeed
         self.phaseHue = 0
         self.phaseBrightness = 0
     
@@ -36,24 +36,24 @@ class AxisColourNoiseProgramme(Programme):
             events,
         ):
 
-        self.phaseHue += frameTime * self.speedHue
-        self.phaseBrightness += frameTime * self.speedBrightness
+        self.phaseHue += frameTime * self.hueSpeed
+        self.phaseBrightness += frameTime * self.brightnessSpeed
         
         for i, led in enumerate(self.leds):
             # noise gives values [-1, 1] adding 1 we get [0, 2],to get hues gradients red - violet - red
             ledBrightness = self.brightness * snoise3(
-                ledCoords[i][0] * self.brightnessNoiseScale, 
-                ledCoords[i][1] * self.brightnessNoiseScale, 
-                # ledCoords[i][2] * self.brightnessNoiseScale, 
+                ledCoords[i][0] * self.brightnessScale, 
+                ledCoords[i][1] * self.brightnessScale, 
+                # ledCoords[i][2] * self.brightnessScale, 
                 self.phaseBrightness
             )
 
             # Only calculate hues for visible leds
             if ledBrightness > 0:
                 hue = snoise2(
-                #     ledCoords[i][0] * self.hueNoiseScale, 
-                #     ledCoords[i][1] * self.hueNoiseScale, 
-                    ledCoords[i][2] * self.hueNoiseScale, 
+                #     ledCoords[i][0] * self.hueScale, 
+                #     ledCoords[i][1] * self.hueScale, 
+                    ledCoords[i][2] * self.hueScale, 
                     self.phaseHue
                 ) + 1
             else:

@@ -37,7 +37,7 @@ class App:
 
         if self.isMaster:
             # Raspberry pis have mac addresses starting with b8
-            self.master = Master(macAddressStartMask = 'b8', isVerbose=isVerbose)
+            self.master = Master(macAddressStartMask = '', isVerbose=isVerbose)
         else:
             self.slave = Slave(isVerbose=isVerbose)
 
@@ -87,4 +87,5 @@ class App:
         # print(sleepTime)
         # if sleepTime > 0: time.sleep(sleepTime)
 
-        # time.sleep(0.01)
+        # Paulo comment sleep
+        time.sleep(0.01)

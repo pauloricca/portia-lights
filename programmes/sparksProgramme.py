@@ -22,8 +22,8 @@ class SparksProgramme(Programme):
         self,
         propagationSpeed=800,
         brightness=25,
-        fadeByDistance=.002,
-        fadeByTime=4
+        fadeByDistance=.00002,
+        fadeByTime=0.001
     ):
         super().__init__()
         self.propagationSpeed = propagationSpeed

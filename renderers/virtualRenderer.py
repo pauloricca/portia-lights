@@ -56,9 +56,9 @@ class VirtualRenderer(Renderer):
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
 
         for i in range(LED_COUNT):
-            r = leds[i][0]
-            g = leds[i][1]
-            b = leds[i][2]
+            r = leds[i][0] / 255
+            g = leds[i][1] / 255
+            b = leds[i][2] / 255
 
             if r < 0: r = 0
             if g < 0: g = 0

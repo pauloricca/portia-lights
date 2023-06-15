@@ -2,3 +2,4 @@ __pycache__/
 *.wav
 config.json*
 daemon.pid
+.DS_Store
