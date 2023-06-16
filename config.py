@@ -2,7 +2,7 @@ import time
 import json
 
 from constants import *
-from utils import getEmptyledCoords, getAbsolutePath
+from utils import getEmptyLedCoords, getAbsolutePath
 from renderers.renderer import Renderer
 
 def saveConfig(ledCoords):
@@ -36,7 +36,7 @@ def interpolateCoords(ledCoords: list[tuple[float, float, float]], fromIndex: in
         print(e)
 
 def config(renderer: Renderer, ledCount: int):
-    ledCoords = getEmptyledCoords(ledCount)
+    ledCoords = getEmptyLedCoords(ledCount)
 
     # Make all leds red for one second (to indicate config and to allow E key to be depressed)
     renderer.render(([(255, 0, 0) for _ in range(ledCount)]), ledCoords)

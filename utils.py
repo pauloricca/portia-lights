@@ -21,7 +21,7 @@ def playAudio():
 def clamp(n, minn, maxn):
     return max(min(maxn, n), minn)
 
-def getEmptyledCoords(ledCount: int):
+def getEmptyLedCoords(ledCount: int):
     return [(0, 0, 0) for _ in range(ledCount)]
 
 def getDistanceSquared(a: tuple[float, float, float], b: tuple[float, float, float]):

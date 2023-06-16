@@ -17,15 +17,19 @@ class ScanLine:
 class ScanLineProgramme(Programme):
     scanLines: list[ScanLine]
     trailLength: float
+    trailFalloff: float # 1 is linear
     speed: float
+    scanLineIntensity: float
 
     def __init__(
         self,
         ledCount: int,
         speed=30,
         brightness=1,
-        trailLength=60,
+        trailLength=120,
         shimmerAmount=0,
+        trailFalloff=0.7,
+        scanLineIntensity=3
     ):
         super().__init__(ledCount)
         self.speed = speed
@@ -33,6 +37,8 @@ class ScanLineProgramme(Programme):
         self.trailLength = trailLength
         self.scanLines = []
         self.shimmerAmount = shimmerAmount
+        self.trailFalloff = trailFalloff
+        self.scanLineIntensity = scanLineIntensity
     
     def step(
             self,
@@ -40,7 +46,6 @@ class ScanLineProgramme(Programme):
             frameTime,
             events,
         ):
-        # super().fade(frameTime * self.fadeByTime)
         self.clear()
 
         for event in events:
@@ -73,7 +78,7 @@ class ScanLineProgramme(Programme):
                     scanLine.direction < 0 and distanceToScanLine < 0 
                     or scanLine.direction > 0 and distanceToScanLine > 0
                 ):
-                    intensity = mapToRange(abs(distanceToScanLine), self.brightness, 0, 0, self.trailLength)
+                    intensity = mapToRange(abs(distanceToScanLine)**self.trailFalloff, self.brightness, 0, 0, self.trailLength**self.trailFalloff)
                     if (intensity) > 0:
                         led[0] += scanLine.colour[0] * intensity
                         led[1] += scanLine.colour[1] * intensity
@@ -88,7 +93,7 @@ class ScanLineProgramme(Programme):
                     (ledCoord <= scanLine.position and ledCoord >= scanLine.lastPosition) or
                     (ledCoord >= scanLine.position and ledCoord <= scanLine.lastPosition)
                 ):
-                    led[0] = 255
-                    led[1] = 255
-                    led[2] = 255
+                    led[0] = scanLine.colour[0] * self.scanLineIntensity
+                    led[1] = scanLine.colour[1] * self.scanLineIntensity
+                    led[2] = scanLine.colour[2] * self.scanLineIntensity
         

@@ -20,6 +20,7 @@ class EVENT_TYPES:
     NERVOUS = 'NERVOUS'
     # Programme events
     SCAN_LINE = 'SCAN_LINE'
+    FLASH = 'FLASH'
     SPARK = 'SPARK'
     GRITTINESS = 'GRITTINESS'
     BACKGROUND_COLOUR = 'BACKGROUND_COLOUR'
@@ -153,12 +154,36 @@ def generateProgrammeEvents(events: list[Event]):
 
     for event in events:
         if event.type == EVENT_TYPES.BOOM:
+
+            # Pre-spark flash
+            sparkCentre = getRandomPointInSpace()
+            newEvents.append(Event(
+                type=EVENT_TYPES.FLASH,
+                atTime=event.atTime - 1,
+                params={
+                    "centre": sparkCentre,
+                    "colour": (255, 255, 255),
+                    "radius": 30,
+                    "life": 1,
+                }
+            ))
             newEvents.append(Event(
                 type=EVENT_TYPES.SPARK,
                 atTime=event.atTime,
                 params={
-                    "centre": getRandomPointInSpace(),
+                    "centre": sparkCentre,
                     "colour": getRandomColour(1),
+                }
+            ))
+
+            newEvents.append(Event(
+                type=EVENT_TYPES.FLASH,
+                atTime=event.atTime,
+                params={
+                    "centre": getRandomPointInSpace(),
+                    "colour": (255, 255, 255),
+                    "radius": 70,
+                    "life": 1,
                 }
             ))
 

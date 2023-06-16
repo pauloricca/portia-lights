@@ -62,8 +62,8 @@ class SparksProgramme(Programme):
         for i, led in enumerate(self.leds):
             for spark in self.sparks:
                 distanceSquared = getDistanceSquared(ledCoords[i], spark.centre)
-                radiusSquared = spark.radius * spark.radius
-                lastRadiusSquared = spark.lastRadius * spark.lastRadius
+                radiusSquared = spark.radius**2
+                lastRadiusSquared = spark.lastRadius**2
                 if (
                     (distanceSquared >= radiusSquared and distanceSquared <= lastRadiusSquared) or
                     (distanceSquared <= radiusSquared and distanceSquared >= lastRadiusSquared)

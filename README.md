@@ -32,10 +32,14 @@ $ sudo aplay -l
 
 $ sudo pip3 install -r requirements.txt
 
-# Running
+# Running on Raspberry Pi
 
 $ ./start
 $ ./stop
+
+# Running on Mac
+
+$ ./master-test.py
 
 # When installing new libraries
 

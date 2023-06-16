@@ -6,6 +6,7 @@ from programmes.axisColourNoiseProgramme import AxisColourNoiseProgramme
 from programmes.noiseThresholdProgramme import NoiseThresholdProgramme
 from programmes.rotatingOrbProgramme import RotatingOrbProgramme
 from programmes.scanLineProgramme import ScanLineProgramme
+from programmes.spheresProgramme import SpheresProgramme
 from utils import getBlankLEDsBuffer, mapToRange
 from programmes.programme import Programme
 from programmes.sparksProgramme import SparksProgramme
@@ -19,6 +20,7 @@ class ProgrammeManager():
     isMaster: bool
 
     colourSparks: SparksProgramme
+    flashes: SpheresProgramme
     inverseColourSparks: SparksProgramme
     fullColourNoise: ColourNoiseProgramme
     paleNoise: ColourNoiseProgramme
@@ -38,8 +40,9 @@ class ProgrammeManager():
         self.isMaster = isMaster
 
         self.colourSparks = SparksProgramme(ledCount)
+        self.flashes = SpheresProgramme(ledCount, shimmerAmount=1)
         self.inverseColourSparks = SparksProgramme(ledCount, propagationSpeed=-150)
-        self.fullColourNoise = ColourNoiseProgramme(ledCount, hueScale=0.0002, hueSpeed=0.02, brightnessScale=0.01, brightness=4, shimmerAmount=1)
+        self.fullColourNoise = ColourNoiseProgramme(ledCount, hueScale=0.0002, hueSpeed=0.02, brightnessScale=0.01, brightness=2, shimmerAmount=1)
         self.paleNoise = ColourNoiseProgramme(ledCount, saturation=0.35, hueScale=.05, hueSpeed=.1, brightnessScale=.4, brightness=0.01)
         self.edgeBlink = ColourNoiseProgramme(ledCount, saturation=0.2, hueScale=.05, hueSpeed=10, brightnessScale=.4, brightness=0.01)
         self.axisNoise = AxisColourNoiseProgramme(ledCount, hueScale=0.2, hueSpeed=.01, brightnessSpeed=0.3, brightnessScale=.01, brightness=0.1)
@@ -53,11 +56,12 @@ class ProgrammeManager():
         self.scanLines = ScanLineProgramme(ledCount, shimmerAmount=1.5)
 
         self.programmes = [
-            # self.colourSparks,
+            self.colourSparks,
+            self.flashes,
             # self.inverseColourSparks,
             # self.fullColourNoise,
-            # self.redNoiseThreshold,
-            # self.blueNoiseThreshold,
+            self.redNoiseThreshold,
+            self.blueNoiseThreshold,
             # self.paleNoise,
             # self.edgeBlink,
             # self.solidColour,
@@ -66,7 +70,7 @@ class ProgrammeManager():
             # self.leftBackOrb,
             # self.rightFrontOrb,
             # self.rightBackOrb,
-            self.scanLines,
+            # self.scanLines,
         ]
     
     def renderProgrammes(
@@ -97,6 +101,15 @@ class ProgrammeManager():
             if event.type == EVENT_TYPES.PHASES_SYNC and not self.isMaster:
                 self.fullColourNoise.huePhase = event.params['fullColourNoise.huePhase']
                 self.fullColourNoise.brightnessPhase = event.params['fullColourNoise.brightnessPhase']
+                self.paleNoise.brightnessPhase = event.params['paleNoise.brightnessPhase']
+                self.axisNoise.phaseHue = event.params['axisNoise.phaseHue']
+                self.axisNoise.phaseBrightness = event.params['axisNoise.phaseBrightness']
+                self.leftFrontOrb.pathRadius = event.params['leftFrontOrb.pathRadius']
+                self.leftBackOrb.pathRadius = event.params['leftBackOrb.pathRadius']
+                self.rightFrontOrb.pathRadius = event.params['rightFrontOrb.pathRadius']
+                self.rightBackOrb.pathRadius = event.params['rightBackOrb.pathRadius']
+                self.redNoiseThreshold.phase = event.params['redNoiseThreshold.phase']
+                self.blueNoiseThreshold.phase = event.params['blueNoiseThreshold.phase']
 
         
         self.animator.animate(frameTime)
@@ -120,6 +133,15 @@ class ProgrammeManager():
                     params={
                         'fullColourNoise.huePhase': self.fullColourNoise.huePhase,
                         'fullColourNoise.brightnessPhase': self.fullColourNoise.brightnessPhase,
+                        'paleNoise.brightnessPhase': self.paleNoise.brightnessPhase,
+                        'axisNoise.phaseHue': self.axisNoise.phaseHue,
+                        'axisNoise.phaseBrightness': self.axisNoise.phaseBrightness,
+                        'leftFrontOrb.pathRadius': self.leftFrontOrb.pathRadius,
+                        'leftBackOrb.pathRadius': self.leftBackOrb.pathRadius,
+                        'rightFrontOrb.pathRadius': self.rightFrontOrb.pathRadius,
+                        'rightBackOrb.pathRadius': self.rightBackOrb.pathRadius,
+                        'redNoiseThreshold.phase': self.redNoiseThreshold.phase,
+                        'blueNoiseThreshold.phase': self.blueNoiseThreshold.phase,
                     },
                 )])
         

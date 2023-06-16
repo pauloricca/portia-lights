@@ -48,7 +48,7 @@ class RotatingOrbProgramme(Programme):
         orbY = self.centre[1] + self.pathRadius * cos(self.angle)
         orbZ = self.centre[2]
 
-        radiusSquared = self.orbRadius * self.orbRadius
+        radiusSquared = self.orbRadius**2
 
         orbColour = hsv_to_rgb(self.hue, 1, 255)
 
