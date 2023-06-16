@@ -4,6 +4,7 @@ import copy
 from constants import *
 from utils import getAbsolutePath, getRandomColour, getRandomPointInSpace, playAudio
 import json
+import sys
 
 # Event names
 class EVENT_TYPES:
@@ -55,6 +56,10 @@ class EventSequence:
         f.close()
         lines = fileContents.split('\n')
 
+        startTime = 0
+        if len(sys.argv) > 1:
+            startTime = int(sys.argv[1])
+        
         self.events = []
         for line in lines:
             if not line.startswith('#'):
@@ -63,16 +68,23 @@ class EventSequence:
                 eventTime: float = 0
                 params = {}
                 for i, part in enumerate(lineParts):
-                    if i == 0: eventTime = float(part)
+                    # Keep initial events at 0, others shift by -startTime
+                    if i == 0:
+                        eventTime = float(part)
+                        if eventTime > 0:
+                            eventTime -= startTime
                     elif i == 1: eventType = part
                     else:
                         paramParts = part.split('=')
                         params[paramParts[0]] = paramParts[1]
-                self.events.append(Event(
-                    type=eventType,
-                    atTime=eventTime,
-                    params=params,
-                ))
+
+                if eventTime >= 0:
+                    self.events.append(Event(
+                        type=eventType,
+                        atTime=eventTime,
+                        params=params,
+                    ))
+
     
     # Gets a copy of the events with timestamps relative to the current time
     def getEvents(self):
@@ -112,10 +124,13 @@ class EventManager:
         futureEvents: list[Event] = []
         for event in (self.localEventQueue if not popFromSlaveQueue else self.slaveEventQueue):
             if event.atTime <= currentTime:
-                if event.type == EVENT_TYPES.PLAY_AUDIO:
-                    playAudio()
+                if event.type == EVENT_TYPES.PLAY_AUDIO and not popFromSlaveQueue:
+                    if len(sys.argv) > 1:
+                        playAudio(sys.argv[1])
+                    else:
+                        playAudio()
                     pass
-                elif event.type == EVENT_TYPES.PLAY_MAIN_SEQUENCE:
+                elif event.type == EVENT_TYPES.PLAY_MAIN_SEQUENCE and not popFromSlaveQueue:
                     sequenceEvents = self.mainSequence.getEvents()
                     for newEvent in sequenceEvents:
                         futureEvents.append(newEvent)

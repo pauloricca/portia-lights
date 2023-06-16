@@ -70,7 +70,7 @@ class ProgrammeManager():
             # self.leftBackOrb,
             # self.rightFrontOrb,
             # self.rightBackOrb,
-            # self.scanLines,
+            self.scanLines,
         ]
     
     def renderProgrammes(

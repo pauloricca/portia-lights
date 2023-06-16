@@ -1,5 +1,6 @@
 from constants import *
 from renderers.renderer import Renderer
+from utils import stopAudio
 try:
     import pygame
     from pygame.locals import *
@@ -44,6 +45,7 @@ class VirtualRenderer(Renderer):
             elif event.type == pygame.MOUSEBUTTONUP:
                 self.isRotating = False
             elif event.type == pygame.QUIT:
+                stopAudio()
                 pygame.quit()
                 quit()
         

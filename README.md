@@ -45,6 +45,12 @@ $ ./master-test.py
 
 $ pip3 freeze > requirements.txt
 
+# Start at specific point of the sequence
+
+For 50 seconds, type:
+$ ./master-test.py 50
+You need to have a variant of the [...].wav file called [...].50.wav with the first 50 seconds trimmed out
+
 # Add script to boot
 
 $ sudo crontab -e

@@ -29,7 +29,6 @@ class App:
     def __init__(self, isMaster: bool, isLightController=True, isVerbose=False):
         self.isMaster = isMaster
         self.isLightController = isLightController
-        self.eventManager = EventManager(self.isMaster)
         self.lastFrameTime = time.time()
         self.framecount = 0
         self.totalFrameTime = 0
@@ -54,6 +53,7 @@ class App:
         if (isConfigInvalid):
             self.ledCoords = config(self.renderer, ledCount)
 
+        self.eventManager = EventManager(self.isMaster)
         self.programmeManager = ProgrammeManager(ledCount, self.isMaster)
 
         while True: self.mainLoop()

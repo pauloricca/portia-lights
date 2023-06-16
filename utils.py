@@ -9,14 +9,19 @@ from constants import *
 
 def _playAudioFileSync(file):
     playCommand = 'aplay' if PLATFORM == 'Linux' else 'afplay'
+    stopAudio()
+    try: subprocess.call((playCommand, file), stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
+    except Exception as e: print('Error playing audio: ' + str(e))
+
+def playAudio(variant = ''):
+    filePath = getAbsolutePath(AUDIO_FILE if variant == '' else AUDIO_FILE.replace('.wav', '.' + variant + '.wav'))
+    t = threading.Thread(target=_playAudioFileSync, args=(filePath,), daemon=True)
+    t.start()
+
+def stopAudio():
+    playCommand = 'aplay' if PLATFORM == 'Linux' else 'afplay'
     try: subprocess.call(("killall", playCommand), stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
     except: pass
-    try: subprocess.call((playCommand, file), stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
-    except: pass
-
-def playAudio():
-    t = threading.Thread(target=_playAudioFileSync, args=(getAbsolutePath(AUDIO_FILE),), daemon=True)
-    t.start()
 
 def clamp(n, minn, maxn):
     return max(min(maxn, n), minn)
