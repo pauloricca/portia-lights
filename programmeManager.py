@@ -39,7 +39,7 @@ class ProgrammeManager():
 
         self.colourSparks = SparksProgramme(ledCount)
         self.inverseColourSparks = SparksProgramme(ledCount, propagationSpeed=-150)
-        self.fullColourNoise = ColourNoiseProgramme(ledCount, hueScale=0.0002, hueSpeed=0.02, brightnessScale=0.01, brightness=4)
+        self.fullColourNoise = ColourNoiseProgramme(ledCount, hueScale=0.0002, hueSpeed=0.02, brightnessScale=0.01, brightness=4, shimmerAmount=1)
         self.paleNoise = ColourNoiseProgramme(ledCount, saturation=0.35, hueScale=.05, hueSpeed=.1, brightnessScale=.4, brightness=0.01)
         self.edgeBlink = ColourNoiseProgramme(ledCount, saturation=0.2, hueScale=.05, hueSpeed=10, brightnessScale=.4, brightness=0.01)
         self.axisNoise = AxisColourNoiseProgramme(ledCount, hueScale=0.2, hueSpeed=.01, brightnessSpeed=0.3, brightnessScale=.01, brightness=0.1)
@@ -50,10 +50,10 @@ class ProgrammeManager():
         self.rightBackOrb = RotatingOrbProgramme(ledCount, centre=(100, 0, 0), pathRadius=30, hue=0.6, speed=2)
         self.redNoiseThreshold = NoiseThresholdProgramme(ledCount, hue=1)
         self.blueNoiseThreshold = NoiseThresholdProgramme(ledCount, hue=0.7, phase=30)
-        self.scanLines = ScanLineProgramme(ledCount)
+        self.scanLines = ScanLineProgramme(ledCount, shimmerAmount=1.5)
 
         self.programmes = [
-            self.colourSparks,
+            # self.colourSparks,
             # self.inverseColourSparks,
             # self.fullColourNoise,
             # self.redNoiseThreshold,
