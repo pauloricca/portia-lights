@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 # Based on https://docs.circuitpython.org/projects/neopixel/en/latest/index.html
+
 # adafruit-circuitpython-pixelbuf https://github.com/adafruit/Adafruit_CircuitPython_Pixelbuf
 
 from app import App

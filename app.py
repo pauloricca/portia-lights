@@ -91,7 +91,7 @@ class App:
             )
         except Exception as e:
             print("Error Rendering.")
-            print(e)
+            print(type(e).__name__ + ': ' + str(e))
 
         # TODO: fix target fps sleep time
         # renderTime = time.time() - self.thisFrameTime

@@ -41,7 +41,6 @@ class Master:
         try:
             f = open(getAbsolutePath(HOSTS_FILE), "r")
             self.manuallyAddedSlaveIps = [line for line in f.read().split('\n') if len(line) > 0]
-            print(self.manuallyAddedSlaveIps)
         except Exception as e:
             pass
 
@@ -109,7 +108,7 @@ class Master:
                     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                         try:
                             s.connect((slave.ip, self.port))
-                            self.isVerbose and print("sending message '" + message + "' to " + slave.ip)
+                            # self.isVerbose and print("sending message '" + message + "' to " + slave.ip)
                             s.sendall(str.encode(message))
                             s.close()
                             slave.lastSeenAt = time.time()

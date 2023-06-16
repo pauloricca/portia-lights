@@ -21,10 +21,10 @@ class SparksProgramme(Programme):
     def __init__(
         self,
         ledCount: int,
-        propagationSpeed=800,
+        propagationSpeed=600,
         brightness=25,
-        fadeByDistance=.00002,
-        fadeByTime=0.001
+        fadeByDistance=.00001,
+        fadeByTime=30
     ):
         super().__init__(ledCount)
         self.propagationSpeed = propagationSpeed
@@ -39,16 +39,16 @@ class SparksProgramme(Programme):
             frameTime,
             events,
         ):
-        super().fade(frameTime * 10)
+        super().fade(frameTime * self.fadeByTime)
 
         for event in events:
             if event.type == EVENT_TYPES.SPARK:
                 self.sparks.append(Spark(
-                centre = event.params["centre"],
-                colour = event.params["colour"],
-                radius = 100 if self.propagationSpeed < 0 else 0,
-                lastRadius = 100 if self.propagationSpeed < 0 else 0
-            ))
+                    centre = event.params["centre"],
+                    colour = event.params["colour"],
+                    radius = 100 if self.propagationSpeed < 0 else 0,
+                    lastRadius = 100 if self.propagationSpeed < 0 else 0
+                ))
     
         # Remove dead sparks
         self.sparks = [spark for spark in self.sparks if spark.life > 0 and spark.radius >= 0]
@@ -65,9 +65,9 @@ class SparksProgramme(Programme):
                 radiusSquared = spark.radius * spark.radius
                 lastRadiusSquared = spark.lastRadius * spark.lastRadius
                 if (
-                    (distanceSquared > radiusSquared and distanceSquared < lastRadiusSquared) or
-                    (distanceSquared < radiusSquared and distanceSquared > lastRadiusSquared)
+                    (distanceSquared >= radiusSquared and distanceSquared <= lastRadiusSquared) or
+                    (distanceSquared <= radiusSquared and distanceSquared >= lastRadiusSquared)
                 ):
-                    led[0] += spark.colour[0] / (distanceSquared * self.fadeByDistance)
-                    led[1] += spark.colour[1] / (distanceSquared * self.fadeByDistance)
-                    led[2] += spark.colour[2] / (distanceSquared * self.fadeByDistance)
+                    led[0] += spark.colour[0] * self.brightness / (distanceSquared * self.fadeByDistance)
+                    led[1] += spark.colour[1] * self.brightness / (distanceSquared * self.fadeByDistance)
+                    led[2] += spark.colour[2] * self.brightness / (distanceSquared * self.fadeByDistance)

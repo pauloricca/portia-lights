@@ -1,6 +1,9 @@
-# Install
+# Set up
 
-$ pip3 install -r requirements.txt
+$ sudo raspi-config
+
+In System > enable go to command line, logged in
+And in Interface Options > enable both SSH and SPI
 
 To play audio as root we need to make the usb audio interface the default interface on root
 
@@ -24,6 +27,10 @@ $ sudo reboot
 Now the usb audio should be the first when we type
 
 $ sudo aplay -l
+
+# Install
+
+$ sudo pip3 install -r requirements.txt
 
 # Running
 

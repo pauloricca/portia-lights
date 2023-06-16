@@ -5,6 +5,7 @@ from events import EVENT_TYPES, Event, EventManager
 from programmes.axisColourNoiseProgramme import AxisColourNoiseProgramme
 from programmes.noiseThresholdProgramme import NoiseThresholdProgramme
 from programmes.rotatingOrbProgramme import RotatingOrbProgramme
+from programmes.scanLineProgramme import ScanLineProgramme
 from utils import getBlankLEDsBuffer, mapToRange
 from programmes.programme import Programme
 from programmes.sparksProgramme import SparksProgramme
@@ -15,6 +16,8 @@ from programmes.solidColourProgramme import SolidColourProgramme
 class ProgrammeManager():
     animator: Animator
     programmes: list[Programme]
+    isMaster: bool
+
     colourSparks: SparksProgramme
     inverseColourSparks: SparksProgramme
     fullColourNoise: ColourNoiseProgramme
@@ -28,7 +31,7 @@ class ProgrammeManager():
     solidColour: SolidColourProgramme
     redNoiseThreshold: NoiseThresholdProgramme
     blueNoiseThreshold: NoiseThresholdProgramme
-    isMaster: bool
+    scanLines: ScanLineProgramme
 
     def __init__(self, ledCount: int, isMaster: bool):
         self.animator = Animator()
@@ -47,11 +50,12 @@ class ProgrammeManager():
         self.rightBackOrb = RotatingOrbProgramme(ledCount, centre=(100, 0, 0), pathRadius=30, hue=0.6, speed=2)
         self.redNoiseThreshold = NoiseThresholdProgramme(ledCount, hue=1)
         self.blueNoiseThreshold = NoiseThresholdProgramme(ledCount, hue=0.7, phase=30)
+        self.scanLines = ScanLineProgramme(ledCount)
 
         self.programmes = [
-            # self.colourSparks,
+            self.colourSparks,
             # self.inverseColourSparks,
-            self.fullColourNoise,
+            # self.fullColourNoise,
             # self.redNoiseThreshold,
             # self.blueNoiseThreshold,
             # self.paleNoise,
@@ -62,6 +66,7 @@ class ProgrammeManager():
             # self.leftBackOrb,
             # self.rightFrontOrb,
             # self.rightBackOrb,
+            self.scanLines,
         ]
     
     def renderProgrammes(

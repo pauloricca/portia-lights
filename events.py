@@ -15,9 +15,11 @@ class EVENT_TYPES:
     PHASES_SYNC = 'PHASES_SYNC'
     # Mood events (get translated into programme events)
     BOOM = 'BOOM'
+    WAVE = 'WAVE'
     CALM = 'CALM'
     NERVOUS = 'NERVOUS'
     # Programme events
+    SCAN_LINE = 'SCAN_LINE'
     SPARK = 'SPARK'
     GRITTINESS = 'GRITTINESS'
     BACKGROUND_COLOUR = 'BACKGROUND_COLOUR'
@@ -157,6 +159,17 @@ def generateProgrammeEvents(events: list[Event]):
                 params={
                     "centre": getRandomPointInSpace(),
                     "colour": getRandomColour(1),
+                }
+            ))
+
+        if event.type == EVENT_TYPES.WAVE:
+            newEvents.append(Event(
+                type=EVENT_TYPES.SCAN_LINE,
+                atTime=event.atTime,
+                params={
+                    "colour": getRandomColour(1),
+                    "axis": 1,
+                    "direction": -1,
                 }
             ))
         
