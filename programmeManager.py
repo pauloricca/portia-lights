@@ -95,7 +95,7 @@ class ProgrammeManager():
                 brightness = event.params["brightness"]
                 transition = event.params["transition"]
                 if "colour" in event.params:
-                    self.solidColour.colour = event.params["colour"]
+                    self.animator.createAnimation(self.solidColour, "colour", event.params["colour"], transition)
                 self.animator.createAnimation(self.solidColour, "brightness", brightness, transition)
             
             if event.type == EVENT_TYPES.PHASES_SYNC and not self.isMaster:
@@ -112,7 +112,7 @@ class ProgrammeManager():
                 self.blueNoiseThreshold.phase = event.params['blueNoiseThreshold.phase']
 
         
-        self.animator.animate(frameTime)
+        self.animator.animate()
 
         # Run programme cycles and add their output to the main render buffer
         for programme in self.programmes:
