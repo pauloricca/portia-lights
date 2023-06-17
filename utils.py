@@ -58,3 +58,6 @@ def getAbsolutePath(relativePath: str):
 # Maps a value to a min-max range
 def mapToRange(num, outMin, outMax, inMin = 0, inMax = 1):
   return outMin + (float(num - inMin) / float(inMax - inMin) * (outMax - outMin))
+
+def oneOf(these: list[any]):
+    return these[math.floor(getRandomBetween(0, len(these)))]
