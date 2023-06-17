@@ -84,13 +84,15 @@ class ProgrammeManager():
 
             if event.type == EVENT_TYPES.PROG_QUIET_CLOUDS:
                 self.animator.createAnimation(self.fullColourNoise, "brightness", 0.3, 1)
+                self.animator.createAnimation(self.fullColourNoise, "hueCentre", 0.3, 1)
                 self.animator.createAnimation(self.fullColourNoise, "shimmerAmount", 0.3, 1)
                 self.animator.createAnimation(self.solidColour, "brightness", 0, 1)
                 self.animator.createAnimation(self.firstNoiseThreshold, "brightness", 0, 1)
                 self.animator.createAnimation(self.secondNoiseThreshold, "brightness", 0, 1)
             
             if event.type == EVENT_TYPES.PROG_RUMBLE:
-                self.animator.createAnimation(self.fullColourNoise, "brightness", 0.6, 0.2)
+                self.animator.createAnimation(self.fullColourNoise, "brightness", 1.5, 0.2)
+                self.animator.createAnimation(self.fullColourNoise, "hueCentre", 0.15, 1)
                 self.animator.createAnimation(self.fullColourNoise, "shimmerAmount", 1, 1)
                 self.animator.createAnimation(self.solidColour, "brightness", 0, 1)
                 self.animator.createAnimation(self.firstNoiseThreshold, "brightness", 0, 1)

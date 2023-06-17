@@ -5,6 +5,8 @@ from noise import pnoise3
 
 class ColourNoiseProgramme(Programme):
     saturation: float
+    hueCentre: float # The hue around which the noise navigates
+    hueRange: float
     hueScale: float
     hueSpeed: float
     huePhase: float
@@ -17,6 +19,8 @@ class ColourNoiseProgramme(Programme):
             ledCount: int,
             brightness=0,
             saturation=1,
+            hueCentre=.5,
+            hueRange=.2,
             hueScale=.0015,
             hueSpeed=.1,
             brightnessScale=.02,
@@ -26,6 +30,8 @@ class ColourNoiseProgramme(Programme):
         super().__init__(ledCount)
         self.brightness = brightness
         self.saturation = saturation
+        self.hueCentre = hueCentre
+        self.hueRange = hueRange
         self.hueScale = hueScale
         self.hueSpeed = hueSpeed
         self.brightnessScale = brightnessScale
@@ -55,11 +61,12 @@ class ColourNoiseProgramme(Programme):
             # noise gives values [-1, 1], but mostly around 0.5. By multiplying by 5 and mod 1 we force it to
             # go through all values and wrap around 1 to 0 (which works for hue as 0 is the same as 1)
             if ledBrightness > 0:
-                hue = (pnoise3(
+                hueNoise = pnoise3(
                     (ledCoords[i][0] + ledCoords[i][1]) * self.hueScale, 
                     (ledCoords[i][2] - ledCoords[i][1]) * self.hueScale, 
                     self.huePhase
-                ) * 5) % 1
+                ) * self.hueRange / 2
+                hue = (self.hueCentre + hueNoise) % 1
             else:
                 ledBrightness = 0
                 hue = 0
