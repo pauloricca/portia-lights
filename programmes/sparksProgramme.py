@@ -22,7 +22,7 @@ class SparksProgramme(Programme):
         self,
         ledCount: int,
         propagationSpeed=600,
-        brightness=25,
+        brightness=0,
         fadeByDistance=.00001,
         fadeByTime=30
     ):

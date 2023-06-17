@@ -23,8 +23,6 @@ class ProgrammeManager():
     flashes: SpheresProgramme
     inverseColourSparks: SparksProgramme
     fullColourNoise: ColourNoiseProgramme
-    paleNoise: ColourNoiseProgramme
-    edgeBlink: ColourNoiseProgramme
     axisNoise: AxisColourNoiseProgramme
     leftFrontOrb: RotatingOrbProgramme
     leftBackOrb: RotatingOrbProgramme
@@ -42,10 +40,8 @@ class ProgrammeManager():
         self.colourSparks = SparksProgramme(ledCount)
         self.flashes = SpheresProgramme(ledCount, shimmerAmount=1)
         self.inverseColourSparks = SparksProgramme(ledCount, propagationSpeed=-150)
-        self.fullColourNoise = ColourNoiseProgramme(ledCount, hueScale=0.0002, hueSpeed=0.02, brightnessScale=0.01, brightness=2, shimmerAmount=1)
-        self.paleNoise = ColourNoiseProgramme(ledCount, saturation=0.35, hueScale=.05, hueSpeed=.1, brightnessScale=.4, brightness=0.01)
-        self.edgeBlink = ColourNoiseProgramme(ledCount, saturation=0.2, hueScale=.05, hueSpeed=10, brightnessScale=.4, brightness=0.01)
-        self.axisNoise = AxisColourNoiseProgramme(ledCount, hueScale=0.2, hueSpeed=.01, brightnessSpeed=0.3, brightnessScale=.01, brightness=0.1)
+        self.fullColourNoise = ColourNoiseProgramme(ledCount, hueScale=0.0002, hueSpeed=0.02, brightnessScale=0.01, shimmerAmount=1)
+        self.axisNoise = AxisColourNoiseProgramme(ledCount, hueScale=0.2, hueSpeed=.01, brightnessSpeed=0.3, brightnessScale=.01)
         self.solidColour = SolidColourProgramme(ledCount)
         self.leftFrontOrb = RotatingOrbProgramme(ledCount, centre=(-100, 0, 25), pathRadius=65, hue=0.1, speed=1)
         self.leftBackOrb = RotatingOrbProgramme(ledCount, centre=(-100, 0, 0), pathRadius=30, hue=0.6, speed=-2)
@@ -56,20 +52,20 @@ class ProgrammeManager():
         self.scanLines = ScanLineProgramme(ledCount, shimmerAmount=1.5)
 
         self.programmes = [
-            self.colourSparks,
-            self.flashes,
-            # self.inverseColourSparks,
-            # self.fullColourNoise,
+            # Background
+            self.fullColourNoise,
             self.firstNoiseThreshold,
             self.secondNoiseThreshold,
-            # self.paleNoise,
-            # self.edgeBlink,
-            # self.solidColour,
-            # self.axisNoise,
-            # self.leftFrontOrb,
-            # self.leftBackOrb,
-            # self.rightFrontOrb,
-            # self.rightBackOrb,
+            self.solidColour,
+            # Effects
+            self.colourSparks,
+            self.inverseColourSparks,
+            self.flashes,
+            self.axisNoise,
+            self.leftFrontOrb,
+            self.leftBackOrb,
+            self.rightFrontOrb,
+            self.rightBackOrb,
             self.scanLines,
         ]
     
@@ -86,6 +82,20 @@ class ProgrammeManager():
         # Pre-Programme Events
         for event in events:
 
+            if event.type == EVENT_TYPES.PROG_QUIET_CLOUDS:
+                self.animator.createAnimation(self.fullColourNoise, "brightness", 0.3, 1)
+                self.animator.createAnimation(self.fullColourNoise, "shimmerAmount", 0.3, 1)
+                self.animator.createAnimation(self.solidColour, "brightness", 0, 1)
+                self.animator.createAnimation(self.firstNoiseThreshold, "brightness", 0, 1)
+                self.animator.createAnimation(self.secondNoiseThreshold, "brightness", 0, 1)
+            
+            if event.type == EVENT_TYPES.PROG_RUMBLE:
+                self.animator.createAnimation(self.fullColourNoise, "brightness", 0.6, 0.2)
+                self.animator.createAnimation(self.fullColourNoise, "shimmerAmount", 1, 1)
+                self.animator.createAnimation(self.solidColour, "brightness", 0, 1)
+                self.animator.createAnimation(self.firstNoiseThreshold, "brightness", 0, 1)
+                self.animator.createAnimation(self.secondNoiseThreshold, "brightness", 0, 1)
+
             if event.type == EVENT_TYPES.GRITTINESS:
                 level = event.params["level"]
                 # self.animator.createAnimation(self.fullColourNoise, "brightness", mapToRange(level, 0.15, 0.05), 1)
@@ -101,7 +111,6 @@ class ProgrammeManager():
             if event.type == EVENT_TYPES.PHASES_SYNC and not self.isMaster:
                 self.fullColourNoise.huePhase = event.params['fullColourNoise.huePhase']
                 self.fullColourNoise.brightnessPhase = event.params['fullColourNoise.brightnessPhase']
-                self.paleNoise.brightnessPhase = event.params['paleNoise.brightnessPhase']
                 self.axisNoise.phaseHue = event.params['axisNoise.phaseHue']
                 self.axisNoise.phaseBrightness = event.params['axisNoise.phaseBrightness']
                 self.leftFrontOrb.pathRadius = event.params['leftFrontOrb.pathRadius']
@@ -133,7 +142,6 @@ class ProgrammeManager():
                     params={
                         'fullColourNoise.huePhase': self.fullColourNoise.huePhase,
                         'fullColourNoise.brightnessPhase': self.fullColourNoise.brightnessPhase,
-                        'paleNoise.brightnessPhase': self.paleNoise.brightnessPhase,
                         'axisNoise.phaseHue': self.axisNoise.phaseHue,
                         'axisNoise.phaseBrightness': self.axisNoise.phaseBrightness,
                         'leftFrontOrb.pathRadius': self.leftFrontOrb.pathRadius,

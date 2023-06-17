@@ -18,7 +18,7 @@ class SpheresProgramme(Programme):
     def __init__(
         self,
         ledCount: int,
-        brightness=1,
+        brightness=0,
         shimmerAmount=0,
     ):
         super().__init__(ledCount)

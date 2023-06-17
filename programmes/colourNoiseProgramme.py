@@ -15,7 +15,7 @@ class ColourNoiseProgramme(Programme):
     def __init__(
             self,
             ledCount: int,
-            brightness=3,
+            brightness=0,
             saturation=1,
             hueScale=.0015,
             hueSpeed=.1,

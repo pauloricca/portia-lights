@@ -25,7 +25,7 @@ class ScanLineProgramme(Programme):
         self,
         ledCount: int,
         speed=30,
-        brightness=1,
+        brightness=0,
         trailLength=120,
         shimmerAmount=0,
         trailFalloff=0.7,

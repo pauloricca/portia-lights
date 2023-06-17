@@ -15,11 +15,16 @@ class EVENT_TYPES:
     SYNC_PHASES = 'SYNC_PHASES'
     PHASES_SYNC = 'PHASES_SYNC'
     # Mood events (get translated into programme events)
+    FAR_RUMBLE = 'FAR_RUMBLE'
+    NEAR_RUMBLE = 'NEAR_RUMBLE'
+    QUIET_SYNTHS = 'QUIET_SYNTHS'
     BOOM = 'BOOM'
     WAVE = 'WAVE'
     CALM = 'CALM'
     NERVOUS = 'NERVOUS'
     # Programme events
+    PROG_QUIET_CLOUDS = 'PROG_QUIET_CLOUDS'
+    PROG_RUMBLE = 'PROG_RUMBLE'
     SCAN_LINE = 'SCAN_LINE'
     FLASH = 'FLASH'
     SPARK = 'SPARK'
@@ -168,7 +173,19 @@ def generateProgrammeEvents(events: list[Event]):
     newEvents: list[Event] = []
 
     for event in events:
-        if event.type == EVENT_TYPES.BOOM:
+        if event.type == EVENT_TYPES.FAR_RUMBLE:
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_QUIET_CLOUDS,
+                atTime=event.atTime,
+            ))
+        
+        if event.type == EVENT_TYPES.NEAR_RUMBLE:
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_RUMBLE,
+                atTime=event.atTime,
+            ))
+
+        elif event.type == EVENT_TYPES.BOOM:
 
             # Pre-spark flash
             sparkCentre = getRandomPointInSpace()
@@ -202,7 +219,7 @@ def generateProgrammeEvents(events: list[Event]):
                 }
             ))
 
-        if event.type == EVENT_TYPES.WAVE:
+        elif event.type == EVENT_TYPES.WAVE:
             newEvents.append(Event(
                 type=EVENT_TYPES.SCAN_LINE,
                 atTime=event.atTime,
