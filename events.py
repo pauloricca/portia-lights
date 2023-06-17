@@ -18,6 +18,8 @@ class EVENT_TYPES:
     FAR_RUMBLE = 'FAR_RUMBLE'
     NEAR_RUMBLE = 'NEAR_RUMBLE'
     QUIET_SYNTHS = 'QUIET_SYNTHS'
+    # Effects
+    THUNDER = 'THUNDER'
     BOOM = 'BOOM'
     WAVE = 'WAVE'
     CALM = 'CALM'
@@ -25,6 +27,8 @@ class EVENT_TYPES:
     # Programme events
     PROG_QUIET_CLOUDS = 'PROG_QUIET_CLOUDS'
     PROG_RUMBLE = 'PROG_RUMBLE'
+    PROG_SPEED_INCREASE = 'PROG_SPEED_INCREASE'
+    PROG_SPEED_DECREASE = 'PROG_SPEED_DECREASE'
     SCAN_LINE = 'SCAN_LINE'
     FLASH = 'FLASH'
     SPARK = 'SPARK'
@@ -179,10 +183,20 @@ def generateProgrammeEvents(events: list[Event]):
                 atTime=event.atTime,
             ))
         
-        if event.type == EVENT_TYPES.NEAR_RUMBLE:
+        elif event.type == EVENT_TYPES.NEAR_RUMBLE:
             newEvents.append(Event(
                 type=EVENT_TYPES.PROG_RUMBLE,
                 atTime=event.atTime,
+            ))
+
+        elif event.type == EVENT_TYPES.THUNDER:
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_SPEED_INCREASE,
+                atTime=event.atTime,
+            ))
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_SPEED_DECREASE,
+                atTime=event.atTime + 1,
             ))
 
         elif event.type == EVENT_TYPES.BOOM:

@@ -98,6 +98,14 @@ class ProgrammeManager():
                 self.animator.createAnimation(self.solidColour, "brightness", 0, 1)
                 self.animator.createAnimation(self.firstNoiseThreshold, "brightness", 0, 1)
                 self.animator.createAnimation(self.secondNoiseThreshold, "brightness", 0, 1)
+            
+            if event.type == EVENT_TYPES.PROG_SPEED_INCREASE:
+                self.animator.createAnimation(self.fullColourNoise, "brightnessSpeed", 1.5, 0.5)
+
+            if event.type == EVENT_TYPES.PROG_SPEED_DECREASE:
+                self.animator.createAnimation(self.fullColourNoise, "brightnessSpeed", 0.2, 3)
+
+
 
             if event.type == EVENT_TYPES.GRITTINESS:
                 level = event.params["level"]
