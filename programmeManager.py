@@ -31,8 +31,8 @@ class ProgrammeManager():
     rightFrontOrb: RotatingOrbProgramme
     rightBackOrb: RotatingOrbProgramme
     solidColour: SolidColourProgramme
-    redNoiseThreshold: NoiseThresholdProgramme
-    blueNoiseThreshold: NoiseThresholdProgramme
+    firstNoiseThreshold: NoiseThresholdProgramme
+    secondNoiseThreshold: NoiseThresholdProgramme
     scanLines: ScanLineProgramme
 
     def __init__(self, ledCount: int, isMaster: bool):
@@ -51,8 +51,8 @@ class ProgrammeManager():
         self.leftBackOrb = RotatingOrbProgramme(ledCount, centre=(-100, 0, 0), pathRadius=30, hue=0.6, speed=-2)
         self.rightFrontOrb = RotatingOrbProgramme(ledCount, centre=(100, 0, 25), pathRadius=65, hue=0.1, speed=-1)
         self.rightBackOrb = RotatingOrbProgramme(ledCount, centre=(100, 0, 0), pathRadius=30, hue=0.6, speed=2)
-        self.redNoiseThreshold = NoiseThresholdProgramme(ledCount, hue=1, shimmerAmount=0.5)
-        self.blueNoiseThreshold = NoiseThresholdProgramme(ledCount, hue=0.6, phase=30, shimmerAmount=0.5)
+        self.firstNoiseThreshold = NoiseThresholdProgramme(ledCount, hue=1, shimmerAmount=0.5)
+        self.secondNoiseThreshold = NoiseThresholdProgramme(ledCount, hue=0.6, phase=30, shimmerAmount=0.5)
         self.scanLines = ScanLineProgramme(ledCount, shimmerAmount=1.5)
 
         self.programmes = [
@@ -60,8 +60,8 @@ class ProgrammeManager():
             self.flashes,
             # self.inverseColourSparks,
             # self.fullColourNoise,
-            self.redNoiseThreshold,
-            self.blueNoiseThreshold,
+            self.firstNoiseThreshold,
+            self.secondNoiseThreshold,
             # self.paleNoise,
             # self.edgeBlink,
             # self.solidColour,
@@ -108,8 +108,8 @@ class ProgrammeManager():
                 self.leftBackOrb.pathRadius = event.params['leftBackOrb.pathRadius']
                 self.rightFrontOrb.pathRadius = event.params['rightFrontOrb.pathRadius']
                 self.rightBackOrb.pathRadius = event.params['rightBackOrb.pathRadius']
-                self.redNoiseThreshold.phase = event.params['redNoiseThreshold.phase']
-                self.blueNoiseThreshold.phase = event.params['blueNoiseThreshold.phase']
+                self.firstNoiseThreshold.phase = event.params['firstNoiseThreshold.phase']
+                self.secondNoiseThreshold.phase = event.params['secondNoiseThreshold.phase']
 
         
         self.animator.animate()
@@ -140,8 +140,8 @@ class ProgrammeManager():
                         'leftBackOrb.pathRadius': self.leftBackOrb.pathRadius,
                         'rightFrontOrb.pathRadius': self.rightFrontOrb.pathRadius,
                         'rightBackOrb.pathRadius': self.rightBackOrb.pathRadius,
-                        'redNoiseThreshold.phase': self.redNoiseThreshold.phase,
-                        'blueNoiseThreshold.phase': self.blueNoiseThreshold.phase,
+                        'firstNoiseThreshold.phase': self.firstNoiseThreshold.phase,
+                        'secondNoiseThreshold.phase': self.secondNoiseThreshold.phase,
                     },
                 )])
         
