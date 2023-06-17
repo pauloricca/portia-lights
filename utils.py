@@ -7,20 +7,21 @@ from colorsys import hsv_to_rgb
 from random import random
 from constants import *
 
-def _playAudioFileSync(file):
-    playCommand = 'aplay' if PLATFORM == 'Linux' else 'afplay'
+def __getSoundCommand():
+    return 'aplay' if PLATFORM == 'Linux' else 'afplay'
+
+def __playAudioFileSync(file):
     stopAudio()
-    try: subprocess.call((playCommand, file), stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
+    try: subprocess.call((__getSoundCommand(), file), stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
     except Exception as e: print('Error playing audio: ' + str(e))
 
 def playAudio(variant = ''):
     filePath = getAbsolutePath(AUDIO_FILE if variant == '' else AUDIO_FILE.replace('.wav', '.' + variant + '.wav'))
-    t = threading.Thread(target=_playAudioFileSync, args=(filePath,), daemon=True)
+    t = threading.Thread(target=__playAudioFileSync, args=(filePath,), daemon=True)
     t.start()
 
 def stopAudio():
-    playCommand = 'aplay' if PLATFORM == 'Linux' else 'afplay'
-    try: subprocess.call(("killall", playCommand), stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
+    try: subprocess.call(("killall", __getSoundCommand()), stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
     except: pass
 
 def clamp(n, minn, maxn):
