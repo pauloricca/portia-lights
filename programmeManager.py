@@ -51,8 +51,8 @@ class ProgrammeManager():
         self.leftBackOrb = RotatingOrbProgramme(ledCount, centre=(-100, 0, 0), pathRadius=30, hue=0.6, speed=-2)
         self.rightFrontOrb = RotatingOrbProgramme(ledCount, centre=(100, 0, 25), pathRadius=65, hue=0.1, speed=-1)
         self.rightBackOrb = RotatingOrbProgramme(ledCount, centre=(100, 0, 0), pathRadius=30, hue=0.6, speed=2)
-        self.redNoiseThreshold = NoiseThresholdProgramme(ledCount, hue=1)
-        self.blueNoiseThreshold = NoiseThresholdProgramme(ledCount, hue=0.7, phase=30)
+        self.redNoiseThreshold = NoiseThresholdProgramme(ledCount, hue=1, shimmerAmount=0.5)
+        self.blueNoiseThreshold = NoiseThresholdProgramme(ledCount, hue=0.6, phase=30, shimmerAmount=0.5)
         self.scanLines = ScanLineProgramme(ledCount, shimmerAmount=1.5)
 
         self.programmes = [

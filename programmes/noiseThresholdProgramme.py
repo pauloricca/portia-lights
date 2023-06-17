@@ -22,7 +22,8 @@ class NoiseThresholdProgramme(Programme):
             speed=.15,
             thresholdMin=.3,
             thresholdMax=.6,
-            phase=0
+            phase=0,
+            shimmerAmount=0
         ):
         super().__init__(ledCount)
         self.brightness = brightness
@@ -33,6 +34,7 @@ class NoiseThresholdProgramme(Programme):
         self.phase = phase
         self.thresholdMin = thresholdMin
         self.thresholdMax = thresholdMax
+        self.shimmerAmount = shimmerAmount
     
     def step(
             self,
@@ -58,3 +60,5 @@ class NoiseThresholdProgramme(Programme):
             led[0] = rgb[0] * 255
             led[1] = rgb[1] * 255
             led[2] = rgb[2] * 255
+    
+        self.shimmer(frameTime)
