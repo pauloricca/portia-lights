@@ -108,7 +108,7 @@ class Master:
                     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                         try:
                             s.connect((slave.ip, self.port))
-                            # self.isVerbose and print("sending message '" + message + "' to " + slave.ip)
+                            self.isVerbose and print("sending message '" + message + "' to " + slave.ip)
                             s.sendall(str.encode(message))
                             s.close()
                             slave.lastSeenAt = time.time()

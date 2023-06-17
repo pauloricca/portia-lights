@@ -81,6 +81,7 @@ class ProgrammeManager():
 
         # Pre-Programme Events
         for event in events:
+            print('Will process programme event: ' + event.type)
 
             if event.type == EVENT_TYPES.PROG_QUIET_CLOUDS:
                 self.animator.createAnimation(self.fullColourNoise, "brightness", 0.3, 1)
