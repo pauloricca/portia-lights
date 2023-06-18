@@ -1,8 +1,8 @@
 import time
-import keyboard
 
 from constants import *
 from config import config, loadConfig
+from eventProgrammer import eventProgrammer
 from networking.slave import Slave
 from networking.master import Master
 from events import EventManager
@@ -53,8 +53,8 @@ class App:
         if (isConfigInvalid):
             self.ledCoords = config(self.renderer, ledCount)
 
-        self.eventManager = EventManager(self.isMaster)
         self.programmeManager = ProgrammeManager(ledCount, self.isMaster)
+        self.eventManager = EventManager(self.isMaster, eventProgrammer)
 
         while True: self.mainLoop()
     
@@ -75,24 +75,17 @@ class App:
         else:
             # Add events received from master
             self.eventManager.pushEvents(self.slave.popEvents())
-        
-        # Enter Config when pressing Enter key
-        # if keyboard.is_pressed("enter"): self.ledCoords = config(self.renderer, len(self.ledCoords))
 
-        try:
-            self.renderer.render(
-                self.programmeManager.renderProgrammes(
-                    self.eventManager.popEvents(),
-                    self.ledCoords,
-                    self.frameTime,
-                    self.eventManager
-                ),
-                self.ledCoords
-            )
-        except Exception as e:
-            print("Error Rendering.")
-            print(type(e).__name__ + ': ' + str(e))
-
+        self.renderer.render(
+            self.programmeManager.renderProgrammes(
+                self.eventManager.popEvents(),
+                self.ledCoords,
+                self.frameTime,
+                self.eventManager
+            ),
+            self.ledCoords
+        )
+            
         # TODO: fix target fps sleep time
         # renderTime = time.time() - self.thisFrameTime
         # sleepTime = renderTime - (1 / TARGET_FPS)

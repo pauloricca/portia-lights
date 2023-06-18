@@ -1,8 +1,9 @@
 from dataclasses import dataclass, field
 import time
 import copy
+from typing import Callable
 from constants import *
-from utils import getAbsolutePath, getRandomColour, getRandomPointInSpace, playAudio
+from utils import getAbsolutePath, playAudio
 import json
 import sys
 
@@ -29,6 +30,7 @@ class EVENT_TYPES:
     PROG_RUMBLE = 'PROG_RUMBLE'
     PROG_SPEED_INCREASE = 'PROG_SPEED_INCREASE'
     PROG_SPEED_DECREASE = 'PROG_SPEED_DECREASE'
+    PROG_RAIN = 'PROG_RAIN' # duration attack release
     SCAN_LINE = 'SCAN_LINE'
     FLASH = 'FLASH'
     SPARK = 'SPARK'
@@ -85,7 +87,7 @@ class EventSequence:
                     elif i == 1: eventType = part
                     else:
                         paramParts = part.split('=')
-                        params[paramParts[0]] = paramParts[1]
+                        params[paramParts[0]] = float(paramParts[1])
 
                 if eventTime >= 0:
                     self.events.append(Event(
@@ -96,14 +98,14 @@ class EventSequence:
 
     
     # Gets a copy of the events with timestamps relative to the current time
-    def getEvents(self):
+    def getEvents(self, eventProgrammer: Callable):
         currentTime = time.time()
         events: list[Event] = []
         for event in self.events:
             eventCopy = copy.deepcopy(event)
             eventCopy.atTime += currentTime
             events.append(eventCopy)
-        return generateProgrammeEvents(events)
+        return eventProgrammer(events)
 
 
 class EventManager:
@@ -111,14 +113,16 @@ class EventManager:
     slaveEventQueue: list[Event]
     mainSequence: EventSequence
     isMaster: bool
+    eventManager: Callable
 
-    def __init__(self, isMaster: bool):
+    def __init__(self, isMaster: bool, eventProgrammer: Callable):
         self.isMaster = isMaster
+        self.eventProgrammer = eventProgrammer
 
         if self.isMaster:
             self.mainSequence = EventSequence()
             self.mainSequence.loadFromFile(getAbsolutePath(MAIN_SEQUENCE_FILE))
-            self.localEventQueue = self.mainSequence.getEvents()
+            self.localEventQueue = self.mainSequence.getEvents(self.eventProgrammer)
             self.slaveEventQueue = []
             for event in self.localEventQueue:
                 self.slaveEventQueue.append(event)
@@ -140,7 +144,7 @@ class EventManager:
                         playAudio()
                     pass
                 elif event.type == EVENT_TYPES.PLAY_MAIN_SEQUENCE and not popFromSlaveQueue:
-                    sequenceEvents = self.mainSequence.getEvents()
+                    sequenceEvents = self.mainSequence.getEvents(self.eventProgrammer)
                     for newEvent in sequenceEvents:
                         futureEvents.append(newEvent)
                     pass
@@ -172,104 +176,3 @@ class EventManager:
                 try: self.slaveEventQueue.remove(event)
                 except: pass
 
-# Go through the basic sequence events and generate programme events
-def generateProgrammeEvents(events: list[Event]):
-    newEvents: list[Event] = []
-
-    for event in events:
-        if event.type == EVENT_TYPES.FAR_RUMBLE:
-            newEvents.append(Event(
-                type=EVENT_TYPES.PROG_QUIET_CLOUDS,
-                atTime=event.atTime,
-            ))
-        
-        elif event.type == EVENT_TYPES.NEAR_RUMBLE:
-            newEvents.append(Event(
-                type=EVENT_TYPES.PROG_RUMBLE,
-                atTime=event.atTime,
-            ))
-
-        elif event.type == EVENT_TYPES.THUNDER:
-            newEvents.append(Event(
-                type=EVENT_TYPES.PROG_SPEED_INCREASE,
-                atTime=event.atTime,
-            ))
-            newEvents.append(Event(
-                type=EVENT_TYPES.PROG_SPEED_DECREASE,
-                atTime=event.atTime + 1,
-            ))
-
-        elif event.type == EVENT_TYPES.BOOM:
-
-            # Pre-spark flash
-            sparkCentre = getRandomPointInSpace()
-            newEvents.append(Event(
-                type=EVENT_TYPES.FLASH,
-                atTime=event.atTime - 1,
-                params={
-                    "centre": sparkCentre,
-                    "colour": (255, 255, 255),
-                    "radius": 30,
-                    "life": 1,
-                }
-            ))
-            newEvents.append(Event(
-                type=EVENT_TYPES.SPARK,
-                atTime=event.atTime,
-                params={
-                    "centre": sparkCentre,
-                    "colour": getRandomColour(1),
-                }
-            ))
-
-            newEvents.append(Event(
-                type=EVENT_TYPES.FLASH,
-                atTime=event.atTime,
-                params={
-                    "centre": getRandomPointInSpace(),
-                    "colour": (255, 255, 255),
-                    "radius": 70,
-                    "life": 1,
-                }
-            ))
-
-        elif event.type == EVENT_TYPES.WAVE:
-            newEvents.append(Event(
-                type=EVENT_TYPES.SCAN_LINE,
-                atTime=event.atTime,
-                params={
-                    "colour": getRandomColour(1),
-                    "axis": 1,
-                    "direction": -1,
-                }
-            ))
-        
-        elif event.type == EVENT_TYPES.CALM:
-            newEvents.append(Event(
-                type=EVENT_TYPES.GRITTINESS,
-                atTime=event.atTime,
-                params={ "level": 0 }
-            ))
-            newEvents.append(Event(
-                type=EVENT_TYPES.BACKGROUND_COLOUR,
-                atTime=event.atTime,
-                params={ "brightness": 0.1, "colour": getRandomColour(1), "transition": 1 }
-            ))
-        
-        elif event.type == EVENT_TYPES.NERVOUS:
-            newEvents.append(Event(
-                type=EVENT_TYPES.GRITTINESS,
-                atTime=event.atTime,
-                params={ "level": 1 }
-            ))
-            newEvents.append(Event(
-                type=EVENT_TYPES.BACKGROUND_COLOUR,
-                atTime=event.atTime,
-                params={ "brightness": 0, "transition": 0.2 }
-            ))
-        
-        else:
-            # Add event as is
-            newEvents.append(event)
-    
-    return newEvents

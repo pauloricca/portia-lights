@@ -58,9 +58,7 @@ class SparksProgramme(Programme):
             spark.life -= frameTime
             spark.lastRadius = spark.radius
             spark.radius += frameTime * self.propagationSpeed
-
-        for i, led in enumerate(self.leds):
-            for spark in self.sparks:
+            for i, led in enumerate(self.leds):
                 distanceSquared = getDistanceSquared(ledCoords[i], spark.centre)
                 radiusSquared = spark.radius**2
                 lastRadiusSquared = spark.lastRadius**2
