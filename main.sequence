@@ -1,11 +1,10 @@
 0 SYNC_PHASES
 0 PLAY_AUDIO
-#  3 FAR_RUMBLE
-# test event
-6 PROG_RAIN duration=10 attack=2 release=5
-#  18 THUNDER
-#  52 NEAR_RUMBLE
-#  80 PROG_RAIN duration=93 attack=20 release=5
+3 FAR_RUMBLE
+18 THUNDER
+53 THUNDER
+53 NEAR_RUMBLE
+73 PROG_RAIN duration=93 attack=20 release=5
 155 QUIET_SYNTHS
 314 ORGAN
 523.5 BASS

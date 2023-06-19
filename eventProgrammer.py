@@ -25,7 +25,7 @@ def eventProgrammer(events: list[Event]):
             ))
             newEvents.append(Event(
                 type=EVENT_TYPES.PROG_SPEED_DECREASE,
-                atTime=event.atTime + 1,
+                atTime=event.atTime + 0.7,
             ))
 
         elif event.type == EVENT_TYPES.BOOM:
@@ -33,7 +33,7 @@ def eventProgrammer(events: list[Event]):
             # Pre-spark flash
             sparkCentre = getRandomPointInSpace()
             newEvents.append(Event(
-                type=EVENT_TYPES.FLASH,
+                type=EVENT_TYPES.PROG_FLASH,
                 atTime=event.atTime - 1,
                 params={
                     "centre": sparkCentre,
@@ -43,7 +43,7 @@ def eventProgrammer(events: list[Event]):
                 }
             ))
             newEvents.append(Event(
-                type=EVENT_TYPES.SPARK,
+                type=EVENT_TYPES.PROG_SPARK,
                 atTime=event.atTime,
                 params={
                     "centre": sparkCentre,
@@ -52,7 +52,7 @@ def eventProgrammer(events: list[Event]):
             ))
 
             newEvents.append(Event(
-                type=EVENT_TYPES.FLASH,
+                type=EVENT_TYPES.PROG_FLASH,
                 atTime=event.atTime,
                 params={
                     "centre": getRandomPointInSpace(),
@@ -64,7 +64,7 @@ def eventProgrammer(events: list[Event]):
 
         elif event.type == EVENT_TYPES.WAVE:
             newEvents.append(Event(
-                type=EVENT_TYPES.SCAN_LINE,
+                type=EVENT_TYPES.PROG_SCAN_LINE,
                 atTime=event.atTime,
                 params={
                     "colour": getRandomColour(1),
@@ -80,7 +80,7 @@ def eventProgrammer(events: list[Event]):
                 params={ "level": 0 }
             ))
             newEvents.append(Event(
-                type=EVENT_TYPES.BACKGROUND_COLOUR,
+                type=EVENT_TYPES.PROG_BACKGROUND_COLOUR,
                 atTime=event.atTime,
                 params={ "brightness": 0.1, "colour": getRandomColour(1), "transition": 1 }
             ))
@@ -92,7 +92,7 @@ def eventProgrammer(events: list[Event]):
                 params={ "level": 1 }
             ))
             newEvents.append(Event(
-                type=EVENT_TYPES.BACKGROUND_COLOUR,
+                type=EVENT_TYPES.PROG_BACKGROUND_COLOUR,
                 atTime=event.atTime,
                 params={ "brightness": 0, "transition": 0.2 }
             ))

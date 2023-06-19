@@ -1,4 +1,5 @@
 import time
+from constants import EVENTS_BOUNDING_BOX
 from events import EVENT_TYPES
 from dataclasses import dataclass
 
@@ -40,7 +41,7 @@ class SpheresProgramme(Programme):
         currentTime = time.time()
 
         for event in events:
-            if event.type == EVENT_TYPES.FLASH:
+            if event.type == EVENT_TYPES.PROG_FLASH:
                 self.spheres.append(Sphere(
                     centre = event.params["centre"],
                     radius = event.params["radius"],
@@ -55,33 +56,45 @@ class SpheresProgramme(Programme):
 
         # spheres life cycle
         for sphere in self.spheres:
-            if sphere.startTime >= currentTime:
+            if sphere.startTime <= currentTime:
                 sphere.life -= frameTime
+                sphere.centre = [sphere.centre[i] + pos * frameTime for i, pos in enumerate(sphere.velocity)]
                 for i, led in enumerate(self.leds):
-                    distanceSquared = getDistanceSquared(ledCoords[i], sphere.centre)
-                    if distanceSquared < sphere.radius**2 :
-                        led[0] = sphere.colour[0]
-                        led[1] = sphere.colour[1]
-                        led[2] = sphere.colour[2]
+                    ## Optimised collision detection
+                    if (
+                        ledCoords[i][0] >= sphere.centre[0] - sphere.radius and 
+                        ledCoords[i][0] <= sphere.centre[0] + sphere.radius and
+                        ledCoords[i][1] >= sphere.centre[1] - sphere.radius and 
+                        ledCoords[i][1] <= sphere.centre[1] + sphere.radius and
+                        ledCoords[i][2] >= sphere.centre[2] - sphere.radius and 
+                        ledCoords[i][2] <= sphere.centre[2] + sphere.radius
+                    ):
+                        distanceSquared = getDistanceSquared(ledCoords[i], sphere.centre)
+                        if distanceSquared < sphere.radius**2 :
+                            led[0] = sphere.colour[0] * self.brightness
+                            led[1] = sphere.colour[1] * self.brightness
+                            led[2] = sphere.colour[2] * self.brightness
         
         self.shimmer(frameTime)
 
 
     def startRain(self, duration: float):
-        dropRadius = 100
-        dropFrequency = 5 # Drops per second
+        dropRadius = 10
+        dropFrequency = 20 # Drops per second
         numberOfDrops = int(duration * dropFrequency)
         intervalBetweenDrops = duration / numberOfDrops
         currentTime = time.time()
 
-        for _ in range(numberOfDrops):
-            startTime = currentTime + intervalBetweenDrops
+        for i in range(numberOfDrops):
+            startTime = currentTime + intervalBetweenDrops * i
+            randomPoint = getRandomPointInSpace()
+            startPoint = (randomPoint[0], EVENTS_BOUNDING_BOX[1][1], randomPoint[2])
             self.spheres.append(Sphere(
-                centre = getRandomPointInSpace(),
+                centre = startPoint,
                 radius = dropRadius,
                 colour = (255, 255, 255),
                 life = 5,
-                startTime = 0, # startTime Paulo
-                velocity = (0, -1, 0)
+                startTime = startTime,
+                velocity = (0, -140, 0)
             ))
 

@@ -49,7 +49,7 @@ class ScanLineProgramme(Programme):
         self.clear()
 
         for event in events:
-            if event.type == EVENT_TYPES.SCAN_LINE:
+            if event.type == EVENT_TYPES.PROG_SCAN_LINE:
                 self.scanLines.append(ScanLine(
                     axis = event.params["axis"],
                     direction = event.params["direction"],

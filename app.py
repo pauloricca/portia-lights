@@ -62,7 +62,7 @@ class App:
         self.thisFrameTime = time.time()
         self.frameTime = self.thisFrameTime - self.lastFrameTime
         self.lastFrameTime = self.thisFrameTime
-        #print(str(int(1/self.frameTime)) + "fps")
+        print(str(int(1/self.frameTime)) + "fps")
 
         ## Average frame time
         # self.totalFrameTime += self.frameTime
@@ -93,4 +93,4 @@ class App:
         # if sleepTime > 0: time.sleep(sleepTime)
 
         # Paulo comment sleep
-        time.sleep(0.01)
+        # time.sleep(0.01)

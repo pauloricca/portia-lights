@@ -58,9 +58,9 @@ class VirtualRenderer(Renderer):
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
 
         for i in range(len(ledCoords)):
-            r = leds[i][0] / 255
-            g = leds[i][1] / 255
-            b = leds[i][2] / 255
+            r = leds[i][0]
+            g = leds[i][1]
+            b = leds[i][2]
 
             if r < 0: r = 0
             if g < 0: g = 0
@@ -95,6 +95,11 @@ class VirtualRenderer(Renderer):
             if r > 255: r = 255
             if g > 255: g = 255
             if b > 255: b = 255
+
+            # Apply 0.5 exponent to get a brightness curve closer to the LEDs (as it's not linear like computer screens)
+            r = (r / 255) ** 0.5
+            g = (g / 255) ** 0.5
+            b = (b / 255) ** 0.5
 
             glPushMatrix()
             glTranslatef(ledCoords[i][0], ledCoords[i][1], ledCoords[i][2])

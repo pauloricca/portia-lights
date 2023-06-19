@@ -39,23 +39,25 @@ class ProgrammeManager():
         self.animator = Animator()
         self.isMaster = isMaster
 
-        self.colourSparks = SparksProgramme(ledCount)
-        self.flashes = SpheresProgramme(ledCount, shimmerAmount=1)
-        self.rain = SpheresProgramme(ledCount, shimmerAmount=0.5)
-        self.inverseColourSparks = SparksProgramme(ledCount, propagationSpeed=-150)
+        # Backgrounds
         self.fullColourNoise = ColourNoiseProgramme(ledCount, hueScale=0.0002, hueSpeed=0.02, brightnessScale=0.01, shimmerAmount=1)
-        self.axisNoise = AxisColourNoiseProgramme(ledCount, hueScale=0.2, hueSpeed=.01, brightnessSpeed=0.3, brightnessScale=.01)
+        self.firstNoiseThreshold = NoiseThresholdProgramme(ledCount, hue=1, shimmerAmount=0.5)
+        self.secondNoiseThreshold = NoiseThresholdProgramme(ledCount, hue=0.6, phase=30, shimmerAmount=0.5)
         self.solidColour = SolidColourProgramme(ledCount)
+        # Effects
+        self.colourSparks = SparksProgramme(ledCount)
+        self.inverseColourSparks = SparksProgramme(ledCount, propagationSpeed=-150)
+        self.flashes = SpheresProgramme(ledCount, shimmerAmount=1)
+        self.axisNoise = AxisColourNoiseProgramme(ledCount, hueScale=0.2, hueSpeed=.01, brightnessSpeed=0.3, brightnessScale=.01)
         self.leftFrontOrb = RotatingOrbProgramme(ledCount, centre=(-100, 0, 25), pathRadius=65, hue=0.1, speed=1)
         self.leftBackOrb = RotatingOrbProgramme(ledCount, centre=(-100, 0, 0), pathRadius=30, hue=0.6, speed=-2)
         self.rightFrontOrb = RotatingOrbProgramme(ledCount, centre=(100, 0, 25), pathRadius=65, hue=0.1, speed=-1)
         self.rightBackOrb = RotatingOrbProgramme(ledCount, centre=(100, 0, 0), pathRadius=30, hue=0.6, speed=2)
-        self.firstNoiseThreshold = NoiseThresholdProgramme(ledCount, hue=1, shimmerAmount=0.5)
-        self.secondNoiseThreshold = NoiseThresholdProgramme(ledCount, hue=0.6, phase=30, shimmerAmount=0.5)
         self.scanLines = ScanLineProgramme(ledCount, shimmerAmount=1.5)
+        self.rain = SpheresProgramme(ledCount, shimmerAmount=0.5)
 
         self.programmes = [
-            # Background
+            # Backgrounds
             self.fullColourNoise,
             self.firstNoiseThreshold,
             self.secondNoiseThreshold,
@@ -83,8 +85,7 @@ class ProgrammeManager():
         # Holds pre-rendered pixel rgb values, from 0 to 500 (0: black, 255: full saturation, 500: white)
         leds: list[list] = getBlankLEDsBuffer(len(ledCoords))
 
-        
-        # Pre-Programme Events
+        # Process programme events
         for event in events:
             print('Will process programme event: ' + event.type)
 
@@ -92,7 +93,7 @@ class ProgrammeManager():
 
                 if event.type == EVENT_TYPES.PROG_QUIET_CLOUDS:
                     self.animator.createAnimation(self.fullColourNoise, "brightness", 0.3, 1)
-                    self.animator.createAnimation(self.fullColourNoise, "hueCentre", 0.3, 1)
+                    self.animator.createAnimation(self.fullColourNoise, "hueCentre", 0.6, 1)
                     self.animator.createAnimation(self.fullColourNoise, "shimmerAmount", 0.3, 1)
                     self.animator.createAnimation(self.solidColour, "brightness", 0, 1)
                     self.animator.createAnimation(self.firstNoiseThreshold, "brightness", 0, 1)
@@ -110,7 +111,7 @@ class ProgrammeManager():
                     self.animator.createAnimation(self.fullColourNoise, "brightnessSpeed", 2, 0.2)
 
                 if event.type == EVENT_TYPES.PROG_SPEED_DECREASE:
-                    self.animator.createAnimation(self.fullColourNoise, "brightnessSpeed", 0.2, 3)
+                    self.animator.createAnimation(self.fullColourNoise, "brightnessSpeed", 0.2, 2)
                 
                 if event.type == EVENT_TYPES.PROG_RAIN:
                     duration = event.params["duration"]
@@ -126,7 +127,7 @@ class ProgrammeManager():
                     # self.animator.createAnimation(self.fullColourNoise, "brightness", mapToRange(level, 0.15, 0.05), 1)
                     self.animator.createAnimation(self.edgeBlink, "brightness", mapToRange(level, 0.004, 0.05), 1)
                 
-                if event.type == EVENT_TYPES.BACKGROUND_COLOUR:
+                if event.type == EVENT_TYPES.PROG_BACKGROUND_COLOUR:
                     brightness = event.params["brightness"]
                     transition = event.params["transition"]
                     if "colour" in event.params:
@@ -165,7 +166,7 @@ class ProgrammeManager():
                 traceback.print_exc()
         
         try:
-            # Post-programme Events
+            # Raise phase sync event
             for event in events:
                 if event.type == EVENT_TYPES.SYNC_PHASES and self.isMaster:
                     eventManager.pushEvents([Event(

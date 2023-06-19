@@ -42,7 +42,7 @@ class SparksProgramme(Programme):
         super().fade(frameTime * self.fadeByTime)
 
         for event in events:
-            if event.type == EVENT_TYPES.SPARK:
+            if event.type == EVENT_TYPES.PROG_SPARK:
                 self.sparks.append(Spark(
                     centre = event.params["centre"],
                     colour = event.params["colour"],
