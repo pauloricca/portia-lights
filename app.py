@@ -62,7 +62,9 @@ class App:
         self.thisFrameTime = time.time()
         self.frameTime = self.thisFrameTime - self.lastFrameTime
         self.lastFrameTime = self.thisFrameTime
-        print(str(int(1/self.frameTime)) + "fps")
+
+        # Print FPS
+        # print(str(int(1/self.frameTime)) + "fps")
 
         ## Average frame time
         # self.totalFrameTime += self.frameTime

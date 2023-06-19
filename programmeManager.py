@@ -18,6 +18,7 @@ from programmes.solidColourProgramme import SolidColourProgramme
 class ProgrammeManager():
     animator: Animator
     programmes: list[Programme]
+    backgroundProgrammes: list[Programme]
     isMaster: bool
 
     colourSparks: SparksProgramme
@@ -56,12 +57,15 @@ class ProgrammeManager():
         self.scanLines = ScanLineProgramme(ledCount, shimmerAmount=1.5)
         self.rain = SpheresProgramme(ledCount, shimmerAmount=0.5)
 
-        self.programmes = [
-            # Backgrounds
+        self.backgroundProgrammes = [
             self.fullColourNoise,
             self.firstNoiseThreshold,
             self.secondNoiseThreshold,
             self.solidColour,
+        ]
+
+        self.programmes = [
+            *self.backgroundProgrammes,
             # Effects
             self.colourSparks,
             self.inverseColourSparks,
@@ -74,6 +78,12 @@ class ProgrammeManager():
             self.scanLines,
             self.rain,
         ]
+    
+    def getBackgroundProgrammesOtherThan(self, programme: Programme):
+        return [otherProgramme for otherProgramme in self.backgroundProgrammes if otherProgramme != programme]
+
+    def getActiveBackgroundProgrammes(self):
+        return [programme for programme in self.backgroundProgrammes if programme.brightness > 0]
     
     def renderProgrammes(
             self,
@@ -95,17 +105,26 @@ class ProgrammeManager():
                     self.animator.createAnimation(self.fullColourNoise, "brightness", 0.3, 1)
                     self.animator.createAnimation(self.fullColourNoise, "hueCentre", 0.6, 1)
                     self.animator.createAnimation(self.fullColourNoise, "shimmerAmount", 0.3, 1)
-                    self.animator.createAnimation(self.solidColour, "brightness", 0, 1)
-                    self.animator.createAnimation(self.firstNoiseThreshold, "brightness", 0, 1)
-                    self.animator.createAnimation(self.secondNoiseThreshold, "brightness", 0, 1)
+                    for programme in self.getBackgroundProgrammesOtherThan(self.fullColourNoise):
+                        self.animator.createAnimation(programme, "brightness", 0, 1)
+                
+                if event.type == EVENT_TYPES.PROG_BREATHING:
+                    breathingStart =  event.atTime
+                    breathingEvery = event.params["every"]
+                    breathingCount = event.params["count"]
+                    breathLength = event.params["length"]
+                    activeBackgroundProgrammes = self.getActiveBackgroundProgrammes()
+                    for i in range(int(breathingCount)):
+                        for programme in activeBackgroundProgrammes:
+                            self.animator.createAnimation(programme, "brightness", 0.8, 0.5, breathingStart + i * breathingEvery, 0.3)
+                            self.animator.createAnimation(programme, "brightness", 0.3, 1, breathLength + breathingStart + i * breathingEvery, 0.8)
                 
                 if event.type == EVENT_TYPES.PROG_RUMBLE:
                     self.animator.createAnimation(self.fullColourNoise, "brightness", 1.5, 0.2)
                     self.animator.createAnimation(self.fullColourNoise, "hueCentre", 0.15, 1)
                     self.animator.createAnimation(self.fullColourNoise, "shimmerAmount", 1, 1)
-                    self.animator.createAnimation(self.solidColour, "brightness", 0, 1)
-                    self.animator.createAnimation(self.firstNoiseThreshold, "brightness", 0, 1)
-                    self.animator.createAnimation(self.secondNoiseThreshold, "brightness", 0, 1)
+                    for programme in self.getBackgroundProgrammesOtherThan(self.fullColourNoise):
+                        self.animator.createAnimation(programme, "brightness", 0, 1)
                 
                 if event.type == EVENT_TYPES.PROG_SPEED_INCREASE:
                     self.animator.createAnimation(self.fullColourNoise, "brightnessSpeed", 2, 0.2)
@@ -120,7 +139,7 @@ class ProgrammeManager():
                     self.rain.brightness = 0
                     self.rain.startRain(duration)
                     self.animator.createAnimation(self.rain, "brightness", 1, attack)
-                    self.animator.createAnimation(self.rain, "brightness", 0, release, time.time()+duration-release, 1)
+                    self.animator.createAnimation(self.rain, "brightness", 0, release, event.atTime+duration-release, 1)
 
                 if event.type == EVENT_TYPES.GRITTINESS:
                     level = event.params["level"]
