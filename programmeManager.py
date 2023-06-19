@@ -126,11 +126,9 @@ class ProgrammeManager():
                     for programme in self.getBackgroundProgrammesOtherThan(self.fullColourNoise):
                         self.animator.createAnimation(programme, "brightness", 0, 1)
                 
-                if event.type == EVENT_TYPES.PROG_SPEED_INCREASE:
-                    self.animator.createAnimation(self.fullColourNoise, "brightnessSpeed", 2, 0.2)
-
-                if event.type == EVENT_TYPES.PROG_SPEED_DECREASE:
-                    self.animator.createAnimation(self.fullColourNoise, "brightnessSpeed", 0.2, 2)
+                if event.type == EVENT_TYPES.PROG_SPEED_CHANGE:
+                    targetSpeed = self.fullColourNoise.brightnessSpeed * event.params["factor"]
+                    self.animator.createAnimation(self.fullColourNoise, "brightnessSpeed", targetSpeed, event.params["duration"])
                 
                 if event.type == EVENT_TYPES.PROG_RAIN:
                     duration = event.params["duration"]

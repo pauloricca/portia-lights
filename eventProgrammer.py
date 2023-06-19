@@ -20,12 +20,20 @@ def eventProgrammer(events: list[Event]):
 
         elif event.type == EVENT_TYPES.THUNDER:
             newEvents.append(Event(
-                type=EVENT_TYPES.PROG_SPEED_INCREASE,
+                type=EVENT_TYPES.PROG_SPEED_CHANGE,
                 atTime=event.atTime,
+                params={
+                    "factor": 10,
+                    "duration": 0.2,
+                },
             ))
             newEvents.append(Event(
-                type=EVENT_TYPES.PROG_SPEED_DECREASE,
+                type=EVENT_TYPES.PROG_SPEED_CHANGE,
                 atTime=event.atTime + 0.7,
+                params={
+                    "factor": 0.1,
+                    "duration": 2,
+                },
             ))
 
         elif event.type == EVENT_TYPES.BOOM:
