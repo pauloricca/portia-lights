@@ -11,11 +11,27 @@ def eventProgrammer(events: list[Event]):
                 type=EVENT_TYPES.PROG_QUIET_CLOUDS,
                 atTime=event.atTime,
             ))
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_BACKGROUND_COLOUR,
+                atTime=event.atTime,
+                params={
+                    "hue": 0.6,
+                    "ramp": 2,
+                }
+            ))
         
         elif event.type == EVENT_TYPES.NEAR_RUMBLE:
             newEvents.append(Event(
                 type=EVENT_TYPES.PROG_RUMBLE,
                 atTime=event.atTime,
+            ))
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_BACKGROUND_COLOUR,
+                atTime=event.atTime - 3,
+                params={
+                    "hue": 0.15,
+                    "ramp": 6,
+                }
             ))
 
         elif event.type == EVENT_TYPES.THUNDER:
@@ -24,20 +40,58 @@ def eventProgrammer(events: list[Event]):
                 atTime=event.atTime,
                 params={
                     "factor": 10,
-                    "duration": 0.2,
+                    "ramp": 0.2,
                 },
+            ))
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_BACKGROUND_COLOUR,
+                atTime=event.atTime,
+                params={
+                    "saturation": 0.2,
+                    "ramp": 0.2,
+                }
             ))
             newEvents.append(Event(
                 type=EVENT_TYPES.PROG_SPEED_CHANGE,
                 atTime=event.atTime + 0.7,
                 params={
                     "factor": 0.1,
-                    "duration": 2,
+                    "ramp": 2,
                 },
             ))
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_BACKGROUND_COLOUR,
+                atTime=event.atTime + 0.7,
+                params={
+                    "saturation": 1,
+                    "ramp": 2,
+                }
+            ))
+
+        elif event.type == EVENT_TYPES.RHYTHMICAL_SYNTHS:
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_FAR_ORBS,
+                atTime=event.atTime,
+                params={
+                    "hue": 0.5,
+                    "brightness": 1,
+                    "ramp": 15,
+                }
+            ))
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_NEAR_ORBS,
+                atTime=event.atTime + 5,
+                params={
+                    "hue": 0.3,
+                    "brightness": 1,
+                    "ramp": 15,
+                }
+            ))
+
+
+
 
         elif event.type == EVENT_TYPES.BOOM:
-
             # Pre-spark flash
             sparkCentre = getRandomPointInSpace()
             newEvents.append(Event(
@@ -59,17 +113,6 @@ def eventProgrammer(events: list[Event]):
                 }
             ))
 
-            newEvents.append(Event(
-                type=EVENT_TYPES.PROG_FLASH,
-                atTime=event.atTime,
-                params={
-                    "centre": getRandomPointInSpace(),
-                    "colour": (255, 255, 255),
-                    "radius": 70,
-                    "life": 1,
-                }
-            ))
-
         elif event.type == EVENT_TYPES.WAVE:
             newEvents.append(Event(
                 type=EVENT_TYPES.PROG_SCAN_LINE,
@@ -81,29 +124,6 @@ def eventProgrammer(events: list[Event]):
                 }
             ))
         
-        elif event.type == EVENT_TYPES.CALM:
-            newEvents.append(Event(
-                type=EVENT_TYPES.GRITTINESS,
-                atTime=event.atTime,
-                params={ "level": 0 }
-            ))
-            newEvents.append(Event(
-                type=EVENT_TYPES.PROG_BACKGROUND_COLOUR,
-                atTime=event.atTime,
-                params={ "brightness": 0.1, "colour": getRandomColour(1), "transition": 1 }
-            ))
-        
-        elif event.type == EVENT_TYPES.NERVOUS:
-            newEvents.append(Event(
-                type=EVENT_TYPES.GRITTINESS,
-                atTime=event.atTime,
-                params={ "level": 1 }
-            ))
-            newEvents.append(Event(
-                type=EVENT_TYPES.PROG_BACKGROUND_COLOUR,
-                atTime=event.atTime,
-                params={ "brightness": 0, "transition": 0.2 }
-            ))
         
         else:
             # Add event as is

@@ -18,6 +18,7 @@ class EVENT_TYPES:
     # Mood events (get translated into programme events)
     FAR_RUMBLE = 'FAR_RUMBLE'
     NEAR_RUMBLE = 'NEAR_RUMBLE'
+    RHYTHMICAL_SYNTHS = 'RHYTHMICAL_SYNTHS'
     QUIET_SYNTHS = 'QUIET_SYNTHS'
     # Effects
     THUNDER = 'THUNDER'
@@ -27,16 +28,17 @@ class EVENT_TYPES:
     PROG_QUIET_CLOUDS = 'PROG_QUIET_CLOUDS'
     PROG_RUMBLE = 'PROG_RUMBLE'
     PROG_BREATHING = 'PROG_BREATHING' # every count length
-    PROG_SPEED_CHANGE = 'PROG_SPEED_CHANGE' # factor duration
+    PROG_SPEED_BREATHING = 'PROG_SPEED_BREATHING' # factor every count length
+    PROG_HUE_BREATHING = 'PROG_HUE_BREATHING' # hue every count length
+    PROG_SPEED_CHANGE = 'PROG_SPEED_CHANGE' # factor ramp
+    PROG_SCALE_CHANGE = 'PROG_SCALE_CHANGE' # factor ramp
     PROG_RAIN = 'PROG_RAIN' # duration attack release
     PROG_SCAN_LINE = 'PROG_SCAN_LINE'
-    PROG_FLASH = 'PROG_FLASH'
-    PROG_SPARK = 'PROG_SPARK'
-    PROG_BACKGROUND_COLOUR = 'PROG_BACKGROUND_COLOUR'
-    # Test events
-    GRITTINESS = 'GRITTINESS'
-    CALM = 'CALM'
-    NERVOUS = 'NERVOUS'
+    PROG_FLASH = 'PROG_FLASH' # centre colour radius life
+    PROG_SPARK = 'PROG_SPARK' # centre colour
+    PROG_FAR_ORBS = 'PROG_FAR_ORBS' # (hue brightness saturation ramp)
+    PROG_NEAR_ORBS = 'PROG_NEAR_ORBS' # (hue brightness saturation ramp)
+    PROG_BACKGROUND_COLOUR = 'PROG_BACKGROUND_COLOUR' # (hue brightness saturation ramp)
 
 
 @dataclass

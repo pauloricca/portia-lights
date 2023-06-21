@@ -1,17 +1,24 @@
+from colorsys import hsv_to_rgb
 from programmes.programme import Programme
 
 class SolidColourProgramme(Programme):
-    colour: tuple[float, float, float]
+    hue: float
+    brightness: float
+    saturation: float
+
 
     def __init__(
             self,
             ledCount: int,
-            colour=[0, 0, 0],
+            hue=0,
+            saturation=1,
             brightness=0,
         ):
         super().__init__(ledCount)
         self.brightness = brightness
-        self.colour = colour
+        self.hue = hue
+        self.saturation = saturation
+        self.brightness = brightness
     
     def step(
             self,
@@ -19,7 +26,8 @@ class SolidColourProgramme(Programme):
             frameTime,
             events,
         ):
-        for i, led in enumerate(self.leds):
-            led[0] = self.colour[0] * self.brightness
-            led[1] = self.colour[1] * self.brightness
-            led[2] = self.colour[2] * self.brightness
+        colour = hsv_to_rgb(self.hue, self.saturation, self.brightness)
+        for led in self.leds:
+            led[0] = colour[0] * 255
+            led[1] = colour[1] * 255
+            led[2] = colour[2] * 255

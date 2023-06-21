@@ -18,7 +18,7 @@ class RotatingOrbProgramme(Programme):
         ledCount: int,
         speed=1,
         brightness=0,
-        fadeByDistance=.01,
+        fadeByDistance=.002,
         orbRadius=15,
         pathRadius=65,
         centre=(20, 0, 0),

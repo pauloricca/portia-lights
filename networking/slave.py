@@ -53,7 +53,7 @@ class Slave:
 
                                     # Consume clock sync events
                                     if event.type == EVENT_TYPES.CLOCK_SYNC:
-                                        self.masterTimeDiff = event.params['time'] - time.time()
+                                        self.masterTimeDiff = event.params["time"] - time.time()
                                     else:
                                         # Adjust event times to compensate master time difference
                                         if event.atTime: event.atTime -= self.masterTimeDiff

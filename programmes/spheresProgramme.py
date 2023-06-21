@@ -93,7 +93,7 @@ class SpheresProgramme(Programme):
                 centre = startPoint,
                 radius = dropRadius,
                 colour = (255, 255, 255),
-                life = 5,
+                life = 3,
                 startTime = startTime,
                 velocity = (0, -140, 0)
             ))
