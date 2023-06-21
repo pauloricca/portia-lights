@@ -102,55 +102,40 @@ class ProgrammeManager():
                         self.animator.createAnimation(programme, "brightness", 0, 1)
                 
                 if event.type == EVENT_TYPES.PROG_HUE_BREATHING:
-                    breathingStart =  event.atTime
-                    breathingEvery = event.params["every"]
-                    breathingCount = event.params["count"]
-                    breathLength = event.params["length"]
-                    hue = event.params["hue"]
-                    for i in range(int(breathingCount)):
-                        for programme in self.backgroundProgrammes:
-                            if hasattr(programme, "hue"):
-                                currentHue = programme.hue
-                                self.animator.createAnimation(programme, "hue", hue, 0.5, breathingStart + i * breathingEvery, currentHue)
-                                self.animator.createAnimation(programme, "hue", currentHue, 1, breathLength + breathingStart + i * breathingEvery, hue)
+                    self.generateBreathing(
+                        attributes=["hue"],
+                        start=event.atTime,
+                        length=event.params["length"],
+                        count=event.params["count"] if "count" in event.params else 1,
+                        every=event.params["every"] if event.params["count"] > 1 else 0,
+                        factor=event.params["factor"],
+                        attack=0.5,
+                        release=1,
+                    )
                 
                 if event.type == EVENT_TYPES.PROG_BREATHING:
-                    breathingStart =  event.atTime
-                    breathingEvery = event.params["every"]
-                    breathingCount = event.params["count"]
-                    breathLength = event.params["length"]
-                    attack = 0.5
-                    release = 1
-                    highValue = 0.8
-                    lowValue = 0.3
-                    activeBackgroundProgrammes = self.getActiveBackgroundProgrammes()
-                    for i in range(int(breathingCount)):
-                        attackStart = breathingStart + i * breathingEvery
-                        releaseStart = attackStart + breathLength - release
-                        for programme in activeBackgroundProgrammes:
-                            self.animator.createAnimation(programme, "brightness", highValue, attack, attackStart, lowValue)
-                            self.animator.createAnimation(programme, "brightness", lowValue, release, releaseStart, highValue)
+                    self.generateBreathing(
+                        attributes=["brightness"],
+                        start=event.atTime,
+                        length=event.params["length"],
+                        count=event.params["count"] if "count" in event.params else 1,
+                        every=event.params["every"] if event.params["count"] > 1 else 0,
+                        factor=event.params["factor"],
+                        attack=0.5,
+                        release=1,
+                    )
                 
                 if event.type == EVENT_TYPES.PROG_SPEED_BREATHING:
-                    breathingStart =  event.atTime
-                    breathingEvery = event.params["every"]
-                    breathingCount = event.params["count"]
-                    breathLength = event.params["length"]
-                    factor = event.params["factor"]
-                    attack = 0.5
-                    release = 1
-                    highValue = 0.8
-                    lowValue = 0.3
-                    activeBackgroundProgrammes = self.getActiveBackgroundProgrammes()
-                    for i in range(int(breathingCount)):
-                        attackStart = breathingStart + i * breathingEvery
-                        releaseStart = attackStart + breathLength - release
-                        for programme in activeBackgroundProgrammes:
-                            for attr in [attr for attr in ["brightnessSpeed", "hueSpeed"] if hasattr(programme, attr)]:
-                                currentSpeed = getattr(programme, attr)
-                                targetSpeed = currentSpeed * factor
-                                self.animator.createAnimation(programme, attr, targetSpeed, attack, attackStart, currentSpeed)
-                                self.animator.createAnimation(programme, attr, currentSpeed, release, releaseStart, targetSpeed)
+                    self.generateBreathing(
+                        attributes=["brightnessSpeed", "hueSpeed"],
+                        start=event.atTime,
+                        length=event.params["length"],
+                        count=event.params["count"] if "count" in event.params else 1,
+                        every=event.params["every"] if event.params["count"] > 1 else 0,
+                        factor=event.params["factor"],
+                        attack=0.5,
+                        release=1,
+                    )
 
                 if event.type == EVENT_TYPES.PROG_RUMBLE:
                     self.animator.createAnimation(self.fullColourNoise, "brightness", 1.5, 0.2)
@@ -254,6 +239,29 @@ class ProgrammeManager():
             traceback.print_exc()
 
         return leds
+
+    def generateBreathing(
+            self,
+            start: float,
+            length: float,
+            count: float,
+            every: float,
+            factor: float,
+            attack: float,
+            release: float,
+            attributes: list[str],
+            onlyActiveProgrammes=True
+            ):
+        programmes = self.getActiveBackgroundProgrammes() if onlyActiveProgrammes else self.backgroundProgrammes
+        for i in range(int(count)):
+            attackStart = start + i * every
+            releaseStart = attackStart + length - release
+            for programme in programmes:
+                for attr in [attr for attr in attributes if hasattr(programme, attr)]:
+                    currentValue = getattr(programme, attr)
+                    targetValue = currentValue * factor
+                    self.animator.createAnimation(programme, attr, targetValue, attack, attackStart, currentValue)
+                    self.animator.createAnimation(programme, attr, currentValue, release, releaseStart, targetValue)
 
     
     def getBackgroundProgrammesOtherThan(self, programme: Programme):

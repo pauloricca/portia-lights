@@ -1,13 +1,13 @@
 0 SYNC_PHASES
 0 PLAY_AUDIO
 0 FAR_RUMBLE
-0.7 PROG_BREATHING every=4.37 count=12 length=1.5
-0.7 PROG_SPEED_BREATHING factor=5 every=4.37 count=12 length=1.5
+0.7 PROG_BREATHING factor=3 every=4.37 count=12 length=1.5
+0.7 PROG_SPEED_BREATHING factor=5 every=4.37 count=12 length=2
 18 THUNDER
 53 THUNDER
 53 NEAR_RUMBLE
-61.5 PROG_HUE_BREATHING hue=0 every=4.37 count=12 length=1.5
-61.5 PROG_SPEED_BREATHING factor=5 every=4.37 count=12 length=1.5
+61.5 PROG_HUE_BREATHING factor=-0.01 every=4.37 count=12 length=1.5
+61.5 PROG_SPEED_BREATHING factor=5 every=4.37 count=12 length=2
 70 PROG_RAIN duration=93 attack=20 release=5
 88 THUNDER
 86 RHYTHMICAL_SYNTHS
