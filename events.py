@@ -9,22 +9,25 @@ import sys
 
 # Event names
 class EVENT_TYPES:
-    # General
+    # App events
     PLAY_AUDIO = 'PLAY_AUDIO'
     PLAY_MAIN_SEQUENCE = 'PLAY_MAIN_SEQUENCE'
     CLOCK_SYNC = 'CLOCK_SYNC'
     SYNC_PHASES = 'SYNC_PHASES'
     PHASES_SYNC = 'PHASES_SYNC'
+
     # Mood events (get translated into programme events)
     FAR_RUMBLE = 'FAR_RUMBLE'
     NEAR_RUMBLE = 'NEAR_RUMBLE'
     RHYTHMICAL_SYNTHS = 'RHYTHMICAL_SYNTHS'
-    QUIET_SYNTHS = 'QUIET_SYNTHS'
-    # Effects
+    SUNSET = 'SUNSET'
+
+    # Effects (get translated into programme events)
     FLASHES = 'FLASHES' # duration frequency
     THUNDER = 'THUNDER'
     BOOM = 'BOOM'
     WAVE = 'WAVE'
+
     # Programme events
     PROG_QUIET_CLOUDS = 'PROG_QUIET_CLOUDS'
     PROG_RUMBLE = 'PROG_RUMBLE'
@@ -40,6 +43,7 @@ class EVENT_TYPES:
     PROG_FAR_ORBS = 'PROG_FAR_ORBS' # (hue brightness saturation ramp)
     PROG_NEAR_ORBS = 'PROG_NEAR_ORBS' # (hue brightness saturation ramp)
     PROG_BACKGROUND_COLOUR = 'PROG_BACKGROUND_COLOUR' # (hue brightness saturation ramp)
+    PROG_GRADIENT = 'PROG_GRADIENT' # hue brightness saturation hueBottom saturationBottom (ramp)
 
 
 @dataclass

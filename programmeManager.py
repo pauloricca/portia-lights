@@ -4,6 +4,7 @@ from animator import Animator
 from constants import *
 from events import EVENT_TYPES, Event, EventManager
 from programmes.axisColourNoiseProgramme import AxisColourNoiseProgramme
+from programmes.gradientProgramme import GradientProgramme
 from programmes.noiseThresholdProgramme import NoiseThresholdProgramme
 from programmes.rotatingOrbProgramme import RotatingOrbProgramme
 from programmes.scanLineProgramme import ScanLineProgramme
@@ -20,20 +21,22 @@ class ProgrammeManager():
     programmes: list[Programme]
     backgroundProgrammes: list[Programme]
     isMaster: bool
-
+    # Backgrounds
+    fullColourNoise: ColourNoiseProgramme
+    firstNoiseThreshold: NoiseThresholdProgramme
+    secondNoiseThreshold: NoiseThresholdProgramme
+    solidColour: SolidColourProgramme
+    gradient: GradientProgramme
+    # Effects
     colourSparks: SparksProgramme
     flashes: SpheresProgramme
     rain: SpheresProgramme
     inverseColourSparks: SparksProgramme
-    fullColourNoise: ColourNoiseProgramme
     axisNoise: AxisColourNoiseProgramme
     leftNearOrb: RotatingOrbProgramme
     leftFarOrb: RotatingOrbProgramme
     rightNearOrb: RotatingOrbProgramme
     rightFarOrb: RotatingOrbProgramme
-    solidColour: SolidColourProgramme
-    firstNoiseThreshold: NoiseThresholdProgramme
-    secondNoiseThreshold: NoiseThresholdProgramme
     scanLines: ScanLineProgramme
 
     def __init__(self, ledCount: int, isMaster: bool):
@@ -45,6 +48,7 @@ class ProgrammeManager():
         self.firstNoiseThreshold = NoiseThresholdProgramme(ledCount, hue=1, shimmerAmount=0.5)
         self.secondNoiseThreshold = NoiseThresholdProgramme(ledCount, hue=0.6, phase=30, shimmerAmount=0.5)
         self.solidColour = SolidColourProgramme(ledCount)
+        self.gradient = GradientProgramme(ledCount, hue=0.5, hueBottom=0.5)
         # Effects
         self.colourSparks = SparksProgramme(ledCount, brightness=1)
         self.inverseColourSparks = SparksProgramme(ledCount, propagationSpeed=-150)
@@ -54,7 +58,7 @@ class ProgrammeManager():
         self.leftFarOrb = RotatingOrbProgramme(ledCount, centre=(-100, 0, 0), pathRadius=30, hue=0.6, speed=-2)
         self.rightNearOrb = RotatingOrbProgramme(ledCount, centre=(100, 0, 25), pathRadius=65, hue=0.1, speed=-1)
         self.rightFarOrb = RotatingOrbProgramme(ledCount, centre=(100, 0, 0), pathRadius=30, hue=0.6, speed=2)
-        self.scanLines = ScanLineProgramme(ledCount, shimmerAmount=1.5, brightness=1)
+        self.scanLines = ScanLineProgramme(ledCount, shimmerAmount=1, brightness=1)
         self.rain = SpheresProgramme(ledCount, shimmerAmount=0.5)
 
         self.backgroundProgrammes = [
@@ -62,6 +66,7 @@ class ProgrammeManager():
             self.firstNoiseThreshold,
             self.secondNoiseThreshold,
             self.solidColour,
+            self.gradient,
         ]
 
         self.programmes = [
@@ -101,7 +106,7 @@ class ProgrammeManager():
                     for programme in self.getBackgroundProgrammesOtherThan(self.fullColourNoise):
                         self.animator.createAnimation(programme, "brightness", 0, 1)
                 
-                if event.type == EVENT_TYPES.PROG_HUE_BREATHING:
+                elif event.type == EVENT_TYPES.PROG_HUE_BREATHING:
                     self.generateBreathing(
                         attributes=["hue"],
                         start=event.atTime,
@@ -113,7 +118,7 @@ class ProgrammeManager():
                         release=1,
                     )
                 
-                if event.type == EVENT_TYPES.PROG_BREATHING:
+                elif event.type == EVENT_TYPES.PROG_BREATHING:
                     self.generateBreathing(
                         attributes=["brightness"],
                         start=event.atTime,
@@ -125,7 +130,7 @@ class ProgrammeManager():
                         release=1,
                     )
                 
-                if event.type == EVENT_TYPES.PROG_SPEED_BREATHING:
+                elif event.type == EVENT_TYPES.PROG_SPEED_BREATHING:
                     self.generateBreathing(
                         attributes=["brightnessSpeed", "hueSpeed"],
                         start=event.atTime,
@@ -137,23 +142,23 @@ class ProgrammeManager():
                         release=1,
                     )
 
-                if event.type == EVENT_TYPES.PROG_RUMBLE:
+                elif event.type == EVENT_TYPES.PROG_RUMBLE:
                     self.animator.createAnimation(self.fullColourNoise, "brightness", 1.5, 0.2)
                     self.animator.createAnimation(self.fullColourNoise, "shimmerAmount", 1, 1)
                     for programme in self.getBackgroundProgrammesOtherThan(self.fullColourNoise):
                         self.animator.createAnimation(programme, "brightness", 0, 1)
                 
-                if event.type == EVENT_TYPES.PROG_SPEED_CHANGE:
+                elif event.type == EVENT_TYPES.PROG_SPEED_CHANGE:
                     targetSpeed = self.fullColourNoise.brightnessSpeed * event.params["factor"]
                     self.animator.createAnimation(self.fullColourNoise, "brightnessSpeed", targetSpeed, event.params["ramp"])
                 
-                if event.type == EVENT_TYPES.PROG_SCALE_CHANGE:
+                elif event.type == EVENT_TYPES.PROG_SCALE_CHANGE:
                     targetBrightnessScale = self.fullColourNoise.brightnessScale * event.params["factor"]
                     self.animator.createAnimation(self.fullColourNoise, "brightnessScale", targetBrightnessScale, event.params["ramp"])
                     targetHueScale = self.fullColourNoise.hueScale * event.params["factor"]
                     self.animator.createAnimation(self.fullColourNoise, "hueScale", targetHueScale, event.params["ramp"])
                 
-                if event.type == EVENT_TYPES.PROG_RAIN:
+                elif event.type == EVENT_TYPES.PROG_RAIN:
                     duration = event.params["duration"]
                     attack = event.params["attack"]
                     release = event.params["release"]
@@ -162,30 +167,40 @@ class ProgrammeManager():
                     self.animator.createAnimation(self.rain, "brightness", 1, attack)
                     self.animator.createAnimation(self.rain, "brightness", 0, release, event.atTime+duration-release, 1)
                 
-                if event.type == EVENT_TYPES.PROG_NEAR_ORBS or event.type == EVENT_TYPES.PROG_FAR_ORBS:
+                elif event.type == EVENT_TYPES.PROG_NEAR_ORBS or event.type == EVENT_TYPES.PROG_FAR_ORBS:
                     programmes = [self.leftFarOrb, self.rightFarOrb] if event.type == EVENT_TYPES.PROG_FAR_ORBS else [self.leftNearOrb, self.rightNearOrb]
-                    duration = event.params["ramp"] if "ramp" in event.params else 0
+                    ramp = event.params["ramp"] if "ramp" in event.params else 0
                     for programme in programmes:
                         if "hue" in event.params:
-                            self.animator.createAnimation(programme, "hue", event.params["hue"], duration)
+                            self.animator.createAnimation(programme, "hue", event.params["hue"], ramp)
                         if "brightness" in event.params:
-                            self.animator.createAnimation(programme, "brightness", event.params["brightness"], duration)
+                            self.animator.createAnimation(programme, "brightness", event.params["brightness"], ramp)
                         if "saturation" in event.params:
-                            self.animator.createAnimation(programme, "saturation", event.params["saturation"], duration)
+                            self.animator.createAnimation(programme, "saturation", event.params["saturation"], ramp)
 
-                if event.type == EVENT_TYPES.PROG_BACKGROUND_COLOUR:
+                elif event.type == EVENT_TYPES.PROG_BACKGROUND_COLOUR:
                     activeProgrammes = self.getActiveBackgroundProgrammes()
-                    duration = event.params["ramp"] if "ramp" in event.params else 0
+                    ramp = event.params["ramp"] if "ramp" in event.params else 0
                     for programme in self.backgroundProgrammes:
                         if "hue" in event.params:
-                            self.animator.createAnimation(programme, "hue", event.params["hue"], duration)
+                            self.animator.createAnimation(programme, "hue", event.params["hue"], ramp)
                         # Only change brightness on active programmes, otherwise all of them would be visible
                         if "brightness" in event.params and programme in activeProgrammes:
-                            self.animator.createAnimation(programme, "brightness", event.params["brightness"], duration)
+                            self.animator.createAnimation(programme, "brightness", event.params["brightness"], ramp)
                         if "saturation" in event.params:
-                            self.animator.createAnimation(programme, "saturation", event.params["saturation"], duration)
-                
-                if event.type == EVENT_TYPES.PHASES_SYNC and not self.isMaster:
+                            self.animator.createAnimation(programme, "saturation", event.params["saturation"], ramp)
+
+                elif event.type == EVENT_TYPES.PROG_GRADIENT:
+                    otherBackgrounds = self.getBackgroundProgrammesOtherThan(self.gradient)
+                    ramp = event.params["ramp"] if "ramp" in event.params else 0
+                    for programme in otherBackgrounds:
+                        self.animator.createAnimation(programme, "brightness", 0, ramp)
+                    for attr in ["hue", "brightness", "saturation", "hueBottom", "saturationBottom"]:
+                        self.animator.createAnimation(self.gradient, attr, event.params[attr], ramp)
+
+
+
+                elif event.type == EVENT_TYPES.PHASES_SYNC and not self.isMaster:
                     self.fullColourNoise.huePhase = event.params['fullColourNoise.huePhase']
                     self.fullColourNoise.brightnessPhase = event.params['fullColourNoise.brightnessPhase']
                     self.axisNoise.phaseHue = event.params['axisNoise.phaseHue']

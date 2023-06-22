@@ -3,7 +3,6 @@ from programmes.programme import Programme
 
 class SolidColourProgramme(Programme):
     hue: float
-    brightness: float
     saturation: float
 
 
@@ -18,7 +17,6 @@ class SolidColourProgramme(Programme):
         self.brightness = brightness
         self.hue = hue
         self.saturation = saturation
-        self.brightness = brightness
     
     def step(
             self,

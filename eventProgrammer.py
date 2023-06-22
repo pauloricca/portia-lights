@@ -138,10 +138,100 @@ def eventProgrammer(events: list[Event]):
                         "life": 0.5,
                     }
                 ))
-
-
-
-
+        
+        elif event.type == EVENT_TYPES.SUNSET:
+            brightness = 0.7
+            intervalBetweenStages = 25
+            # blue - blue
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_GRADIENT,
+                atTime=event.atTime,
+                params={
+                    "hue": 0.6,
+                    "brightness": brightness,
+                    "saturation": 0.8,
+                    "hueBottom": 0.5,
+                    "saturationBottom": 0.6,
+                    "ramp": intervalBetweenStages,
+                }
+            ))
+            # desaturated green - desaturated yellow
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_GRADIENT,
+                atTime=event.atTime + intervalBetweenStages,
+                params={
+                    "hue": 0.6,
+                    "brightness": brightness,
+                    "saturation": 0.1,
+                    "hueBottom": 0.2,
+                    "saturationBottom": 0.4,
+                    "ramp": intervalBetweenStages,
+                }
+            ))
+            # red - yellow 
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_GRADIENT,
+                atTime=event.atTime + intervalBetweenStages * 2,
+                params={
+                    "hue": 0,
+                    "brightness": brightness,
+                    "saturation": 0.6,
+                    "hueBottom": 0.1,
+                    "saturationBottom": 1,
+                    "ramp": intervalBetweenStages,
+                }
+            ))
+            # purple - desaturated orange
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_GRADIENT,
+                atTime=event.atTime + intervalBetweenStages * 3,
+                params={
+                    "hue": -0.2,
+                    "brightness": brightness,
+                    "saturation": 0.5,
+                    "hueBottom": 0.1,
+                    "saturationBottom": 0.5,
+                    "ramp": intervalBetweenStages,
+                }
+            ))
+            # dark blue - desaturated blue
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_GRADIENT,
+                atTime=event.atTime + intervalBetweenStages * 4,
+                params={
+                    "hue": -0.3,
+                    "brightness": brightness / 4,
+                    "saturation": 0.2,
+                    "hueBottom": 0.5,
+                    "saturationBottom": 0.1,
+                    "ramp": intervalBetweenStages,
+                }
+            ))
+            # black - black
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_GRADIENT,
+                atTime=event.atTime + intervalBetweenStages * 5,
+                params={
+                    "hue": -0.3,
+                    "brightness": 0,
+                    "saturation": 0.1,
+                    "hueBottom": 0.6,
+                    "saturationBottom": 0.2,
+                    "ramp": intervalBetweenStages,
+                }
+            ))
+            # reset gradient
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_GRADIENT,
+                atTime=event.atTime + intervalBetweenStages * 6,
+                params={
+                    "hue": 0.5,
+                    "brightness": 0,
+                    "saturation": 1,
+                    "hueBottom": 0.5,
+                    "saturationBottom": 1,
+                }
+            ))
 
         elif event.type == EVENT_TYPES.WAVE:
             newEvents.append(Event(

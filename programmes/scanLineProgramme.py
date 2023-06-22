@@ -24,9 +24,9 @@ class ScanLineProgramme(Programme):
     def __init__(
         self,
         ledCount: int,
-        speed=30,
+        speed=20,
         brightness=0,
-        trailLength=120,
+        trailLength=170,
         shimmerAmount=0,
         trailFalloff=0.7,
         scanLineIntensity=3
