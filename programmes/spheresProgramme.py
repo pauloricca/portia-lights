@@ -26,7 +26,7 @@ class SpheresProgramme(Programme):
         shimmerAmount=0,
     ):
         super().__init__(ledCount)
-        self.shimmerScale = .00001
+        self.shimmerScale = .002
         self.brightness = brightness
         self.shimmerAmount = shimmerAmount
         self.spheres = []

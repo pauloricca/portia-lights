@@ -21,6 +21,7 @@ class EVENT_TYPES:
     RHYTHMICAL_SYNTHS = 'RHYTHMICAL_SYNTHS'
     QUIET_SYNTHS = 'QUIET_SYNTHS'
     # Effects
+    FLASHES = 'FLASHES' # duration frequency
     THUNDER = 'THUNDER'
     BOOM = 'BOOM'
     WAVE = 'WAVE'

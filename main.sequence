@@ -11,6 +11,9 @@
 70 PROG_RAIN duration=93 attack=20 release=5
 88 THUNDER
 86 RHYTHMICAL_SYNTHS
+115 FLASHES duration=5 frequency=0.8
+120 FLASHES duration=10 frequency=2
+130 FLASHES duration=5 frequency=0.4
 174.5 BOOM
 179.5 BOOM
 184.2 BOOM

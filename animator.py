@@ -27,8 +27,8 @@ class Animator():
         propertyName: str,
         targetValue: Union[float, int, tuple[float]],
         duration: float,
-        startTime = None, # Don't set to start now
-        fromValue = None,
+        startTime:float = None, # Don't set to start now
+        fromValue: Union[float, int, tuple[float]] = None,
     ):
         if startTime == None:
             startTime = time.time()
@@ -48,6 +48,7 @@ class Animator():
         # for animation in existingAnimations:
         #     self.animations.remove(animation)
 
+        # Cconvert single values into lists with one value
         targetValues = targetValue if hasattr(targetValue, '__iter__') else (targetValue,)
         fromValues = (fromValue if hasattr(fromValue, '__iter__') else (fromValue,)) if fromValue != None else None
 

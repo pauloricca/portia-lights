@@ -1,3 +1,4 @@
+from random import random
 from events import EVENT_TYPES, Event
 from utils import getRandomColour, getRandomPointInSpace
 
@@ -87,9 +88,15 @@ def eventProgrammer(events: list[Event]):
                     "ramp": 15,
                 }
             ))
-
-
-
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_BACKGROUND_COLOUR,
+                atTime=event.atTime,
+                params={
+                    "brightness": 0.1,
+                    "saturation": 0.3,
+                    "ramp": 10,
+                }
+            ))
 
         elif event.type == EVENT_TYPES.BOOM:
             # Pre-spark flash
@@ -112,6 +119,29 @@ def eventProgrammer(events: list[Event]):
                     "colour": getRandomColour(1),
                 }
             ))
+        
+        elif event.type == EVENT_TYPES.FLASHES:
+            duration = event.params["duration"]
+            flashesPerSecond = event.params["frequency"]
+            count = int(duration * flashesPerSecond)
+            every = duration / count
+            timeJitterAmount = 0.3
+            for i in range(count):
+                timeJitter = (random() - 0.5) * timeJitterAmount
+                newEvents.append(Event(
+                    type=EVENT_TYPES.PROG_FLASH,
+                    atTime=event.atTime + i * every + timeJitter,
+                    params={
+                        "centre": getRandomPointInSpace(),
+                        "colour": (255, 255, 255),
+                        "radius": 30,
+                        "life": 0.5,
+                    }
+                ))
+
+
+
+
 
         elif event.type == EVENT_TYPES.WAVE:
             newEvents.append(Event(

@@ -50,10 +50,10 @@ class ProgrammeManager():
         self.inverseColourSparks = SparksProgramme(ledCount, propagationSpeed=-150)
         self.flashes = SpheresProgramme(ledCount, shimmerAmount=1, brightness=1)
         self.axisNoise = AxisColourNoiseProgramme(ledCount, hueScale=0.2, hueSpeed=.01, brightnessSpeed=0.3, brightnessScale=.01)
-        self.leftNearOrb = RotatingOrbProgramme(ledCount, centre=(-100, 0, 25), pathRadius=65, hue=0.1, speed=0.5)
-        self.leftFarOrb = RotatingOrbProgramme(ledCount, centre=(-100, 0, 0), pathRadius=30, hue=0.6, speed=-1)
-        self.rightNearOrb = RotatingOrbProgramme(ledCount, centre=(100, 0, 25), pathRadius=65, hue=0.1, speed=-0.5)
-        self.rightFarOrb = RotatingOrbProgramme(ledCount, centre=(100, 0, 0), pathRadius=30, hue=0.6, speed=1)
+        self.leftNearOrb = RotatingOrbProgramme(ledCount, centre=(-100, 0, 25), pathRadius=65, hue=0.1, speed=1)
+        self.leftFarOrb = RotatingOrbProgramme(ledCount, centre=(-100, 0, 0), pathRadius=30, hue=0.6, speed=-2)
+        self.rightNearOrb = RotatingOrbProgramme(ledCount, centre=(100, 0, 25), pathRadius=65, hue=0.1, speed=-1)
+        self.rightFarOrb = RotatingOrbProgramme(ledCount, centre=(100, 0, 0), pathRadius=30, hue=0.6, speed=2)
         self.scanLines = ScanLineProgramme(ledCount, shimmerAmount=1.5, brightness=1)
         self.rain = SpheresProgramme(ledCount, shimmerAmount=0.5)
 
@@ -174,11 +174,13 @@ class ProgrammeManager():
                             self.animator.createAnimation(programme, "saturation", event.params["saturation"], duration)
 
                 if event.type == EVENT_TYPES.PROG_BACKGROUND_COLOUR:
+                    activeProgrammes = self.getActiveBackgroundProgrammes()
                     duration = event.params["ramp"] if "ramp" in event.params else 0
                     for programme in self.backgroundProgrammes:
                         if "hue" in event.params:
                             self.animator.createAnimation(programme, "hue", event.params["hue"], duration)
-                        if "brightness" in event.params:
+                        # Only change brightness on active programmes, otherwise all of them would be visible
+                        if "brightness" in event.params and programme in activeProgrammes:
                             self.animator.createAnimation(programme, "brightness", event.params["brightness"], duration)
                         if "saturation" in event.params:
                             self.animator.createAnimation(programme, "saturation", event.params["saturation"], duration)
