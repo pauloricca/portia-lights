@@ -46,6 +46,13 @@ def getRandomPointInSpace():
         getRandomBetween(EVENTS_BOUNDING_BOX[2][0], EVENTS_BOUNDING_BOX[2][1]),
     )
 
+def getCentrePointInSpace(): 
+    return (
+        EVENTS_BOUNDING_BOX[0][0] + EVENTS_BOUNDING_BOX[0][1] / 2,
+        EVENTS_BOUNDING_BOX[1][0] + EVENTS_BOUNDING_BOX[1][1] / 2,
+        EVENTS_BOUNDING_BOX[2][0] + EVENTS_BOUNDING_BOX[2][1] / 2,
+    )
+
 def getRandomColour(brightness = 0.5):
     rgbColour = hsv_to_rgb(random(), 1, brightness)
     return (rgbColour[0] * 255, rgbColour[1] * 255, rgbColour[2] * 255)

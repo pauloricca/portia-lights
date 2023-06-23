@@ -232,6 +232,59 @@ def eventProgrammer(events: list[Event]):
                     "saturationBottom": 1,
                 }
             ))
+        
+        elif event.type == EVENT_TYPES.WHISTLE:
+            # [timestamp, height (0 is bottom, 1 is top)]
+            anticipationTime = 0.5
+            positions = [
+                [424.5, 0.8],
+                [432.2, 0.5],
+                [439.0, 0.2],
+                [451.9, 0.8],
+                [454.5, 0.5],
+                [460.2, 0.2],
+                [466.2, 0.5],
+                [471.5, 0.5],
+                [475.7, 0.2],
+                [480.0, 0.5],
+                [484.5, 0.2],
+                [488.7, 0.5],
+                [493.1, 0.2],
+                [497.5, 0.5],
+                [502.0, 0.2],
+                [506.2, 0.5],
+                [511.1, 0.2],
+                [514.9, 0.5],
+                [519.3, 0.2],
+                [522.6, -2],
+            ]
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_WHISTLE_GHOST_BRIGHTNESS,
+                atTime=event.atTime - 1,
+                params={
+                    "brightness": 1,
+                    "ramp": 2,
+                }
+            ))
+            for (timestamp, position) in positions:
+                positionTime = event.atTime + timestamp - positions[0][0] - anticipationTime
+                newEvents.append(Event(
+                    type=EVENT_TYPES.PROG_WHISTLE_GHOST_POSITION,
+                    atTime=positionTime,
+                    params={
+                        "position": position,
+                        "ramp": 0.6,
+                    }
+                ))
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_WHISTLE_GHOST_BRIGHTNESS,
+                atTime=event.atTime + positions[-1][0] - positions[0][0],
+                params={
+                    "brightness": 0,
+                    "ramp": 2,
+                }
+            ))
+
 
         elif event.type == EVENT_TYPES.WAVE:
             newEvents.append(Event(

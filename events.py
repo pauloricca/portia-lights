@@ -21,6 +21,7 @@ class EVENT_TYPES:
     NEAR_RUMBLE = 'NEAR_RUMBLE'
     RHYTHMICAL_SYNTHS = 'RHYTHMICAL_SYNTHS'
     SUNSET = 'SUNSET'
+    WHISTLE = 'WHISTLE'
 
     # Effects (get translated into programme events)
     FLASHES = 'FLASHES' # duration frequency
@@ -43,6 +44,8 @@ class EVENT_TYPES:
     PROG_FAR_ORBS = 'PROG_FAR_ORBS' # (hue brightness saturation ramp)
     PROG_NEAR_ORBS = 'PROG_NEAR_ORBS' # (hue brightness saturation ramp)
     PROG_HIDE_ORBS = 'PROG_HIDE_ORBS' # (ramp)
+    PROG_WHISTLE_GHOST_BRIGHTNESS = 'PROG_WHISTLE_GHOST_BRIGHTNESS' # brightness (ramp)
+    PROG_WHISTLE_GHOST_POSITION = 'PROG_WHISTLE_GHOST_POSITION' # position (ramp)
     PROG_BACKGROUND_COLOUR = 'PROG_BACKGROUND_COLOUR' # (hue brightness saturation ramp)
     PROG_GRADIENT = 'PROG_GRADIENT' # hue brightness saturation hueBottom saturationBottom (ramp)
 

@@ -12,6 +12,7 @@ class RotatingOrbProgramme(Programme):
     pathRadius: float
     centre: list[float, float, float]
     hue: float
+    saturation: float
 
     def __init__(
         self,
@@ -22,7 +23,9 @@ class RotatingOrbProgramme(Programme):
         orbRadius=15,
         pathRadius=65,
         centre=(20, 0, 0),
-        hue=0.2
+        hue=0.2,
+        saturation=1,
+        shimmerAmount=0,
     ):
         super().__init__(ledCount)
         self.speed = speed
@@ -33,6 +36,9 @@ class RotatingOrbProgramme(Programme):
         self.pathRadius = pathRadius
         self.centre = centre
         self.hue = hue
+        self.saturation = saturation
+        self.shimmerAmount = shimmerAmount
+        self.shimmerScale = 0.2
     
     def step(
             self,
@@ -50,7 +56,7 @@ class RotatingOrbProgramme(Programme):
 
         radiusSquared = self.orbRadius**2
 
-        orbColour = hsv_to_rgb(self.hue, 1, 255)
+        orbColour = hsv_to_rgb(self.hue, self.saturation, 255)
 
         for i, led in enumerate(self.leds):
             distanceSquared = getDistanceSquared(ledCoords[i], (orbX, orbY, orbZ))
@@ -61,4 +67,6 @@ class RotatingOrbProgramme(Programme):
                 radialBrightness = clamp(mapToRange(distanceSquared, 1, 0, radiusSquared, 2 * radiusSquared), 0, 1)
                 for i in range(0, 3):
                     led[i] = clamp(led[i] + self.brightness * radialBrightness * orbColour[i], 0, 255)
+        
+        self.shimmer(frameTime)
                 

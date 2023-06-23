@@ -9,7 +9,7 @@ from programmes.noiseThresholdProgramme import NoiseThresholdProgramme
 from programmes.rotatingOrbProgramme import RotatingOrbProgramme
 from programmes.scanLineProgramme import ScanLineProgramme
 from programmes.spheresProgramme import SpheresProgramme
-from utils import getBlankLEDsBuffer
+from utils import getBlankLEDsBuffer, getCentrePointInSpace, getRandomPointInSpace, mapToRange
 from programmes.programme import Programme
 from programmes.sparksProgramme import SparksProgramme
 from programmes.colourNoiseProgramme import ColourNoiseProgramme
@@ -37,6 +37,7 @@ class ProgrammeManager():
     leftFarOrb: RotatingOrbProgramme
     rightNearOrb: RotatingOrbProgramme
     rightFarOrb: RotatingOrbProgramme
+    whistleGhost: RotatingOrbProgramme
     scanLines: ScanLineProgramme
 
     def __init__(self, ledCount: int, isMaster: bool):
@@ -58,6 +59,7 @@ class ProgrammeManager():
         self.leftFarOrb = RotatingOrbProgramme(ledCount, centre=(-100, 0, 0), pathRadius=30, hue=0.6, speed=-2)
         self.rightNearOrb = RotatingOrbProgramme(ledCount, centre=(100, 0, 25), pathRadius=65, hue=0.1, speed=-1)
         self.rightFarOrb = RotatingOrbProgramme(ledCount, centre=(100, 0, 0), pathRadius=30, hue=0.6, speed=2)
+        self.whistleGhost = RotatingOrbProgramme(ledCount, centre=getCentrePointInSpace(), pathRadius=10, orbRadius=30, hue=0.5, saturation=1, speed=4, shimmerAmount=1)
         self.scanLines = ScanLineProgramme(ledCount, shimmerAmount=1, brightness=1)
         self.rain = SpheresProgramme(ledCount, shimmerAmount=0.5)
 
@@ -80,6 +82,7 @@ class ProgrammeManager():
             self.leftFarOrb,
             self.rightNearOrb,
             self.rightFarOrb,
+            self.whistleGhost,
             self.scanLines,
             self.rain,
         ]
@@ -96,7 +99,7 @@ class ProgrammeManager():
 
         # Process programme events
         for event in events:
-            print('Will process programme event: ' + event.type)
+            print('Will process programme event: ' + event.type + ' at ' + str(event.atTime))
 
             try:
 
@@ -203,6 +206,23 @@ class ProgrammeManager():
                         self.animator.createAnimation(programme, "brightness", 0, ramp)
                     for attr in ["hue", "brightness", "saturation", "hueBottom", "saturationBottom"]:
                         self.animator.createAnimation(self.gradient, attr, event.params[attr], ramp)
+
+                elif event.type == EVENT_TYPES.PROG_WHISTLE_GHOST_BRIGHTNESS:
+                    brightness = event.params["brightness"]
+                    ramp = event.params["ramp"] if "ramp" in event.params else 0
+                    self.animator.createAnimation(self.whistleGhost, "brightness", brightness, ramp)
+
+                elif event.type == EVENT_TYPES.PROG_WHISTLE_GHOST_POSITION:
+                    randomPoint = getRandomPointInSpace()
+                    newPosition = (
+                        randomPoint[0],
+                        mapToRange(event.params["position"], EVENTS_BOUNDING_BOX[1][0], EVENTS_BOUNDING_BOX[1][1]),
+                        20,
+                    )
+                    ramp = event.params["ramp"] if "ramp" in event.params else 0
+                    self.animator.createAnimation(self.whistleGhost, "centre", newPosition, ramp)
+
+
 
 
 
