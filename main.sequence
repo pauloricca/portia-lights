@@ -8,6 +8,8 @@
 53 NEAR_RUMBLE
 61.5 PROG_HUE_BREATHING factor=-0.01 every=4.37 count=12 length=1.5
 61.5 PROG_SPEED_BREATHING factor=5 every=4.37 count=12 length=2
+65 PROG_SCALE_CHANGE factor=5 ramp=15
+65 PROG_Speed_CHANGE factor=4 ramp=25
 70 PROG_RAIN duration=93 attack=20 release=5
 88 THUNDER
 86 RHYTHMICAL_SYNTHS
@@ -32,6 +34,7 @@
 236.6 BOOM intensity=0.3
 249.6 BOOM
 250.5 BOOM
+250 PROG_HIDE_ORBS ramp=10
 253.9 BOOM intensity=0.7
 256 BOOM intensity=0.1
 314.4 WAVE

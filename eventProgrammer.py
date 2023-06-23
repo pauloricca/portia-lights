@@ -81,7 +81,7 @@ def eventProgrammer(events: list[Event]):
             ))
             newEvents.append(Event(
                 type=EVENT_TYPES.PROG_NEAR_ORBS,
-                atTime=event.atTime + 5,
+                atTime=event.atTime + 15,
                 params={
                     "hue": 0.3,
                     "brightness": 1,
@@ -140,7 +140,7 @@ def eventProgrammer(events: list[Event]):
                 ))
         
         elif event.type == EVENT_TYPES.SUNSET:
-            brightness = 0.7
+            brightness = 0.4
             intervalBetweenStages = 25
             # blue - blue
             newEvents.append(Event(

@@ -42,6 +42,7 @@ class EVENT_TYPES:
     PROG_SPARK = 'PROG_SPARK' # centre colour
     PROG_FAR_ORBS = 'PROG_FAR_ORBS' # (hue brightness saturation ramp)
     PROG_NEAR_ORBS = 'PROG_NEAR_ORBS' # (hue brightness saturation ramp)
+    PROG_HIDE_ORBS = 'PROG_HIDE_ORBS' # (ramp)
     PROG_BACKGROUND_COLOUR = 'PROG_BACKGROUND_COLOUR' # (hue brightness saturation ramp)
     PROG_GRADIENT = 'PROG_GRADIENT' # hue brightness saturation hueBottom saturationBottom (ramp)
 

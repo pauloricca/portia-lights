@@ -178,6 +178,12 @@ class ProgrammeManager():
                         if "saturation" in event.params:
                             self.animator.createAnimation(programme, "saturation", event.params["saturation"], ramp)
 
+                elif event.type ==EVENT_TYPES.PROG_HIDE_ORBS:
+                    programmes = [self.leftFarOrb, self.rightFarOrb, self.leftNearOrb, self.rightNearOrb]
+                    ramp = event.params["ramp"] if "ramp" in event.params else 0
+                    for programme in programmes:
+                        self.animator.createAnimation(programme, "brightness", 0, ramp)
+
                 elif event.type == EVENT_TYPES.PROG_BACKGROUND_COLOUR:
                     activeProgrammes = self.getActiveBackgroundProgrammes()
                     ramp = event.params["ramp"] if "ramp" in event.params else 0
