@@ -20,4 +20,5 @@ if PLATFORM == 'Linux':
 if isMaster: print("Starting as Master")
 else: print("Starting as Slave")
 
-app = App(isMaster=isMaster, isLightController=True, isVerbose=False)
+# Paulo remove verbose
+app = App(isMaster=isMaster, isLightController=True, isVerbose=True)
