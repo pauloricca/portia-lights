@@ -141,54 +141,67 @@ def eventProgrammer(events: list[Event]):
         
         elif event.type == EVENT_TYPES.SUNSET:
             brightness = 0.4
-            intervalBetweenStages = 25
+            intervalBetweenStages = 22
             # blue - blue
             newEvents.append(Event(
-                type=EVENT_TYPES.PROG_GRADIENT,
+                type=EVENT_TYPES.PROG_RGB_GRADIENT,
                 atTime=event.atTime,
                 params={
                     "hue": 0.6,
                     "brightness": brightness,
                     "saturation": 0.8,
                     "hueBottom": 0.5,
-                    "saturationBottom": 0.6,
+                    "saturationBottom": 0.3,
                     "ramp": intervalBetweenStages,
                 }
             ))
             # desaturated green - desaturated yellow
             newEvents.append(Event(
-                type=EVENT_TYPES.PROG_GRADIENT,
+                type=EVENT_TYPES.PROG_RGB_GRADIENT,
                 atTime=event.atTime + intervalBetweenStages,
                 params={
                     "hue": 0.6,
                     "brightness": brightness,
-                    "saturation": 0.1,
-                    "hueBottom": 0.2,
-                    "saturationBottom": 0.4,
+                    "saturation": 0.3,
+                    "hueBottom": 0.15,
+                    "saturationBottom": 0.8,
+                    "ramp": intervalBetweenStages,
+                }
+            ))
+            # grey - desaturated yellow
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_RGB_GRADIENT,
+                atTime=event.atTime + intervalBetweenStages * 2,
+                params={
+                    "hue": 0.3,
+                    "brightness": brightness,
+                    "saturation": 0,
+                    "hueBottom": 0.15,
+                    "saturationBottom": 0.8,
                     "ramp": intervalBetweenStages,
                 }
             ))
             # red - yellow 
             newEvents.append(Event(
-                type=EVENT_TYPES.PROG_GRADIENT,
-                atTime=event.atTime + intervalBetweenStages * 2,
+                type=EVENT_TYPES.PROG_RGB_GRADIENT,
+                atTime=event.atTime + intervalBetweenStages * 3,
                 params={
-                    "hue": 0,
+                    "hue": 0.02,
                     "brightness": brightness,
-                    "saturation": 0.6,
-                    "hueBottom": 0.1,
+                    "saturation": 1,
+                    "hueBottom": 0.12,
                     "saturationBottom": 1,
                     "ramp": intervalBetweenStages,
                 }
             ))
             # purple - desaturated orange
             newEvents.append(Event(
-                type=EVENT_TYPES.PROG_GRADIENT,
-                atTime=event.atTime + intervalBetweenStages * 3,
+                type=EVENT_TYPES.PROG_RGB_GRADIENT,
+                atTime=event.atTime + intervalBetweenStages * 4,
                 params={
-                    "hue": -0.2,
+                    "hue": -0.3,
                     "brightness": brightness,
-                    "saturation": 0.5,
+                    "saturation": 1,
                     "hueBottom": 0.1,
                     "saturationBottom": 0.5,
                     "ramp": intervalBetweenStages,
@@ -196,21 +209,21 @@ def eventProgrammer(events: list[Event]):
             ))
             # dark blue - desaturated blue
             newEvents.append(Event(
-                type=EVENT_TYPES.PROG_GRADIENT,
-                atTime=event.atTime + intervalBetweenStages * 4,
+                type=EVENT_TYPES.PROG_RGB_GRADIENT,
+                atTime=event.atTime + intervalBetweenStages * 5,
                 params={
-                    "hue": -0.3,
+                    "hue": -0.4,
                     "brightness": brightness / 4,
-                    "saturation": 0.2,
+                    "saturation": 0.4,
                     "hueBottom": 0.5,
-                    "saturationBottom": 0.1,
+                    "saturationBottom": 0.3,
                     "ramp": intervalBetweenStages,
                 }
             ))
             # black - black
             newEvents.append(Event(
-                type=EVENT_TYPES.PROG_GRADIENT,
-                atTime=event.atTime + intervalBetweenStages * 5,
+                type=EVENT_TYPES.PROG_RGB_GRADIENT,
+                atTime=event.atTime + intervalBetweenStages * 6,
                 params={
                     "hue": -0.3,
                     "brightness": 0,
@@ -222,8 +235,8 @@ def eventProgrammer(events: list[Event]):
             ))
             # reset gradient
             newEvents.append(Event(
-                type=EVENT_TYPES.PROG_GRADIENT,
-                atTime=event.atTime + intervalBetweenStages * 6,
+                type=EVENT_TYPES.PROG_RGB_GRADIENT,
+                atTime=event.atTime + intervalBetweenStages * 7,
                 params={
                     "hue": 0.5,
                     "brightness": 0,
@@ -234,29 +247,29 @@ def eventProgrammer(events: list[Event]):
             ))
         
         elif event.type == EVENT_TYPES.WHISTLE:
-            # [timestamp, height (0 is bottom, 1 is top)]
-            anticipationTime = 0.5
+            anticipationTime = 0.5 # time the ghost starts moving before the note
+            # (timestamp, height (0 is bottom, 1 is top))
             positions = [
-                [424.5, 0.8],
-                [432.2, 0.5],
-                [439.0, 0.2],
-                [451.9, 0.8],
-                [454.5, 0.5],
-                [460.2, 0.2],
-                [466.2, 0.5],
-                [471.5, 0.5],
-                [475.7, 0.2],
-                [480.0, 0.5],
-                [484.5, 0.2],
-                [488.7, 0.5],
-                [493.1, 0.2],
-                [497.5, 0.5],
-                [502.0, 0.2],
-                [506.2, 0.5],
-                [511.1, 0.2],
-                [514.9, 0.5],
-                [519.3, 0.2],
-                [522.6, -2],
+                (424.5, 0.8),
+                (432.2, 0.5),
+                (439.0, 0.2),
+                (451.9, 0.8),
+                (454.5, 0.5),
+                (460.2, 0.2),
+                (466.2, 0.5),
+                (471.5, 0.5),
+                (475.7, 0.2),
+                (480.0, 0.5),
+                (484.5, 0.2),
+                (488.7, 0.5),
+                (493.1, 0.2),
+                (497.5, 0.5),
+                (502.0, 0.2),
+                (506.2, 0.5),
+                (511.1, 0.2),
+                (514.9, 0.5),
+                (519.3, 0.2),
+                (522.6, -2),
             ]
             newEvents.append(Event(
                 type=EVENT_TYPES.PROG_WHISTLE_GHOST_BRIGHTNESS,
@@ -267,10 +280,10 @@ def eventProgrammer(events: list[Event]):
                 }
             ))
             for (timestamp, position) in positions:
-                positionTime = event.atTime + timestamp - positions[0][0] - anticipationTime
+                stepTime = event.atTime + timestamp - positions[0][0] - anticipationTime
                 newEvents.append(Event(
                     type=EVENT_TYPES.PROG_WHISTLE_GHOST_POSITION,
-                    atTime=positionTime,
+                    atTime=stepTime,
                     params={
                         "position": position,
                         "ramp": 0.6,
@@ -284,6 +297,32 @@ def eventProgrammer(events: list[Event]):
                     "ramp": 2,
                 }
             ))
+        
+        elif event.type == EVENT_TYPES.FIRST_BASS_LINE:
+            # (timestamp, brightness, (hue,saturation)-top, (hue,saturation)-bottom)
+            steps = [
+                (524.5, 1, (0,1), (0.5,1)),
+                (526, 1, (0.5,1), (0.8,1)),
+                (527, 1, (0.8,1), (0.4,1)),
+                (528, 1, (0.4,1), (0.6,1)),
+                (529, 1, (0.6,1), (0.2,1)),
+            ]
+            ramp = 0.3
+            anticipationTime = 0.3
+            for (timestamp, brightness, (hue, saturation), (hueBottom, saturationBottom)) in steps:
+                stepTime = event.atTime + timestamp - steps[0][0] - anticipationTime
+                newEvents.append(Event(
+                    type=EVENT_TYPES.PROG_HUE_GRADIENT,
+                    atTime=stepTime,
+                    params={
+                        "brightness": brightness,
+                        "hue": hue,
+                        "saturation": saturation,
+                        "hueBottom": hueBottom,
+                        "saturationBottom": saturationBottom,
+                        "ramp": ramp,
+                    }
+                ))
 
 
         elif event.type == EVENT_TYPES.WAVE:

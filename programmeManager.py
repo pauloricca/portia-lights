@@ -26,7 +26,8 @@ class ProgrammeManager():
     firstNoiseThreshold: NoiseThresholdProgramme
     secondNoiseThreshold: NoiseThresholdProgramme
     solidColour: SolidColourProgramme
-    gradient: GradientProgramme
+    hueGradient: GradientProgramme
+    rgbGradient: GradientProgramme
     # Effects
     colourSparks: SparksProgramme
     flashes: SpheresProgramme
@@ -49,7 +50,8 @@ class ProgrammeManager():
         self.firstNoiseThreshold = NoiseThresholdProgramme(ledCount, hue=1, shimmerAmount=0.5)
         self.secondNoiseThreshold = NoiseThresholdProgramme(ledCount, hue=0.6, phase=30, shimmerAmount=0.5)
         self.solidColour = SolidColourProgramme(ledCount)
-        self.gradient = GradientProgramme(ledCount, hue=0.5, hueBottom=0.5)
+        self.hueGradient = GradientProgramme(ledCount, hue=0.5, hueBottom=0.5, interpolateByHue=True)
+        self.rgbGradient = GradientProgramme(ledCount, hue=0.5, hueBottom=0.5)
         # Effects
         self.colourSparks = SparksProgramme(ledCount, brightness=1)
         self.inverseColourSparks = SparksProgramme(ledCount, propagationSpeed=-150)
@@ -68,7 +70,8 @@ class ProgrammeManager():
             self.firstNoiseThreshold,
             self.secondNoiseThreshold,
             self.solidColour,
-            self.gradient,
+            self.hueGradient,
+            self.rgbGradient,
         ]
 
         self.programmes = [
@@ -199,13 +202,21 @@ class ProgrammeManager():
                         if "saturation" in event.params:
                             self.animator.createAnimation(programme, "saturation", event.params["saturation"], ramp)
 
-                elif event.type == EVENT_TYPES.PROG_GRADIENT:
-                    otherBackgrounds = self.getBackgroundProgrammesOtherThan(self.gradient)
+                elif event.type == EVENT_TYPES.PROG_HUE_GRADIENT:
+                    otherBackgrounds = self.getBackgroundProgrammesOtherThan(self.hueGradient)
                     ramp = event.params["ramp"] if "ramp" in event.params else 0
                     for programme in otherBackgrounds:
                         self.animator.createAnimation(programme, "brightness", 0, ramp)
                     for attr in ["hue", "brightness", "saturation", "hueBottom", "saturationBottom"]:
-                        self.animator.createAnimation(self.gradient, attr, event.params[attr], ramp)
+                        self.animator.createAnimation(self.hueGradient, attr, event.params[attr], ramp)
+                
+                elif event.type == EVENT_TYPES.PROG_RGB_GRADIENT:
+                    otherBackgrounds = self.getBackgroundProgrammesOtherThan(self.rgbGradient)
+                    ramp = event.params["ramp"] if "ramp" in event.params else 0
+                    for programme in otherBackgrounds:
+                        self.animator.createAnimation(programme, "brightness", 0, ramp)
+                    for attr in ["hue", "brightness", "saturation", "hueBottom", "saturationBottom"]:
+                        self.animator.createAnimation(self.rgbGradient, attr, event.params[attr], ramp)
 
                 elif event.type == EVENT_TYPES.PROG_WHISTLE_GHOST_BRIGHTNESS:
                     brightness = event.params["brightness"]
