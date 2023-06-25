@@ -29,7 +29,7 @@ OVERBLOW_BLEED_RATIO_B = .2
 
 # Used to generate events in random points of space (can be different to the actual installation bounding box)
 EVENTS_BOUNDING_BOX = [
-    [-180, 180],
+    [-175, 175],
     [-65, 78],
     [-5, 30]
 ]

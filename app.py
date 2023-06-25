@@ -109,8 +109,8 @@ class App:
         for ledPos in self.ledCoords:
             for i in [0, 1, 2]:
                 if ledPos[i] < range[i][0]:
-                    range[i][0] = ledPos[0]
+                    range[i][0] = ledPos[i]
                 if ledPos[i] > range[i][1]:
-                    range[i][1] = ledPos[0]
+                    range[i][1] = ledPos[i]
         for i, a in enumerate(['X', 'Y', 'Z']):
             print("Config " + a + " range: " + str(range[i][0]) + " to " + str(range[i][1]))
