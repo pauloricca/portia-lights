@@ -52,7 +52,7 @@ class Animator():
         targetValues = targetValue if hasattr(targetValue, '__iter__') else (targetValue,)
         fromValues = (fromValue if hasattr(fromValue, '__iter__') else (fromValue,)) if fromValue != None else None
         # Paulo
-        print((targetValues, fromValues))
+        # print((targetValues, fromValues))
         def getFromValues(i):
             if fromValues != None:
                 return fromValues[i]
@@ -61,9 +61,9 @@ class Animator():
             else:
                 return getattr(object, propertyName)[i]
         # Paulo
-        print([
-                ((value - getFromValues(i)) / duration) if duration > 0 else 0 for i, value in enumerate(targetValues)
-            ])
+        # print([
+        #         ((value - getFromValues(i)) / duration) if duration > 0 else 0 for i, value in enumerate(targetValues)
+        #     ])
 
         self.animations.append(AnimatorItem(
             object=object,

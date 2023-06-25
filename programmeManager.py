@@ -319,8 +319,8 @@ class ProgrammeManager():
                     currentValue = getattr(programme, attr)
                     targetValue = currentValue * factor
                     # Paulo
-                    if programme == self.noiseBands:
-                        print(('BREATH', currentValue, targetValue, factor))
+                    # if programme == self.noiseBands:
+                    #     print(('BREATH', currentValue, targetValue, factor))
                     self.animator.createAnimation(programme, attr, targetValue, attack, attackStart, currentValue)
                     self.animator.createAnimation(programme, attr, currentValue, release, releaseStart, targetValue)
 
