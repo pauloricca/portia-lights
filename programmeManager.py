@@ -17,10 +17,12 @@ from programmes.solidColourProgramme import SolidColourProgramme
 
 # Schedules changes in the programmes in response to events
 class ProgrammeManager():
+    isMaster: bool
+    ledCount: int
     animator: Animator
     programmes: list[Programme]
     backgroundProgrammes: list[Programme]
-    isMaster: bool
+
     # Backgrounds
     fullColourNoise: ColourNoiseProgramme
     noiseBands: NoiseBandsProgramme
@@ -40,28 +42,26 @@ class ProgrammeManager():
     whistleGhost: RotatingOrbProgramme
     scanLines: ScanLineProgramme
 
-    def __init__(self, ledCount: int, isMaster: bool):
+    def init(self):
         self.animator = Animator()
-        self.isMaster = isMaster
-
         # Backgrounds
-        self.fullColourNoise = ColourNoiseProgramme(ledCount, hueScale=0.002, hueSpeed=0.02, brightnessScale=0.01, shimmerAmount=1)
-        self.noiseBands = NoiseBandsProgramme(ledCount, shimmerAmount=1)
-        self.solidColour = SolidColourProgramme(ledCount)
-        self.hueGradient = GradientProgramme(ledCount, hue=0.5, hueBottom=0.5, interpolateByHue=True)
-        self.rgbGradient = GradientProgramme(ledCount, hue=0.5, hueBottom=0.5)
+        self.fullColourNoise = ColourNoiseProgramme(self.ledCount, hueScale=0.002, hueSpeed=0.02, brightnessScale=0.01, shimmerAmount=1)
+        self.noiseBands = NoiseBandsProgramme(self.ledCount, shimmerAmount=1)
+        self.solidColour = SolidColourProgramme(self.ledCount)
+        self.hueGradient = GradientProgramme(self.ledCount, hue=0.5, hueBottom=0.5, interpolateByHue=True)
+        self.rgbGradient = GradientProgramme(self.ledCount, hue=0.5, hueBottom=0.5)
         # Effects
-        self.colourSparks = SparksProgramme(ledCount, brightness=1)
-        self.inverseColourSparks = SparksProgramme(ledCount, propagationSpeed=-150)
-        self.flashes = SpheresProgramme(ledCount, shimmerAmount=1, brightness=1)
-        self.axisNoise = AxisColourNoiseProgramme(ledCount, hueScale=0.2, hueSpeed=.01, brightnessSpeed=0.3, brightnessScale=.01)
-        self.leftNearOrb = RotatingOrbProgramme(ledCount, centre=(-100, 0, 25), pathRadius=65, hue=0.1, speed=1)
-        self.leftFarOrb = RotatingOrbProgramme(ledCount, centre=(-100, 0, 0), pathRadius=30, hue=0.6, speed=-2)
-        self.rightNearOrb = RotatingOrbProgramme(ledCount, centre=(100, 0, 25), pathRadius=65, hue=0.1, speed=-1)
-        self.rightFarOrb = RotatingOrbProgramme(ledCount, centre=(100, 0, 0), pathRadius=30, hue=0.6, speed=2)
-        self.whistleGhost = RotatingOrbProgramme(ledCount, centre=getCentrePointInSpace(), pathRadius=10, orbRadius=30, hue=0.5, saturation=1, speed=4, shimmerAmount=1)
-        self.scanLines = ScanLineProgramme(ledCount, shimmerAmount=1, brightness=1)
-        self.rain = SpheresProgramme(ledCount, shimmerAmount=0.5)
+        self.colourSparks = SparksProgramme(self.ledCount, brightness=1)
+        self.inverseColourSparks = SparksProgramme(self.ledCount, propagationSpeed=-150)
+        self.flashes = SpheresProgramme(self.ledCount, shimmerAmount=1, brightness=1)
+        self.axisNoise = AxisColourNoiseProgramme(self.ledCount, hueScale=0.2, hueSpeed=.01, brightnessSpeed=0.3, brightnessScale=.01)
+        self.leftNearOrb = RotatingOrbProgramme(self.ledCount, centre=(-100, 0, 25), pathRadius=65, hue=0.1, speed=1)
+        self.leftFarOrb = RotatingOrbProgramme(self.ledCount, centre=(-100, 0, 0), pathRadius=30, hue=0.6, speed=-2)
+        self.rightNearOrb = RotatingOrbProgramme(self.ledCount, centre=(100, 0, 25), pathRadius=65, hue=0.1, speed=-1)
+        self.rightFarOrb = RotatingOrbProgramme(self.ledCount, centre=(100, 0, 0), pathRadius=30, hue=0.6, speed=2)
+        self.whistleGhost = RotatingOrbProgramme(self.ledCount, centre=getCentrePointInSpace(), pathRadius=10, orbRadius=30, hue=0.5, saturation=1, speed=4, shimmerAmount=1)
+        self.scanLines = ScanLineProgramme(self.ledCount, shimmerAmount=1, brightness=1)
+        self.rain = SpheresProgramme(self.ledCount, shimmerAmount=0.5)
 
         self.backgroundProgrammes = [
             self.fullColourNoise,
@@ -86,6 +86,13 @@ class ProgrammeManager():
             self.scanLines,
             self.rain,
         ]
+
+    def __init__(self, ledCount: int, isMaster: bool):
+        self.isMaster = isMaster
+        self.ledCount = ledCount
+        self.init()
+
+        
     
     def renderProgrammes(
             self,
@@ -244,15 +251,9 @@ class ProgrammeManager():
 
 
                 elif event.type == EVENT_TYPES.PHASES_SYNC and not self.isMaster:
-                    self.fullColourNoise.huePhase = event.params['fullColourNoise.huePhase']
-                    self.fullColourNoise.brightnessPhase = event.params['fullColourNoise.brightnessPhase']
-                    self.axisNoise.phaseHue = event.params['axisNoise.phaseHue']
-                    self.axisNoise.phaseBrightness = event.params['axisNoise.phaseBrightness']
-                    self.leftNearOrb.pathRadius = event.params['leftNearOrb.pathRadius']
-                    self.leftFarOrb.pathRadius = event.params['leftFarOrb.pathRadius']
-                    self.rightNearOrb.pathRadius = event.params['rightNearOrb.pathRadius']
-                    self.rightFarOrb.pathRadius = event.params['rightFarOrb.pathRadius']
-                    self.noiseBands.phase = event.params['noiseBands.phase']
+                    self.init()
+                    self.consumeSyncEvent(event)
+
             except KeyboardInterrupt:
                 quit()
             except:
@@ -278,21 +279,11 @@ class ProgrammeManager():
             # Raise phase sync event
             for event in events:
                 if event.type == EVENT_TYPES.SYNC_PHASES and self.isMaster:
-                    eventManager.pushEvents([Event(
-                        type=EVENT_TYPES.PHASES_SYNC,
-                        atTime=time.time(),
-                        params={
-                            'fullColourNoise.huePhase': self.fullColourNoise.huePhase,
-                            'fullColourNoise.brightnessPhase': self.fullColourNoise.brightnessPhase,
-                            'axisNoise.phaseHue': self.axisNoise.phaseHue,
-                            'axisNoise.phaseBrightness': self.axisNoise.phaseBrightness,
-                            'leftNearOrb.pathRadius': self.leftNearOrb.pathRadius,
-                            'leftFarOrb.pathRadius': self.leftFarOrb.pathRadius,
-                            'rightNearOrb.pathRadius': self.rightNearOrb.pathRadius,
-                            'rightFarOrb.pathRadius': self.rightFarOrb.pathRadius,
-                            'noiseBands.phase': self.noiseBands.phase,
-                        },
-                    )])
+                    # Reset and send sync event to slaves
+                    syncEvent = self.getSyncEvent()
+                    self.init()
+                    self.consumeSyncEvent(syncEvent)
+                    eventManager.pushEvents([syncEvent])
         except:
             print("Error Processing Post-Programme Events.")
             traceback.print_exc()
@@ -331,3 +322,31 @@ class ProgrammeManager():
 
     def getActiveBackgroundProgrammes(self):
         return [programme for programme in self.backgroundProgrammes if programme.brightness > 0]
+
+    def getSyncEvent(self):
+        return Event(
+            type=EVENT_TYPES.PHASES_SYNC,
+            atTime=time.time(),
+            params={
+                'fullColourNoise.huePhase': self.fullColourNoise.huePhase,
+                'fullColourNoise.brightnessPhase': self.fullColourNoise.brightnessPhase,
+                'axisNoise.phaseHue': self.axisNoise.phaseHue,
+                'axisNoise.phaseBrightness': self.axisNoise.phaseBrightness,
+                'leftNearOrb.pathRadius': self.leftNearOrb.pathRadius,
+                'leftFarOrb.pathRadius': self.leftFarOrb.pathRadius,
+                'rightNearOrb.pathRadius': self.rightNearOrb.pathRadius,
+                'rightFarOrb.pathRadius': self.rightFarOrb.pathRadius,
+                'noiseBands.phase': self.noiseBands.phase,
+            },
+        )
+
+    def consumeSyncEvent(self, event: Event):
+        self.fullColourNoise.huePhase = event.params['fullColourNoise.huePhase']
+        self.fullColourNoise.brightnessPhase = event.params['fullColourNoise.brightnessPhase']
+        self.axisNoise.phaseHue = event.params['axisNoise.phaseHue']
+        self.axisNoise.phaseBrightness = event.params['axisNoise.phaseBrightness']
+        self.leftNearOrb.pathRadius = event.params['leftNearOrb.pathRadius']
+        self.leftFarOrb.pathRadius = event.params['leftFarOrb.pathRadius']
+        self.rightNearOrb.pathRadius = event.params['rightNearOrb.pathRadius']
+        self.rightFarOrb.pathRadius = event.params['rightFarOrb.pathRadius']
+        self.noiseBands.phase = event.params['noiseBands.phase']

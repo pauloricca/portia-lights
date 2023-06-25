@@ -97,9 +97,9 @@ class VirtualRenderer(Renderer):
             if b > 255: b = 255
 
             # Apply 0.5 exponent to get a brightness curve closer to the LEDs (as it's not linear like computer screens)
-            r = (r / 255) ** 0.5
-            g = (g / 255) ** 0.5
-            b = (b / 255) ** 0.5
+            r = (r / 255) ** 0.4
+            g = (g / 255) ** 0.3
+            b = (b / 255) ** 0.2
 
             glPushMatrix()
             glTranslatef(ledCoords[i][0], ledCoords[i][1], ledCoords[i][2])
