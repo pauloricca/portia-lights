@@ -24,6 +24,7 @@ class EVENT_TYPES:
     WHISTLE = 'WHISTLE'
     FIRST_BASS_LINE = 'FIRST_BASS_LINE'
     SECOND_BASS_LINE = 'SECOND_BASS_LINE'
+    PIANO = 'PIANO'
 
     # Effects (get translated into programme events)
     FLASHES = 'FLASHES' # duration frequency
@@ -49,8 +50,9 @@ class EVENT_TYPES:
     PROG_WHISTLE_GHOST_BRIGHTNESS = 'PROG_WHISTLE_GHOST_BRIGHTNESS' # brightness (ramp)
     PROG_WHISTLE_GHOST_POSITION = 'PROG_WHISTLE_GHOST_POSITION' # position (ramp)
     PROG_BACKGROUND_COLOUR = 'PROG_BACKGROUND_COLOUR' # (hue brightness saturation ramp)
-    PROG_HUE_GRADIENT = 'PROG_HUE_GRADIENT' # hue brightness saturation hueBottom saturationBottom (ramp)
-    PROG_RGB_GRADIENT = 'PROG_RGB_GRADIENT' # hue brightness saturation hueBottom saturationBottom (ramp)
+    PROG_HUE_GRADIENT = 'PROG_HUE_GRADIENT' # brightness hue saturation hueBottom saturationBottom (ramp)
+    PROG_RGB_GRADIENT = 'PROG_RGB_GRADIENT' # brightness hue saturation hueBottom saturationBottom (ramp)
+    PROG_NOISE_THRESHOLD = 'PROG_NOISE_THRESHOLD' # (brightness hue saturation hueSecond saturationSecond min1 max1 min2 max2 ramp)
 
 
 @dataclass
@@ -58,8 +60,6 @@ class Event:
     type: str # Event identifier
     params: dict = field(default_factory=dict) # Dict of event params, specific to each event
     atTime: float = None # Timestamp of the event
-    # every: float = None # Interval between repetitions (in seconds), if repeating
-    # repeatTimes: int = 0 # Number of times to repeat the event
 
     def __repr__(self):
         return json.dumps({

@@ -5,7 +5,7 @@ from constants import *
 from events import EVENT_TYPES, Event, EventManager
 from programmes.axisColourNoiseProgramme import AxisColourNoiseProgramme
 from programmes.gradientProgramme import GradientProgramme
-from programmes.noiseThresholdProgramme import NoiseThresholdProgramme
+from programmes.noiseBandsProgramme import NoiseBandsProgramme
 from programmes.rotatingOrbProgramme import RotatingOrbProgramme
 from programmes.scanLineProgramme import ScanLineProgramme
 from programmes.spheresProgramme import SpheresProgramme
@@ -23,8 +23,7 @@ class ProgrammeManager():
     isMaster: bool
     # Backgrounds
     fullColourNoise: ColourNoiseProgramme
-    firstNoiseThreshold: NoiseThresholdProgramme
-    secondNoiseThreshold: NoiseThresholdProgramme
+    noiseBands: NoiseBandsProgramme
     solidColour: SolidColourProgramme
     hueGradient: GradientProgramme
     rgbGradient: GradientProgramme
@@ -47,8 +46,7 @@ class ProgrammeManager():
 
         # Backgrounds
         self.fullColourNoise = ColourNoiseProgramme(ledCount, hueScale=0.002, hueSpeed=0.02, brightnessScale=0.01, shimmerAmount=1)
-        self.firstNoiseThreshold = NoiseThresholdProgramme(ledCount, hue=1, shimmerAmount=0.5)
-        self.secondNoiseThreshold = NoiseThresholdProgramme(ledCount, hue=0.6, phase=30, shimmerAmount=0.5)
+        self.noiseBands = NoiseBandsProgramme(ledCount, shimmerAmount=1)
         self.solidColour = SolidColourProgramme(ledCount)
         self.hueGradient = GradientProgramme(ledCount, hue=0.5, hueBottom=0.5, interpolateByHue=True)
         self.rgbGradient = GradientProgramme(ledCount, hue=0.5, hueBottom=0.5)
@@ -67,8 +65,7 @@ class ProgrammeManager():
 
         self.backgroundProgrammes = [
             self.fullColourNoise,
-            self.firstNoiseThreshold,
-            self.secondNoiseThreshold,
+            self.noiseBands,
             self.solidColour,
             self.hueGradient,
             self.rgbGradient,
@@ -138,7 +135,7 @@ class ProgrammeManager():
                 
                 elif event.type == EVENT_TYPES.PROG_SPEED_BREATHING:
                     self.generateBreathing(
-                        attributes=["brightnessSpeed", "hueSpeed"],
+                        attributes=["brightnessSpeed", "hueSpeed", "speed"],
                         start=event.atTime,
                         length=event.params["length"],
                         count=event.params["count"] if "count" in event.params else 1,
@@ -233,6 +230,15 @@ class ProgrammeManager():
                     ramp = event.params["ramp"] if "ramp" in event.params else 0
                     self.animator.createAnimation(self.whistleGhost, "centre", newPosition, ramp)
 
+                elif event.type == EVENT_TYPES.PROG_NOISE_THRESHOLD:
+                    ramp = event.params["ramp"] if "ramp" in event.params else 0
+                    attributes = ["brightness", "hue", "saturation", "hueSecond", "saturationSecond"]
+                    for attr in [attr for attr in attributes if attr in event.params]:
+                        self.animator.createAnimation(self.noiseBands, attr, event.params[attr], ramp)
+                    if "min1" in event.params and "max1" in event.params:
+                        self.animator.createAnimation(self.noiseBands, "firstBand", (event.params["min1"], event.params["max1"]), ramp)
+                    if "min2" in event.params and "max2" in event.params:
+                        self.animator.createAnimation(self.noiseBands, "secondBand", (event.params["min2"], event.params["max2"]), ramp)
 
 
 
@@ -246,8 +252,7 @@ class ProgrammeManager():
                     self.leftFarOrb.pathRadius = event.params['leftFarOrb.pathRadius']
                     self.rightNearOrb.pathRadius = event.params['rightNearOrb.pathRadius']
                     self.rightFarOrb.pathRadius = event.params['rightFarOrb.pathRadius']
-                    self.firstNoiseThreshold.phase = event.params['firstNoiseThreshold.phase']
-                    self.secondNoiseThreshold.phase = event.params['secondNoiseThreshold.phase']
+                    self.noiseBands.phase = event.params['noiseBands.phase']
 
             except:
                 print("Error Processing Programme Event " + event.type +".")
@@ -284,8 +289,7 @@ class ProgrammeManager():
                             'leftFarOrb.pathRadius': self.leftFarOrb.pathRadius,
                             'rightNearOrb.pathRadius': self.rightNearOrb.pathRadius,
                             'rightFarOrb.pathRadius': self.rightFarOrb.pathRadius,
-                            'firstNoiseThreshold.phase': self.firstNoiseThreshold.phase,
-                            'secondNoiseThreshold.phase': self.secondNoiseThreshold.phase,
+                            'noiseBands.phase': self.noiseBands.phase,
                         },
                     )])
         except:
@@ -314,6 +318,9 @@ class ProgrammeManager():
                 for attr in [attr for attr in attributes if hasattr(programme, attr)]:
                     currentValue = getattr(programme, attr)
                     targetValue = currentValue * factor
+                    # Paulo
+                    if programme == self.noiseBands:
+                        print(('BREATH', currentValue, targetValue, factor))
                     self.animator.createAnimation(programme, attr, targetValue, attack, attackStart, currentValue)
                     self.animator.createAnimation(programme, attr, currentValue, release, releaseStart, targetValue)
 

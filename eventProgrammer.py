@@ -324,6 +324,54 @@ def eventProgrammer(events: list[Event]):
                     }
                 ))
 
+        elif event.type == EVENT_TYPES.PIANO:
+            # max brightness with 0 band width (all dark)
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_NOISE_THRESHOLD,
+                atTime=event.atTime,
+                params={
+                    "brightness": 1,
+                    "hue": .6,
+                    "saturation": .8,
+                    "hueSecond": .7,
+                    "saturationSecond": .8,
+                    "min1": .3,
+                    "max1": .3,
+                    "min2": .7,
+                    "max2": .7,
+                }
+            ))
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_NOISE_THRESHOLD,
+                atTime=event.atTime + 1,
+                params={
+                    "min1": .4,
+                    "max1": .5,
+                    "min2": .7,
+                    "max2": .8,
+                    "ramp": 5,
+                }
+            ))
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_NOISE_THRESHOLD,
+                atTime=event.atTime + 2,
+                params={
+                    "hue": 0,
+                    "hueSecond": .2,
+                    "ramp": 15,
+                }
+            ))
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_SPEED_BREATHING,
+                atTime=event.atTime + 1,
+                params={
+                    "factor": -20,
+                    "every": 4,
+                    "count": 30,
+                    "length": .5,
+                }
+            ))
+
 
         elif event.type == EVENT_TYPES.WAVE:
             newEvents.append(Event(

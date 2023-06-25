@@ -24,7 +24,7 @@ class SparksProgramme(Programme):
         propagationSpeed=600,
         brightness=0,
         fadeByDistance=.00001,
-        fadeByTime=30
+        fadeByTime=3
     ):
         super().__init__(ledCount)
         self.propagationSpeed = propagationSpeed
