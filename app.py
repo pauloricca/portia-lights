@@ -48,6 +48,8 @@ class App:
             isConfigInvalid = True
             ledCount = int(input("LED count:\n"))
 
+        self.printConfigInfo()
+
         self.renderer = LEDRenderer(ledCount) if self.isLightController else VirtualRenderer()
 
         if (isConfigInvalid):
@@ -96,3 +98,19 @@ class App:
 
         # Paulo comment sleep
         # time.sleep(0.01)
+    
+    def printConfigInfo(self):
+        print("LED coount: " + str(len(self.ledCoords)))
+        range = [
+            [float("inf"), float("-inf")],
+            [float("inf"), float("-inf")],
+            [float("inf"), float("-inf")],
+        ]
+        for ledPos in self.ledCoords:
+            for i in [0, 1, 2]:
+                if ledPos[i] < range[i][0]:
+                    range[i][0] = ledPos[0]
+                if ledPos[i] > range[i][1]:
+                    range[i][1] = ledPos[0]
+        for i, a in enumerate(['X', 'Y', 'Z']):
+            print("Config " + a + " range: " + str(range[i][0]) + " to " + str(range[i][1]))

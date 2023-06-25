@@ -4,3 +4,4 @@ config.json*
 daemon.pid
 .DS_Store
 hosts
+hosts_
