@@ -152,13 +152,13 @@ class EventManager:
         futureEvents: list[Event] = []
         for event in (self.localEventQueue if not popFromSlaveQueue else self.slaveEventQueue):
             if event.atTime <= currentTime:
-                if event.type == EVENT_TYPES.PLAY_AUDIO and not popFromSlaveQueue:
+                if self.isMaster and event.type == EVENT_TYPES.PLAY_AUDIO and not popFromSlaveQueue:
                     if len(sys.argv) > 1:
                         playAudio(sys.argv[1])
                     else:
                         playAudio()
                     pass
-                elif event.type == EVENT_TYPES.PLAY_MAIN_SEQUENCE and not popFromSlaveQueue:
+                elif self.isMaster and event.type == EVENT_TYPES.PLAY_MAIN_SEQUENCE and not popFromSlaveQueue:
                     sequenceEvents = self.mainSequence.getEvents(self.eventProgrammer)
                     for newEvent in sequenceEvents:
                         futureEvents.append(newEvent)
