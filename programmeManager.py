@@ -253,9 +253,10 @@ class ProgrammeManager():
                     self.rightNearOrb.pathRadius = event.params['rightNearOrb.pathRadius']
                     self.rightFarOrb.pathRadius = event.params['rightFarOrb.pathRadius']
                     self.noiseBands.phase = event.params['noiseBands.phase']
-
+            except KeyboardInterrupt:
+                quit()
             except:
-                print("Error Processing Programme Event " + event.type +".")
+                print("Error Processing Programme Event " + event.type + ".")
                 traceback.print_exc()
             
         self.animator.animate()
