@@ -261,6 +261,14 @@ def eventProgrammer(events: list[Event]):
                     "ramp": intervalBetweenStages,
                 }
             ))
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_BACKGROUND_COLOUR,
+                atTime=event.atTime + stage * intervalBetweenStages,
+                params={
+                    "brightness": 0,
+                    "ramp": 2,
+                }
+            ))
             stage += 1
             # reset gradient
             newEvents.append(Event(

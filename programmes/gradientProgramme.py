@@ -20,6 +20,7 @@ class GradientProgramme(Programme):
             hueBottom=0,
             saturationBottom=1,
             interpolateByHue=False,
+            shimmerAmount=0.5,
         ):
         super().__init__(ledCount)
         self.brightness = brightness
@@ -28,6 +29,7 @@ class GradientProgramme(Programme):
         self.hueBottom = hueBottom
         self.saturationBottom = saturationBottom
         self.interpolateByHue = interpolateByHue
+        self.shimmerAmount = shimmerAmount
     
     def step(
             self,
@@ -53,3 +55,5 @@ class GradientProgramme(Programme):
             led[0] = colour[0] * 255
             led[1] = colour[1] * 255
             led[2] = colour[2] * 255
+
+        self.shimmer(frameTime)
