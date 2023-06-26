@@ -99,6 +99,7 @@ def eventProgrammer(events: list[Event]):
             ))
 
         elif event.type == EVENT_TYPES.BOOM:
+            intensity = event.params["intensity"] if "intensity" in event.params else 1
             # Pre-spark flash
             sparkCentre = getRandomPointInSpace()
             newEvents.append(Event(
@@ -111,14 +112,20 @@ def eventProgrammer(events: list[Event]):
                     "life": 1,
                 }
             ))
-            newEvents.append(Event(
-                type=EVENT_TYPES.PROG_SPARK,
-                atTime=event.atTime,
-                params={
-                    "centre": sparkCentre,
-                    "colour": getRandomColour(1),
-                }
-            ))
+            sparkColour = getRandomColour(intensity)
+            sparkDelayTime = .3
+            sparkDelayCount = 6
+            sparkDelayFalloff = .3
+            for i in range(sparkDelayCount):
+                newEvents.append(Event(
+                    type=EVENT_TYPES.PROG_SPARK,
+                    atTime=event.atTime + i * sparkDelayTime,
+                    params={
+                        "centre": sparkCentre,
+                        "colour": sparkColour,
+                    }
+                ))
+                sparkColour = [c * sparkDelayFalloff for c in sparkColour]
         
         elif event.type == EVENT_TYPES.FLASHES:
             duration = event.params["duration"]
@@ -140,12 +147,27 @@ def eventProgrammer(events: list[Event]):
                 ))
         
         elif event.type == EVENT_TYPES.SUNSET:
-            brightness = 0.4
+            brightness = 0.2
             intervalBetweenStages = 22
+            stage = 0
+            # clouds
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_QUIET_CLOUDS,
+                atTime=event.atTime,
+            ))
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_BACKGROUND_COLOUR,
+                atTime=event.atTime,
+                params={
+                    "saturation": 0,
+                    "brightness": 1,
+                    "ramp": 2,
+                }
+            ))
             # blue - blue
             newEvents.append(Event(
                 type=EVENT_TYPES.PROG_RGB_GRADIENT,
-                atTime=event.atTime,
+                atTime=event.atTime + stage * intervalBetweenStages,
                 params={
                     "hue": 0.6,
                     "brightness": brightness,
@@ -155,10 +177,11 @@ def eventProgrammer(events: list[Event]):
                     "ramp": intervalBetweenStages,
                 }
             ))
+            stage += 1
             # desaturated green - desaturated yellow
             newEvents.append(Event(
                 type=EVENT_TYPES.PROG_RGB_GRADIENT,
-                atTime=event.atTime + intervalBetweenStages,
+                atTime=event.atTime + stage * intervalBetweenStages,
                 params={
                     "hue": 0.6,
                     "brightness": brightness,
@@ -168,10 +191,11 @@ def eventProgrammer(events: list[Event]):
                     "ramp": intervalBetweenStages,
                 }
             ))
+            stage += 1
             # grey - desaturated yellow
             newEvents.append(Event(
                 type=EVENT_TYPES.PROG_RGB_GRADIENT,
-                atTime=event.atTime + intervalBetweenStages * 2,
+                atTime=event.atTime + stage * intervalBetweenStages,
                 params={
                     "hue": 0.3,
                     "brightness": brightness,
@@ -181,10 +205,11 @@ def eventProgrammer(events: list[Event]):
                     "ramp": intervalBetweenStages,
                 }
             ))
+            stage += 1
             # red - yellow 
             newEvents.append(Event(
                 type=EVENT_TYPES.PROG_RGB_GRADIENT,
-                atTime=event.atTime + intervalBetweenStages * 3,
+                atTime=event.atTime + stage * intervalBetweenStages,
                 params={
                     "hue": 0.02,
                     "brightness": brightness,
@@ -194,10 +219,11 @@ def eventProgrammer(events: list[Event]):
                     "ramp": intervalBetweenStages,
                 }
             ))
+            stage += 1
             # purple - desaturated orange
             newEvents.append(Event(
                 type=EVENT_TYPES.PROG_RGB_GRADIENT,
-                atTime=event.atTime + intervalBetweenStages * 4,
+                atTime=event.atTime + stage * intervalBetweenStages,
                 params={
                     "hue": -0.3,
                     "brightness": brightness,
@@ -207,10 +233,11 @@ def eventProgrammer(events: list[Event]):
                     "ramp": intervalBetweenStages,
                 }
             ))
+            stage += 1
             # dark blue - desaturated blue
             newEvents.append(Event(
                 type=EVENT_TYPES.PROG_RGB_GRADIENT,
-                atTime=event.atTime + intervalBetweenStages * 5,
+                atTime=event.atTime + stage * intervalBetweenStages,
                 params={
                     "hue": -0.4,
                     "brightness": brightness / 4,
@@ -220,10 +247,11 @@ def eventProgrammer(events: list[Event]):
                     "ramp": intervalBetweenStages,
                 }
             ))
+            stage += 1
             # black - black
             newEvents.append(Event(
                 type=EVENT_TYPES.PROG_RGB_GRADIENT,
-                atTime=event.atTime + intervalBetweenStages * 6,
+                atTime=event.atTime + stage * intervalBetweenStages,
                 params={
                     "hue": -0.3,
                     "brightness": 0,
@@ -233,10 +261,11 @@ def eventProgrammer(events: list[Event]):
                     "ramp": intervalBetweenStages,
                 }
             ))
+            stage += 1
             # reset gradient
             newEvents.append(Event(
                 type=EVENT_TYPES.PROG_RGB_GRADIENT,
-                atTime=event.atTime + intervalBetweenStages * 7,
+                atTime=event.atTime + stage * intervalBetweenStages,
                 params={
                     "hue": 0.5,
                     "brightness": 0,
