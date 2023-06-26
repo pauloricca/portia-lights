@@ -80,7 +80,7 @@ class SpheresProgramme(Programme):
 
     def startRain(self, duration: float):
         dropRadius = 10
-        dropFrequency = 20 # Drops per second
+        dropFrequency = 15 # Drops per second
         numberOfDrops = int(duration * dropFrequency)
         intervalBetweenDrops = duration / numberOfDrops
         currentTime = time.time()
@@ -93,7 +93,7 @@ class SpheresProgramme(Programme):
                 centre = startPoint,
                 radius = dropRadius,
                 colour = (255, 255, 255),
-                life = 3,
+                life = 1.5,
                 startTime = startTime,
                 velocity = (0, -140, 0)
             ))

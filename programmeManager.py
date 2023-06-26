@@ -264,8 +264,8 @@ class ProgrammeManager():
         # Run programme cycles and add their output to the main render buffer
         for programme in self.programmes:
             try:
-                programme.step(ledCoords, frameTime, events)
                 if programme.brightness > 0:
+                    programme.step(ledCoords, frameTime, events)
                     for i, led in enumerate(leds):
                         led[0] += programme.leds[i][0]
                         led[1] += programme.leds[i][1]

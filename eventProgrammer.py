@@ -147,7 +147,7 @@ def eventProgrammer(events: list[Event]):
                 ))
         
         elif event.type == EVENT_TYPES.SUNSET:
-            brightness = 0.2
+            brightness = 0.07
             intervalBetweenStages = 22
             stage = 0
             # clouds

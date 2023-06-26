@@ -49,6 +49,10 @@ class ColourNoiseProgramme(Programme):
 
         self.huePhase += frameTime * self.hueSpeed
         self.brightnessPhase += frameTime * self.brightnessSpeed
+
+        # Paulo
+        # print((self.huePhase, self.brightnessPhase, self.hueSpeed, self.brightnessSpeed))
+        # print((self.brightness, self.brightnessPhase))
         
         for i, led in enumerate(self.leds):
             ledBrightness = self.brightness * pnoise3(

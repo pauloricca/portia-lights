@@ -6,7 +6,7 @@ from programmes.programme import Programme
 
 @dataclass
 class Spark:
-    life = 4
+    life = 1
     lastRadius: float
     radius: float
     centre: tuple[float, float, float]
