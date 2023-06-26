@@ -36,6 +36,7 @@ class EVENT_TYPES:
     # Programme events
     PROG_QUIET_CLOUDS = 'PROG_QUIET_CLOUDS'
     PROG_RUMBLE = 'PROG_RUMBLE'
+    PROG_ACCELERATE = 'PROG_ACCELERATE' # high low duration attack release
     PROG_BREATHING = 'PROG_BREATHING' # factor length (count every)
     PROG_SPEED_BREATHING = 'PROG_SPEED_BREATHING' # factor length (count every)
     PROG_HUE_BREATHING = 'PROG_HUE_BREATHING' # factor length (count every)

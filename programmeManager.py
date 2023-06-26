@@ -177,6 +177,19 @@ class ProgrammeManager():
                     self.animator.createAnimation(self.rain, "brightness", 1, attack)
                     self.animator.createAnimation(self.rain, "brightness", 0, release, event.atTime+duration-release, 1)
                 
+                elif event.type == EVENT_TYPES.PROG_ACCELERATE:
+                    duration = event.params["duration"]
+                    attack = event.params["attack"]
+                    release = event.params["release"]
+                    high = event.params["high"]
+                    low = event.params["low"]
+                    activeProgrammes = self.getActiveBackgroundProgrammes()
+                    for attr in ["brightnessSpeed", "hueSpeed", "speed"]:
+                        for programme in activeProgrammes:
+                            self.animator.createAnimation(programme, "brightness", high, attack)
+                            self.animator.createAnimation(programme, "brightness", low, release, event.atTime+duration-release, high)
+                    
+                
                 elif event.type == EVENT_TYPES.PROG_NEAR_ORBS or event.type == EVENT_TYPES.PROG_FAR_ORBS:
                     programmes = [self.leftFarOrb, self.rightFarOrb] if event.type == EVENT_TYPES.PROG_FAR_ORBS else [self.leftNearOrb, self.rightNearOrb]
                     ramp = event.params["ramp"] if "ramp" in event.params else 0
