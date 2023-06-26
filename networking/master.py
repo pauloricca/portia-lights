@@ -120,10 +120,11 @@ class Master:
             time.sleep(self.sendRetryTime)
 
     def pushEvents(self, events: list[Event]):
+        if len(events) == 0: return
+        
         for event in events:
             message = str(event)
             for slave in self.slaves:
                 slave.messageBuffer.append(message)
 
-        if len(events) > 0:
-            self.__startMessageSendingCycle()
+        self.__startMessageSendingCycle()

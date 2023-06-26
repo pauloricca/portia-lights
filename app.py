@@ -58,8 +58,12 @@ class App:
         self.programmeManager = ProgrammeManager(ledCount, self.isMaster)
         self.eventManager = EventManager(self.isMaster, eventProgrammer)
 
+        if self.isMaster:
+            self.eventManager.startSequence()
+
         while True: self.mainLoop()
-    
+
+
     def mainLoop(self):
         self.thisFrameTime = time.time()
         self.frameTime = self.thisFrameTime - self.lastFrameTime
@@ -98,6 +102,7 @@ class App:
 
         # Paulo comment sleep
         # time.sleep(0.01)
+
     
     def printConfigInfo(self):
         print("LED coount: " + str(len(self.ledCoords)))

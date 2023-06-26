@@ -10,11 +10,11 @@ import sys
 # Event names
 class EVENT_TYPES:
     # App events
-    PLAY_AUDIO = 'PLAY_AUDIO'
     PLAY_MAIN_SEQUENCE = 'PLAY_MAIN_SEQUENCE'
     CLOCK_SYNC = 'CLOCK_SYNC'
     SYNC_PHASES = 'SYNC_PHASES'
     PHASES_SYNC = 'PHASES_SYNC'
+    RESTART = 'RESTART'
 
     # Mood events (get translated into programme events)
     FAR_RUMBLE = 'FAR_RUMBLE'
@@ -128,21 +128,17 @@ class EventManager:
     slaveEventQueue: list[Event]
     mainSequence: EventSequence
     isMaster: bool
-    eventManager: Callable
+    eventProgrammer: Callable
 
     def __init__(self, isMaster: bool, eventProgrammer: Callable):
         self.isMaster = isMaster
         self.eventProgrammer = eventProgrammer
+        self.localEventQueue = []
 
         if self.isMaster:
             self.mainSequence = EventSequence()
             self.mainSequence.loadFromFile(getAbsolutePath(MAIN_SEQUENCE_FILE))
-            self.localEventQueue = self.mainSequence.getEvents(self.eventProgrammer)
             self.slaveEventQueue = []
-            for event in self.localEventQueue:
-                self.slaveEventQueue.append(event)
-        else:
-            self.localEventQueue = []
     
     # Selects events from the local (or slave) queue that should happen now,
     # processes global events and returns the others
@@ -152,17 +148,17 @@ class EventManager:
         futureEvents: list[Event] = []
         for event in (self.localEventQueue if not popFromSlaveQueue else self.slaveEventQueue):
             if event.atTime <= currentTime:
-                if self.isMaster and event.type == EVENT_TYPES.PLAY_AUDIO and not popFromSlaveQueue:
-                    if len(sys.argv) > 1:
-                        playAudio(sys.argv[1])
-                    else:
-                        playAudio()
-                    pass
+                if self.isMaster and event.type == EVENT_TYPES.RESTART and not popFromSlaveQueue:
+                    self.startSequence()
                 elif self.isMaster and event.type == EVENT_TYPES.PLAY_MAIN_SEQUENCE and not popFromSlaveQueue:
                     sequenceEvents = self.mainSequence.getEvents(self.eventProgrammer)
                     for newEvent in sequenceEvents:
                         futureEvents.append(newEvent)
-                    pass
+                        self.slaveEventQueue.append(newEvent)
+                    if len(sys.argv) > 1:
+                        playAudio(sys.argv[1])
+                    else:
+                        playAudio()
                 else:
                     currentEvents.append(event)
             else:
@@ -190,4 +186,14 @@ class EventManager:
             if self.isMaster:
                 try: self.slaveEventQueue.remove(event)
                 except: pass
+    
+    def startSequence(self):
+        self.pushEvents([Event(
+            type=EVENT_TYPES.SYNC_PHASES,
+            atTime=time.time() + 5,
+        )])
+        self.pushEvents([Event(
+            type=EVENT_TYPES.PLAY_MAIN_SEQUENCE,
+            atTime=time.time() + 10,
+        )])
 
