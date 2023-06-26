@@ -13,6 +13,7 @@ class RotatingOrbProgramme(Programme):
     centre: list[float, float, float]
     hue: float
     saturation: float
+    fadeByTime: float 
 
     def __init__(
         self,
@@ -39,6 +40,7 @@ class RotatingOrbProgramme(Programme):
         self.saturation = saturation
         self.shimmerAmount = shimmerAmount
         self.shimmerScale = 0.2
+        self.fadeByTime = 4
     
     def step(
             self,
@@ -46,7 +48,7 @@ class RotatingOrbProgramme(Programme):
             frameTime,
             events,
         ):
-        super().fade(frameTime * 4)
+        super().fade(frameTime * self.fadeByTime)
 
         self.angle += frameTime * self.speed
 

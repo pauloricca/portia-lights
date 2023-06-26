@@ -15,6 +15,7 @@ class EVENT_TYPES:
     SYNC_PHASES = 'SYNC_PHASES'
     PHASES_SYNC = 'PHASES_SYNC'
     RESTART = 'RESTART'
+    RESET = 'RESET'
 
     # Mood events (get translated into programme events)
     FAR_RUMBLE = 'FAR_RUMBLE'
@@ -189,9 +190,14 @@ class EventManager:
     
     def startSequence(self):
         self.pushEvents([Event(
-            type=EVENT_TYPES.SYNC_PHASES,
+            type=EVENT_TYPES.RESET,
             atTime=time.time() + 5,
         )])
+        for t in range(10):
+            self.pushEvents([Event(
+                type=EVENT_TYPES.SYNC_PHASES,
+                atTime=time.time() + 5 * t,
+            )])
         self.pushEvents([Event(
             type=EVENT_TYPES.PLAY_MAIN_SEQUENCE,
             atTime=time.time() + 10,

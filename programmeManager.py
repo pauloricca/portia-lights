@@ -251,7 +251,6 @@ class ProgrammeManager():
 
 
                 elif event.type == EVENT_TYPES.PHASES_SYNC and not self.isMaster:
-                    self.init()
                     self.consumeSyncEvent(event)
 
             except KeyboardInterrupt:
@@ -278,12 +277,10 @@ class ProgrammeManager():
         try:
             # Raise phase sync event
             for event in events:
-                if event.type == EVENT_TYPES.SYNC_PHASES and self.isMaster:
-                    # Reset and send sync event to slaves
-                    syncEvent = self.getSyncEvent()
+                if event.type == EVENT_TYPES.RESET:
                     self.init()
-                    self.consumeSyncEvent(syncEvent)
-                    eventManager.pushEvents([syncEvent])
+                if event.type == EVENT_TYPES.SYNC_PHASES and self.isMaster:
+                    eventManager.pushEvents([self.getSyncEvent()])
         except:
             print("Error Processing Post-Programme Events.")
             traceback.print_exc()

@@ -13,6 +13,7 @@ class NoiseBandsProgramme(Programme):
     scale: float
     speed: float
     phase: float
+    fadeByTime: float
 
     def __init__(
             self,
@@ -40,6 +41,7 @@ class NoiseBandsProgramme(Programme):
         self.firstBand = firstBand
         self.secondBand = secondBand
         self.shimmerAmount = shimmerAmount
+        self.fadeByTime = 2
     
     def step(
             self,
@@ -50,10 +52,7 @@ class NoiseBandsProgramme(Programme):
 
         self.phase += frameTime * self.speed
 
-        self.hue = 0.6
-        self.hueSecond = 0.7
-
-        self.fade(frameTime * 2)
+        self.fade(frameTime * self.fadeByTime)
         self.shimmer(frameTime)
 
         for i, led in enumerate(self.leds):
