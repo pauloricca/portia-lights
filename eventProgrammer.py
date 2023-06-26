@@ -407,22 +407,23 @@ def eventProgrammer(events: list[Event]):
                 (741.5, 1, 0.5),
                 (744.7, 0.5, 0.2),
                 (747.2, 0.7, 0.3),
+                (749.2, 0.7, 0.3),
             ]
             lowSpeed = 0.3
+            anticipationTime = 0
             for (timestamp, movement, duration) in steps:
                 stepTime = event.atTime + timestamp - steps[0][0] - anticipationTime
                 newEvents.append(Event(
                     type=EVENT_TYPES.PROG_ACCELERATE,
-                    atTime=event.atTime + 1,
+                    atTime=stepTime,
                     params={
                         "high": movement,
                         "low": lowSpeed,
                         "duration": duration,
-                        "attack": .2,
-                        "release": .5,
+                        "attack": .3,
+                        "release": 1,
                     }
                 ))
-                # high low duration attack release
 
 
         elif event.type == EVENT_TYPES.WAVE:

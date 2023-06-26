@@ -194,7 +194,7 @@ class EventManager:
             type=EVENT_TYPES.RESET,
             atTime=time.time() + 5,
         )])
-        for t in range(10):
+        for t in range(1):
             self.pushEvents([Event(
                 type=EVENT_TYPES.SYNC_PHASES,
                 atTime=time.time() + 5 * t,
