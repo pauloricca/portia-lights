@@ -301,14 +301,17 @@ def eventProgrammer(events: list[Event]):
         elif event.type == EVENT_TYPES.FIRST_BASS_LINE:
             # (timestamp, brightness, (hue,saturation)-top, (hue,saturation)-bottom)
             steps = [
-                (524.5, 1, (0,1), (0.5,1)),
-                (526, 1, (0.5,1), (0.8,1)),
-                (527, 1, (0.8,1), (0.4,1)),
-                (528, 1, (0.4,1), (0.6,1)),
-                (529, 1, (0.6,1), (0.2,1)),
+                (523.6, 1, (0,1), (0.5,1)),
+                (527.9, 1, (0.5,1), (0.8,1)),
+                (531.5, 1, (0.8,1), (0.4,1)),
+                (532.3, 1, (0.4,1), (0.6,1)),
+                (536.6, 1, (0.6,1), (0.2,1)),
+                (538.8, 1, (0,2), (0.5,1)),
+                (541.0, 1, (0.5,1), (0.8,1)),
+                (544.0, 1, (0.8,1), (0.4,1)),
             ]
             ramp = 0.3
-            anticipationTime = 0.3
+            anticipationTime = 0
             for (timestamp, brightness, (hue, saturation), (hueBottom, saturationBottom)) in steps:
                 stepTime = event.atTime + timestamp - steps[0][0] - anticipationTime
                 newEvents.append(Event(

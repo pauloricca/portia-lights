@@ -1,7 +1,7 @@
 from abc import *
 
 from constants import *
-from utils import getBlankLEDsBuffer
+from utils import clamp, getBlankLEDsBuffer
 from events import Event
 from noise import snoise2
 
@@ -40,10 +40,11 @@ class Programme(ABC):
         self,
         amount: float
     ):
+        clampedAmount = clamp(amount, 0, 1)
         for led in self.leds:
-            led[0] *= 1 - amount
-            led[1] *= 1 - amount
-            led[2] *= 1 - amount
+            led[0] *= 1 - clampedAmount
+            led[1] *= 1 - clampedAmount
+            led[2] *= 1 - clampedAmount
 
     # Shimmer all leds according to shimmerAmount
     def shimmer(self, frameTime: float):
