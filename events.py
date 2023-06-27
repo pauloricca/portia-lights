@@ -65,10 +65,10 @@ class Event:
 
     def __repr__(self):
         return json.dumps({
-                 "type": self.type,
-                 "atTime": self.atTime,
-                 "params": self.params 
-            })
+                "type": self.type,
+                "atTime": self.atTime,
+                "params": self.params 
+        })
 
 
 @dataclass
@@ -90,7 +90,7 @@ class EventSequence:
         
         self.events = []
         for line in lines:
-            if not line.startswith('#'):
+            if not (line == '' or line.isspace() or line.startswith('#')):
                 lineParts = line.split(' ')
                 eventType = ''
                 eventTime: float = 0

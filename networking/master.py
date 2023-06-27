@@ -75,7 +75,8 @@ class Master:
                     try:
                         s.connect((potentialSlaveIp, self.port))
                         # Send clock sync message when discovering potential slaves
-                        s.sendall(str.encode(str(Event(type=EVENT_TYPES.CLOCK_SYNC, params={"time": time.time()}))))
+                        clockSyncMessage = self.__getJsonEventsArrayMessage([str(Event(type=EVENT_TYPES.CLOCK_SYNC, params={"time": time.time()}))])
+                        s.sendall(str.encode(clockSyncMessage))
                         s.close()
 
                         haveSlaveAlready = False
@@ -103,19 +104,19 @@ class Master:
         while stillHaveMessagesToSend:
             stillHaveMessagesToSend = False
             for slave in self.slaves:
-                messagesToRetry = []
-                for message in slave.messageBuffer:
-                    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-                        try:
-                            s.connect((slave.ip, self.port))
-                            self.isVerbose and print("sending message '" + message + "' to " + slave.ip)
-                            s.sendall(str.encode(message))
-                            s.close()
-                            slave.lastSeenAt = time.time()
-                        except:
-                            stillHaveMessagesToSend = True
-                            messagesToRetry.append(message)
-                slave.messageBuffer = messagesToRetry
+                messagesToSend = slave.messageBuffer
+                slave.messageBuffer = []
+                message = self.__getJsonEventsArrayMessage(messagesToSend)
+                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                    try:
+                        s.connect((slave.ip, self.port))
+                        self.isVerbose and print("sending message '" + message + "' to " + slave.ip)
+                        s.sendall(str.encode(message))
+                        s.close()
+                        slave.lastSeenAt = time.time()
+                    except:
+                        stillHaveMessagesToSend = True
+                        slave.messageBuffer.extend(messagesToSend)
 
             time.sleep(self.sendRetryTime)
 
@@ -128,3 +129,6 @@ class Master:
                 slave.messageBuffer.append(message)
 
         self.__startMessageSendingCycle()
+
+    def __getJsonEventsArrayMessage(self, messages: list[str]):
+        return '{"events": [' + ",".join(messages) + ']}'
