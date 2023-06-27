@@ -34,7 +34,7 @@ class EVENT_TYPES:
     WAVE = 'WAVE'
 
     # Programme events
-    PROG_QUIET_CLOUDS = 'PROG_QUIET_CLOUDS'
+    PROG_QUIET_CLOUDS = 'PROG_QUIET_CLOUDS' # (brightness saturation ramp)
     PROG_RUMBLE = 'PROG_RUMBLE'
     PROG_ACCELERATE = 'PROG_ACCELERATE' # high low duration attack release
     PROG_BREATHING = 'PROG_BREATHING' # factor length (count every)
@@ -192,15 +192,16 @@ class EventManager:
     def startSequence(self):
         self.pushEvents([Event(
             type=EVENT_TYPES.RESET,
-            atTime=time.time() + 5,
+            atTime=time.time() + START_SEQUENCE_DELAY / 2,
         )])
+        # PAULO
         for t in range(1):
             self.pushEvents([Event(
                 type=EVENT_TYPES.SYNC_PHASES,
-                atTime=time.time() + 5 * t,
+                atTime=time.time() + (START_SEQUENCE_DELAY / 2) * t,
             )])
         self.pushEvents([Event(
             type=EVENT_TYPES.PLAY_MAIN_SEQUENCE,
-            atTime=time.time() + 10,
+            atTime=time.time() + START_SEQUENCE_DELAY,
         )])
 

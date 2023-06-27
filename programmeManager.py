@@ -111,10 +111,14 @@ class ProgrammeManager():
             try:
 
                 if event.type == EVENT_TYPES.PROG_QUIET_CLOUDS:
-                    self.animator.createAnimation(self.fullColourNoise, "brightness", 0.3, 1)
-                    self.animator.createAnimation(self.fullColourNoise, "shimmerAmount", 0.3, 1)
+                    ramp = event.params["ramp"] if "ramp" in event.params else 1
+                    saturation = event.params["saturation"] if "saturation" in event.params else 0.5
+                    brightness = event.params["brightness"] if "brightness" in event.params else 0.3
+                    self.animator.createAnimation(self.fullColourNoise, "brightness", brightness, ramp)
+                    self.animator.createAnimation(self.fullColourNoise, "shimmerAmount", 0.3, ramp)
+                    self.animator.createAnimation(self.fullColourNoise, "saturation", saturation, ramp)
                     for programme in self.getBackgroundProgrammesOtherThan(self.fullColourNoise):
-                        self.animator.createAnimation(programme, "brightness", 0, 1)
+                        self.animator.createAnimation(programme, "brightness", 0, ramp)
                 
                 elif event.type == EVENT_TYPES.PROG_HUE_BREATHING:
                     self.generateBreathing(
@@ -228,10 +232,10 @@ class ProgrammeManager():
                         self.animator.createAnimation(self.hueGradient, attr, event.params[attr], ramp)
                 
                 elif event.type == EVENT_TYPES.PROG_RGB_GRADIENT:
-                    otherBackgrounds = self.getBackgroundProgrammesOtherThan(self.rgbGradient)
+                    # otherBackgrounds = self.getBackgroundProgrammesOtherThan(self.rgbGradient)
                     ramp = event.params["ramp"] if "ramp" in event.params else 0
-                    for programme in otherBackgrounds:
-                        self.animator.createAnimation(programme, "brightness", 0, ramp)
+                    # for programme in otherBackgrounds:
+                    #     self.animator.createAnimation(programme, "brightness", 0, ramp)
                     for attr in ["hue", "brightness", "saturation", "hueBottom", "saturationBottom"]:
                         self.animator.createAnimation(self.rgbGradient, attr, event.params[attr], ramp)
 

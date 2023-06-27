@@ -153,14 +153,9 @@ def eventProgrammer(events: list[Event]):
             # clouds
             newEvents.append(Event(
                 type=EVENT_TYPES.PROG_QUIET_CLOUDS,
-                atTime=event.atTime,
-            ))
-            newEvents.append(Event(
-                type=EVENT_TYPES.PROG_BACKGROUND_COLOUR,
-                atTime=event.atTime,
+                atTime=event.atTime - 2,
                 params={
                     "saturation": 0,
-                    "brightness": 1,
                     "ramp": 2,
                 }
             ))
@@ -261,12 +256,13 @@ def eventProgrammer(events: list[Event]):
                     "ramp": intervalBetweenStages,
                 }
             ))
+            # clouds disappear
             newEvents.append(Event(
-                type=EVENT_TYPES.PROG_BACKGROUND_COLOUR,
+                type=EVENT_TYPES.PROG_QUIET_CLOUDS,
                 atTime=event.atTime + stage * intervalBetweenStages,
                 params={
                     "brightness": 0,
-                    "ramp": 2,
+                    "ramp": 4,
                 }
             ))
             stage += 1
