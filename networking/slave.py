@@ -49,30 +49,35 @@ class Slave:
                         else:
                             if message != '':
                                 try:
-                                    event: Event = json.loads(message, object_hook=asEvent)
+                                    events: list[Event] = json.loads(message, object_hook=asEventList)
+                                    for event in events:
+                                        # Consume clock sync events
+                                        if event.type == EVENT_TYPES.CLOCK_SYNC:
+                                            self.masterTimeDiff = event.params["time"] - time.time()
+                                        else:
+                                            # Adjust event times to compensate master time difference
+                                            if event.atTime: event.atTime -= self.masterTimeDiff
+                                            self.events.append(event)
 
-                                    # Consume clock sync events
-                                    if event.type == EVENT_TYPES.CLOCK_SYNC:
-                                        self.masterTimeDiff = event.params["time"] - time.time()
-                                    else:
-                                        # Adjust event times to compensate master time difference
-                                        if event.atTime: event.atTime -= self.masterTimeDiff
-                                        self.events.append(event)
-
-                                    self.isVerbose and print("New event:")
-                                    self.isVerbose and print(event)
+                                        self.isVerbose and print("New event:")
+                                        self.isVerbose and print(event)
+                                        # Paulo
+                                        print(('new event:', event.type))
                                 except Exception as e:
                                     print("Error parsing message: " + message)
                                     print(e)
                             connectionOpen = False
 
-# Convert event dict converted from json to Event object
-def asEvent(jsonEventDict: dict):
-    if 'type' not in jsonEventDict:
-        return jsonEventDict
+# Convert json message to event list (expecting an object with an "events" array)
+def asEventList(jsonMessage: dict):
+    if 'events' not in jsonMessage:
+        return jsonMessage
     else:
-        return Event(
-            type=jsonEventDict['type'],
-            atTime=jsonEventDict['atTime'] if 'atTime' in jsonEventDict else None,
-            params=jsonEventDict['params'] if 'params' in jsonEventDict else {}
-        )
+        return [
+            Event(
+                type=jsonEvent['type'],
+                atTime=jsonEvent['atTime'] if 'atTime' in jsonEvent else None,
+                params=jsonEvent['params'] if 'params' in jsonEvent else {}
+            )
+            for jsonEvent in jsonMessage['events']
+        ]

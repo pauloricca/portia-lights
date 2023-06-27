@@ -105,7 +105,7 @@ class App:
 
     
     def printConfigInfo(self):
-        print("LED coount: " + str(len(self.ledCoords)))
+        print("LED count: " + str(len(self.ledCoords)))
         range = [
             [float("inf"), float("-inf")],
             [float("inf"), float("-inf")],

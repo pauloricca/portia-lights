@@ -21,4 +21,4 @@ if isMaster: print("Starting as Master")
 else: print("Starting as Slave")
 
 # Paulo remove verbose
-app = App(isMaster=isMaster, isLightController=True, isVerbose=True)
+app = App(isMaster=isMaster, isLightController=True, isVerbose=False)
