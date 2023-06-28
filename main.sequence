@@ -56,9 +56,24 @@
 416.8 WAVE intensity=0.2
 422.4 WAVE intensity=0.1
 424.5 WHISTLE
-523.5 FIRST_BASS_LINE
-#587.4 KEYS
-628.3 SECOND_BASS_LINE
+523.7 FIRST_BASS_LINE
+559 SYNTH_BANDS
+275.4 BOOM intensity=0.1
+580.6 BOOM intensity=0.2
+587.4 BOOM intensity=0.4
+592.7 BOOM intensity=0.6
+597.8 BOOM
+602.4 BOOM intensity=0.4
+606.6 BOOM intensity=0.6
+607.2 BOOM intensity=0.4
+611 BOOM intensity=0.7
+611.5 BOOM intensity=0.7
+615.4 BOOM intensity=0.3
+615.9 BOOM intensity=0.3
+619.7 BOOM intensity=0.4
+624.1 BOOM intensity=0.5
+624.6 BOOM intensity=0.4
+628.5 SECOND_BASS_LINE
 #694 HIGH_FREQUENCY_WHISTLE
 # ---- make sure this thunder appears
 716.3 THUNDER

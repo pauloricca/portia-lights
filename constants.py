@@ -40,7 +40,7 @@ EVENTS_BOUNDING_BOX = [
 SLAVE_ADVANCE_NOTICE_TIME = 2
 
 # Amount of time to delay the start of the sequence, to let slaves connect
-START_SEQUENCE_DELAY = 3
+START_SEQUENCE_DELAY = 0 # Paulo
 
 VIRTUAL_CAMERA = (0, -20, -800)
 

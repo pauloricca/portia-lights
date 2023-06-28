@@ -27,7 +27,7 @@ class NoiseBandsProgramme(Programme):
             speed=.15,
             firstBand=(.2, .3),
             secondBand=(.5, .7),
-            shimmerAmount=0
+            shimmerAmount=0.2
         ):
         super().__init__(ledCount)
         self.brightness = brightness
@@ -41,7 +41,7 @@ class NoiseBandsProgramme(Programme):
         self.firstBand = firstBand
         self.secondBand = secondBand
         self.shimmerAmount = shimmerAmount
-        self.fadeByTime = 2
+        self.fadeByTime = 1
     
     def step(
             self,

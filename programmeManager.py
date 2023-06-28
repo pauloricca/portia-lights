@@ -5,6 +5,7 @@ from constants import *
 from events import EVENT_TYPES, Event, EventManager
 from programmes.axisColourNoiseProgramme import AxisColourNoiseProgramme
 from programmes.gradientProgramme import GradientProgramme
+from programmes.horizontalBandsProgramme import HorizontalBandsProgramme
 from programmes.noiseBandsProgramme import NoiseBandsProgramme
 from programmes.rotatingOrbProgramme import RotatingOrbProgramme
 from programmes.scanLineProgramme import ScanLineProgramme
@@ -47,7 +48,7 @@ class ProgrammeManager():
         # Backgrounds
         # Keep fullColourNoise as it's the transition between the end and start
         if not hasattr(self, 'fullColourNoise'):
-            self.fullColourNoise = ColourNoiseProgramme(self.ledCount, brightness=0.3)
+            self.fullColourNoise = ColourNoiseProgramme(self.ledCount, brightness=0.2)
         self.noiseBands = NoiseBandsProgramme(self.ledCount, shimmerAmount=1)
         self.solidColour = SolidColourProgramme(self.ledCount)
         self.hueGradient = GradientProgramme(self.ledCount, hue=0.5, hueBottom=0.5, interpolateByHue=True)
@@ -64,6 +65,7 @@ class ProgrammeManager():
         self.whistleGhost = RotatingOrbProgramme(self.ledCount, centre=getCentrePointInSpace(), pathRadius=10, orbRadius=30, hue=0.5, saturation=1, speed=4, shimmerAmount=1)
         self.scanLines = ScanLineProgramme(self.ledCount, shimmerAmount=1, brightness=1)
         self.rain = SpheresProgramme(self.ledCount, shimmerAmount=0.5)
+        self.horizontalBands = HorizontalBandsProgramme(self.ledCount)
 
         self.backgroundProgrammes = [
             self.fullColourNoise,
@@ -87,6 +89,7 @@ class ProgrammeManager():
             self.whistleGhost,
             self.scanLines,
             self.rain,
+            self.horizontalBands,
         ]
 
     def __init__(self, ledCount: int, isMaster: bool):
@@ -267,7 +270,12 @@ class ProgrammeManager():
                         self.animator.createAnimation(self.noiseBands, "secondBand", (event.params["min2"], event.params["max2"]), ramp)
                     if "phase" in event.params:
                         self.noiseBands.phase = event.params["phase"]
-
+                
+                elif event.type == EVENT_TYPES.PROG_HORIZONTAL_BANDS:
+                    ramp = event.params["ramp"] if "ramp" in event.params else 0
+                    attributes = ["brightness", "speed", "height", "ratio"]
+                    for attr in [attr for attr in attributes if attr in event.params]:
+                        self.animator.createAnimation(self.horizontalBands, attr, event.params[attr], ramp)
 
 
 
@@ -355,6 +363,7 @@ class ProgrammeManager():
                 'rightNearOrb.pathRadius': self.rightNearOrb.pathRadius,
                 'rightFarOrb.pathRadius': self.rightFarOrb.pathRadius,
                 'noiseBands.phase': self.noiseBands.phase,
+                'horizontalBands.phase': self.horizontalBands.phase,
             },
         )
 
@@ -368,3 +377,4 @@ class ProgrammeManager():
         self.rightNearOrb.pathRadius = event.params['rightNearOrb.pathRadius']
         self.rightFarOrb.pathRadius = event.params['rightFarOrb.pathRadius']
         self.noiseBands.phase = event.params['noiseBands.phase']
+        self.horizontalBands.phase = event.params['horizontalBands.phase']
