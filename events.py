@@ -31,7 +31,7 @@ class EVENT_TYPES:
     FLASHES = 'FLASHES' # duration frequency
     THUNDER = 'THUNDER'
     BOOM = 'BOOM'
-    WAVE = 'WAVE'
+    WAVE = 'WAVE' # intensity
 
     # Programme events
     PROG_QUIET_CLOUDS = 'PROG_QUIET_CLOUDS' # (brightness saturation ramp)
@@ -54,7 +54,7 @@ class EVENT_TYPES:
     PROG_BACKGROUND_COLOUR = 'PROG_BACKGROUND_COLOUR' # (hue brightness saturation ramp)
     PROG_HUE_GRADIENT = 'PROG_HUE_GRADIENT' # brightness hue saturation hueBottom saturationBottom (ramp)
     PROG_RGB_GRADIENT = 'PROG_RGB_GRADIENT' # brightness hue saturation hueBottom saturationBottom (ramp)
-    PROG_NOISE_THRESHOLD = 'PROG_NOISE_THRESHOLD' # (brightness hue saturation hueSecond saturationSecond min1 max1 min2 max2 ramp)
+    PROG_NOISE_THRESHOLD = 'PROG_NOISE_THRESHOLD' # (brightness hue saturation hueSecond saturationSecond phase min1 max1 min2 max2 speed ramp)
 
 
 @dataclass

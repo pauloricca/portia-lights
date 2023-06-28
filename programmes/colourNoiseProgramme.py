@@ -18,14 +18,14 @@ class ColourNoiseProgramme(Programme):
             self,
             ledCount: int,
             brightness=0,
-            saturation=1,
+            saturation=.7,
             hue=.5,
             hueRange=.2,
-            hueScale=.0015,
-            hueSpeed=.1,
-            brightnessScale=.02,
+            hueScale=.02,
+            hueSpeed=2,
+            brightnessScale=.01,
             brightnessSpeed=.2,
-            shimmerAmount=0,
+            shimmerAmount=.3,
         ):
         super().__init__(ledCount)
         self.brightness = brightness

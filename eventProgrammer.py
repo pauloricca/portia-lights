@@ -9,10 +9,6 @@ def eventProgrammer(events: list[Event]):
     for event in events:
         if event.type == EVENT_TYPES.FAR_RUMBLE:
             newEvents.append(Event(
-                type=EVENT_TYPES.PROG_QUIET_CLOUDS,
-                atTime=event.atTime,
-            ))
-            newEvents.append(Event(
                 type=EVENT_TYPES.PROG_BACKGROUND_COLOUR,
                 atTime=event.atTime,
                 params={
@@ -30,8 +26,8 @@ def eventProgrammer(events: list[Event]):
                 type=EVENT_TYPES.PROG_BACKGROUND_COLOUR,
                 atTime=event.atTime - 3,
                 params={
-                    "hue": 0.15,
-                    "ramp": 6,
+                    "hue": 0.07,
+                    "ramp": 4,
                 }
             ))
 
@@ -113,8 +109,8 @@ def eventProgrammer(events: list[Event]):
                 }
             ))
             sparkColour = getRandomColour(intensity)
-            sparkDelayTime = .3
-            sparkDelayCount = 6
+            sparkDelayTime = .4
+            sparkDelayCount = 4
             sparkDelayFalloff = .3
             for i in range(sparkDelayCount):
                 newEvents.append(Event(
@@ -361,73 +357,120 @@ def eventProgrammer(events: list[Event]):
                 ))
 
         elif event.type == EVENT_TYPES.PIANO:
+            lowSpeed = 0.03
+            highSpeed = 0.3
+            startTime = 740
+            startPhase = 2
             # max brightness with 0 band width (all dark)
             newEvents.append(Event(
                 type=EVENT_TYPES.PROG_NOISE_THRESHOLD,
                 atTime=event.atTime,
                 params={
                     "brightness": 1,
-                    "hue": .6,
-                    "saturation": .8,
-                    "hueSecond": .7,
-                    "saturationSecond": .8,
+                    "hue": 0.2,
+                    "saturation": 0.8,
+                    "hueSecond": 0.8,
+                    "saturationSecond": 0.8,
                     "min1": .3,
                     "max1": .3,
                     "min2": .7,
                     "max2": .7,
+                    "phase": startPhase,
                 }
             ))
+            # Appear
             newEvents.append(Event(
                 type=EVENT_TYPES.PROG_NOISE_THRESHOLD,
-                atTime=event.atTime + 1,
+                atTime=event.atTime + 1.5,
                 params={
                     "min1": .4,
                     "max1": .5,
                     "min2": .7,
                     "max2": .8,
-                    "ramp": 5,
+                    "ramp": 1,
                 }
             ))
+            # Slowly change colour
             newEvents.append(Event(
                 type=EVENT_TYPES.PROG_NOISE_THRESHOLD,
-                atTime=event.atTime + 2,
+                atTime=event.atTime + 5,
                 params={
-                    "hue": 0,
-                    "hueSecond": .2,
+                    "hue": .6,
+                    "saturation": .8,
+                    "hueSecond": .7,
+                    "saturationSecond": .8,
                     "ramp": 15,
+                }
+            ))
+            # Slow down
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_NOISE_THRESHOLD,
+                atTime=event.atTime + 4,
+                params={
+                    "speed": lowSpeed,
+                    "ramp": 4,
                 }
             ))
 
             # (timestamp, movement 0-1, duration)
             steps = [
-                (741.5, 1, 0.5),
-                (744.7, 0.5, 0.2),
-                (747.2, 0.7, 0.3),
-                (749.2, 0.7, 0.3),
+                (751.8, 0.7, 2),
+                (757.8, 0.7, 1),
+                (765.3, 0.4, 1),
+                (771.5, 1, 4),
+                (782.7, 1.3, 2),
+                (792.8, 0.7, 2),
+                (800.5, 0.4, 1),
+                (802.5, 1, 4),
+                (811.7, 0.4, 1),
+                (812.8, 1, 4),
+                (820.8, 0.4, 1),
+                (821.9, 0.7, 3),
+                (829.8, 0.4, 1),
+                (830.5, 1, 4),
+                (838.0, 1, 0.6),
+                (839.7, 0.6, 3),
+                (848.7, 0.6, 3),
+                (857.0, 0.3, 3),
+                (875.4, 0.3, 1),
+                (883.3, 0.5, 1),
+                (894.0, 0.5, 1),
             ]
-            lowSpeed = 0.3
             anticipationTime = 0
             for (timestamp, movement, duration) in steps:
-                stepTime = event.atTime + timestamp - steps[0][0] - anticipationTime
+                stepTime = event.atTime + timestamp - startTime - anticipationTime
                 newEvents.append(Event(
                     type=EVENT_TYPES.PROG_ACCELERATE,
                     atTime=stepTime,
                     params={
-                        "high": movement,
+                        "high": lowSpeed + (highSpeed - lowSpeed) * movement,
                         "low": lowSpeed,
                         "duration": duration,
                         "attack": .3,
-                        "release": 1,
+                        "release": duration / 2,
                     }
                 ))
+            # Disappear
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_NOISE_THRESHOLD,
+                atTime=event.atTime + 894 - startTime,
+                params={
+                    "min1": .5,
+                    "max1": .5,
+                    "min2": .5,
+                    "max2": .5,
+                    "ramp": 8,
+                }
+            ))
 
 
         elif event.type == EVENT_TYPES.WAVE:
+            intensity = event.params["intensity"] if "intensity" in event.params else 1
             newEvents.append(Event(
                 type=EVENT_TYPES.PROG_SCAN_LINE,
                 atTime=event.atTime,
                 params={
-                    "colour": getRandomColour(1),
+                    "colour": getRandomColour(intensity),
                     "axis": 1,
                     "direction": -1,
                 }

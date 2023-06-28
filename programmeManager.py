@@ -45,7 +45,9 @@ class ProgrammeManager():
     def init(self):
         self.animator = Animator()
         # Backgrounds
-        self.fullColourNoise = ColourNoiseProgramme(self.ledCount, hueScale=0.002, hueSpeed=0.02, brightnessScale=0.01, shimmerAmount=1)
+        # Keep fullColourNoise as it's the transition between the end and start
+        if not hasattr(self, 'fullColourNoise'):
+            self.fullColourNoise = ColourNoiseProgramme(self.ledCount, brightness=0.3)
         self.noiseBands = NoiseBandsProgramme(self.ledCount, shimmerAmount=1)
         self.solidColour = SolidColourProgramme(self.ledCount)
         self.hueGradient = GradientProgramme(self.ledCount, hue=0.5, hueBottom=0.5, interpolateByHue=True)
@@ -188,10 +190,10 @@ class ProgrammeManager():
                     high = event.params["high"]
                     low = event.params["low"]
                     activeProgrammes = self.getActiveBackgroundProgrammes()
-                    for attr in ["brightnessSpeed", "hueSpeed", "speed"]:
-                        for programme in activeProgrammes:
-                            self.animator.createAnimation(programme, "brightness", high, attack)
-                            self.animator.createAnimation(programme, "brightness", low, release, event.atTime+duration-release, high)
+                    for programme in activeProgrammes:
+                        for attr in [attr for attr in ["brightnessSpeed", "hueSpeed", "speed"] if hasattr(programme, attr)]:
+                            self.animator.createAnimation(programme, attr, high, attack)
+                            self.animator.createAnimation(programme, attr, low, release, event.atTime+duration-release, high)
                     
                 
                 elif event.type == EVENT_TYPES.PROG_NEAR_ORBS or event.type == EVENT_TYPES.PROG_FAR_ORBS:
@@ -256,13 +258,15 @@ class ProgrammeManager():
 
                 elif event.type == EVENT_TYPES.PROG_NOISE_THRESHOLD:
                     ramp = event.params["ramp"] if "ramp" in event.params else 0
-                    attributes = ["brightness", "hue", "saturation", "hueSecond", "saturationSecond"]
+                    attributes = ["brightness", "hue", "saturation", "hueSecond", "saturationSecond", "speed"]
                     for attr in [attr for attr in attributes if attr in event.params]:
                         self.animator.createAnimation(self.noiseBands, attr, event.params[attr], ramp)
                     if "min1" in event.params and "max1" in event.params:
                         self.animator.createAnimation(self.noiseBands, "firstBand", (event.params["min1"], event.params["max1"]), ramp)
                     if "min2" in event.params and "max2" in event.params:
                         self.animator.createAnimation(self.noiseBands, "secondBand", (event.params["min2"], event.params["max2"]), ramp)
+                    if "phase" in event.params:
+                        self.noiseBands.phase = event.params["phase"]
 
 
 
