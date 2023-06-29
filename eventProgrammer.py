@@ -26,7 +26,7 @@ def eventProgrammer(events: list[Event]):
                 type=EVENT_TYPES.PROG_BACKGROUND_COLOUR,
                 atTime=event.atTime - 3,
                 params={
-                    "hue": 0.07,
+                    "hue": 0.4,
                     "ramp": 4,
                 }
             ))
@@ -122,6 +122,22 @@ def eventProgrammer(events: list[Event]):
                     }
                 ))
                 sparkColour = [c * sparkDelayFalloff for c in sparkColour]
+
+        elif event.type == EVENT_TYPES.AURA:
+            intensity = event.params["intensity"] if "intensity" in event.params else 1
+            auraCentre = getRandomPointInSpace()
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_SPARK,
+                atTime=event.atTime,
+                params={
+                    "centre": auraCentre,
+                    "colour": (intensity * 255, intensity * 255, intensity * 255),
+                    "propagationSpeed": 30,
+                    "fadeByDistance": .001,
+                    "fadeByTime": 1,
+                    "life": 4,
+                }
+            ))
         
         elif event.type == EVENT_TYPES.FLASHES:
             duration = event.params["duration"]
@@ -152,6 +168,7 @@ def eventProgrammer(events: list[Event]):
                 atTime=event.atTime - 2,
                 params={
                     "saturation": 0,
+                    "shimmerAmout": 0.6,
                     "ramp": 2,
                 }
             ))
@@ -252,15 +269,6 @@ def eventProgrammer(events: list[Event]):
                     "ramp": intervalBetweenStages,
                 }
             ))
-            # clouds disappear
-            newEvents.append(Event(
-                type=EVENT_TYPES.PROG_QUIET_CLOUDS,
-                atTime=event.atTime + stage * intervalBetweenStages,
-                params={
-                    "brightness": 0,
-                    "ramp": 4,
-                }
-            ))
             stage += 1
             # reset gradient
             newEvents.append(Event(
@@ -272,6 +280,15 @@ def eventProgrammer(events: list[Event]):
                     "saturation": 1,
                     "hueBottom": 0.5,
                     "saturationBottom": 1,
+                }
+            ))
+            # clouds disappear
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_QUIET_CLOUDS,
+                atTime=event.atTime + stage * intervalBetweenStages,
+                params={
+                    "brightness": 0,
+                    "ramp": 4,
                 }
             ))
         

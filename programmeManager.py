@@ -119,8 +119,9 @@ class ProgrammeManager():
                     ramp = event.params["ramp"] if "ramp" in event.params else 1
                     saturation = event.params["saturation"] if "saturation" in event.params else 0.5
                     brightness = event.params["brightness"] if "brightness" in event.params else 0.3
+                    shimmerAmount = event.params["shimmerAmount"] if "shimmerAmount" in event.params else 0.3
                     self.animator.createAnimation(self.fullColourNoise, "brightness", brightness, ramp)
-                    self.animator.createAnimation(self.fullColourNoise, "shimmerAmount", 0.3, ramp)
+                    self.animator.createAnimation(self.fullColourNoise, "shimmerAmount", shimmerAmount, ramp)
                     self.animator.createAnimation(self.fullColourNoise, "saturation", saturation, ramp)
                 
                 elif event.type == EVENT_TYPES.PROG_HUE_BREATHING:
@@ -130,9 +131,10 @@ class ProgrammeManager():
                         length=event.params["length"],
                         count=event.params["count"] if "count" in event.params else 1,
                         every=event.params["every"] if event.params["count"] > 1 else 0,
-                        factor=event.params["factor"],
+                        factor=event.params["amount"],
                         attack=0.5,
                         release=1,
+                        absoluteValue=True
                     )
                 
                 elif event.type == EVENT_TYPES.PROG_BREATHING:
@@ -315,7 +317,8 @@ class ProgrammeManager():
             attack: float,
             release: float,
             attributes: list[str],
-            onlyActiveProgrammes=True
+            onlyActiveProgrammes=True,
+            absoluteValue=False
             ):
         programmes = self.getActiveBackgroundProgrammes() if onlyActiveProgrammes else self.backgroundProgrammes
         for i in range(int(count)):
@@ -324,10 +327,7 @@ class ProgrammeManager():
             for programme in programmes:
                 for attr in [attr for attr in attributes if hasattr(programme, attr)]:
                     currentValue = getattr(programme, attr)
-                    targetValue = currentValue * factor
-                    # Paulo
-                    # if programme == self.noiseBands:
-                    #     print(('BREATH', currentValue, targetValue, factor))
+                    targetValue = currentValue + factor if absoluteValue else currentValue * factor
                     self.animator.createAnimation(programme, attr, targetValue, attack, attackStart, currentValue)
                     self.animator.createAnimation(programme, attr, currentValue, release, releaseStart, targetValue)
 

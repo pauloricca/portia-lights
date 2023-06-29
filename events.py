@@ -32,22 +32,23 @@ class EVENT_TYPES:
     # Effects (get translated into programme events)
     FLASHES = 'FLASHES' # duration frequency
     THUNDER = 'THUNDER'
-    BOOM = 'BOOM'
+    BOOM = 'BOOM' # intensity
+    AURA = 'AURA'
     WAVE = 'WAVE' # intensity
 
     # Programme events
-    PROG_QUIET_CLOUDS = 'PROG_QUIET_CLOUDS' # (brightness saturation ramp)
+    PROG_QUIET_CLOUDS = 'PROG_QUIET_CLOUDS' # (brightness saturation shimmerAmout ramp)
     PROG_RUMBLE = 'PROG_RUMBLE'
     PROG_ACCELERATE = 'PROG_ACCELERATE' # high low duration attack release
     PROG_BREATHING = 'PROG_BREATHING' # factor length (count every)
     PROG_SPEED_BREATHING = 'PROG_SPEED_BREATHING' # factor length (count every)
-    PROG_HUE_BREATHING = 'PROG_HUE_BREATHING' # factor length (count every)
+    PROG_HUE_BREATHING = 'PROG_HUE_BREATHING' # amount length (count every)
     PROG_SPEED_CHANGE = 'PROG_SPEED_CHANGE' # factor ramp
     PROG_SCALE_CHANGE = 'PROG_SCALE_CHANGE' # factor ramp
     PROG_RAIN = 'PROG_RAIN' # duration attack release
     PROG_SCAN_LINE = 'PROG_SCAN_LINE'
     PROG_FLASH = 'PROG_FLASH' # centre colour radius life
-    PROG_SPARK = 'PROG_SPARK' # centre colour
+    PROG_SPARK = 'PROG_SPARK' # centre colour (fadeByDistance fadeByTime propagationSpeed life)
     PROG_FAR_ORBS = 'PROG_FAR_ORBS' # (hue brightness saturation ramp)
     PROG_NEAR_ORBS = 'PROG_NEAR_ORBS' # (hue brightness saturation ramp)
     PROG_HIDE_ORBS = 'PROG_HIDE_ORBS' # (ramp)
