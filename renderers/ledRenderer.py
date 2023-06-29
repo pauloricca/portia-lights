@@ -24,7 +24,7 @@ class LEDRenderer(Renderer):
         self.ledStrip.begin()
 
         if self.pinSplitIndex >= 0:
-            self.ledStrip2 = PixelStrip(ledCount, LED_PIN_2, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
+            self.ledStrip2 = PixelStrip(ledCount, LED_PIN_3, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
             self.ledStrip2.begin()
     
     def render(
