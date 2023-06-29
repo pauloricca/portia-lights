@@ -5,13 +5,14 @@ PLATFORM = platform.system()
 
 AUDIO_FILE = 'Andrey Novikov - Spider Consciousness.wav'
 CONFIG_FILE = 'config.json'
-HOSTS_FILE = 'hosts'
+HOSTS_FILE = 'hosts' # List of slave IPs, one per line
+PIN_SPLIT_INDEX_FILE = 'pin-split-index' # Index of the LED that starts a strip on pin 18
 MAIN_SEQUENCE_FILE = 'main.sequence'
 
 #LED_PIN = 18          # GPIO pin connected to the ledStrip (18 uses PWM!).
 LED_PIN = 10        # GPIO pin connected to the ledStrip (10 uses SPI /dev/spidev0.0).
-LED_PIN_2 = 18        # GPIO pin connected to the ledStrip (10 uses SPI /dev/spidev0.0).
-LED_PIN_3 = 21        # GPIO pin connected to the ledStrip (10 uses SPI /dev/spidev0.0).
+LED_PIN_2 = 18        # GPIO pin connected to the ledStrip (18 uses SPI /dev/spidev0.0).
+LED_PIN_3 = 21        # GPIO pin connected to the ledStrip (21 uses SPI /dev/spidev0.0).
 LED_FREQ_HZ = 800000  # LED signal frequency in hertz (usually 800khz)
 LED_DMA = 10          # DMA channel to use for generating signal (try 10)
 LED_BRIGHTNESS = 255  # Set to 0 for darkest and 255 for brightest
@@ -42,7 +43,7 @@ SLAVE_ADVANCE_NOTICE_TIME = 2
 SOCKET_TIMEOUT = 2
 
 # Amount of time to delay the start of the sequence, to let slaves connect
-START_SEQUENCE_DELAY = 0 # Paulo
+START_SEQUENCE_DELAY = 10 # Paulo, check this value
 
 VIRTUAL_CAMERA = (0, -20, -800)
 

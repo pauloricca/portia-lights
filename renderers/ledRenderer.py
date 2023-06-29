@@ -1,15 +1,31 @@
 from constants import *
 from renderers.renderer import Renderer
+from utils import getAbsolutePath
 try:
     from rpi_ws281x import PixelStrip, Color
 except:
     print("rpi_ws281x library not present (not required if app is not light controller)")
 
 class LEDRenderer(Renderer):
+    pinSplitIndex: int # Index that starts the LEDs connected to pin 18
+
     def __init__(self, ledCount: int):
         super().__init__()
+        self.pinSplitIndex = -1
+
+        # Try to load pin split index
+        try:
+            f = open(getAbsolutePath(PIN_SPLIT_INDEX_FILE), "r")
+            self.pinSplitIndex = int(f.read())
+        except Exception as e:
+            pass
+
         self.ledStrip = PixelStrip(ledCount, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
         self.ledStrip.begin()
+
+        if self.pinSplitIndex >= 0:
+            self.ledStrip2 = PixelStrip(ledCount, LED_PIN_2, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
+            self.ledStrip2.begin()
     
     def render(
             self,
@@ -55,5 +71,10 @@ class LEDRenderer(Renderer):
             if g > 255: g = 255
             if b > 255: b = 255
 
-            self.ledStrip.setPixelColor(i, Color(int(r), int(g), int(b)))
+            if self.pinSplitIndex == -1 or i < self.pinSplitIndex:
+                self.ledStrip.setPixelColor(i, Color(int(r), int(g), int(b)))
+            else:
+                self.ledStrip2.setPixelColor(i - self.pinSplitIndex, Color(int(r), int(g), int(b)))
         self.ledStrip.show()
+        if self.pinSplitIndex >= 0:
+            self.ledStrip2.show()
