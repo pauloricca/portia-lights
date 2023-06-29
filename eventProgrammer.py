@@ -412,7 +412,7 @@ def eventProgrammer(events: list[Event]):
             ))
             newEvents.append(Event(
                 type=EVENT_TYPES.PROG_HORIZONTAL_BANDS,
-                atTime=event.atTime + 6,
+                atTime=event.atTime + 4,
                 params={
                     "ratio": 0.6,
                     "ramp": 4,
@@ -420,7 +420,7 @@ def eventProgrammer(events: list[Event]):
             ))
             newEvents.append(Event(
                 type=EVENT_TYPES.PROG_HORIZONTAL_BANDS,
-                atTime=event.atTime + 10,
+                atTime=event.atTime + 8,
                 params={
                     "speed": 3000,
                     "ramp": 6,
@@ -428,7 +428,7 @@ def eventProgrammer(events: list[Event]):
             ))
             newEvents.append(Event(
                 type=EVENT_TYPES.PROG_HORIZONTAL_BANDS,
-                atTime=event.atTime + 12,
+                atTime=event.atTime + 10,
                 params={
                     "ratio": 0.2,
                     "ramp": 4,
@@ -688,10 +688,21 @@ def eventProgrammer(events: list[Event]):
             ))
         
         elif event.type == EVENT_TYPES.PIANO:
-            lowSpeed = 0.03
+            lowSpeed = 0.06
             highSpeed = 0.3
             startTime = 740
             startPhase = 2
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_QUIET_CLOUDS,
+                atTime=event.atTime,
+                params={
+                    "brightness": 0.05,
+                    "hue": .5,
+                    "hueScale": .02,
+                    "saturation": .7,
+                    "brightnessScale": .01,
+                }
+            ))
             # max brightness with 0 band width (all dark)
             newEvents.append(Event(
                 type=EVENT_TYPES.PROG_NOISE_THRESHOLD,
@@ -700,7 +711,7 @@ def eventProgrammer(events: list[Event]):
                     "brightness": 1,
                     "hue": 0.2,
                     "saturation": 0.8,
-                    "hueSecond": 0.8,
+                    "hueSecond": 0.9,
                     "saturationSecond": 0.8,
                     "min1": .3,
                     "max1": .3,

@@ -78,9 +78,8 @@ class SpheresProgramme(Programme):
         self.shimmer(frameTime)
 
 
-    def startRain(self, duration: float):
+    def startRain(self, duration: float, speed = 140, life = 1.5, dropFrequency = 15): # Frequency is drops per second
         dropRadius = 10
-        dropFrequency = 15 # Drops per second
         numberOfDrops = int(duration * dropFrequency)
         intervalBetweenDrops = duration / numberOfDrops
         currentTime = time.time()
@@ -93,8 +92,8 @@ class SpheresProgramme(Programme):
                 centre = startPoint,
                 radius = dropRadius,
                 colour = (255, 255, 255),
-                life = 1.5,
+                life = life,
                 startTime = startTime,
-                velocity = (0, -140, 0)
+                velocity = (0, -speed, 0)
             ))
 

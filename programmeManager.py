@@ -41,6 +41,7 @@ class ProgrammeManager():
     rightNearOrb: RotatingOrbProgramme
     rightFarOrb: RotatingOrbProgramme
     whistleGhost: RotatingOrbProgramme
+    secondWhistleGhost: RotatingOrbProgramme
     scanLines: ScanLineProgramme
 
     def init(self):
@@ -63,6 +64,7 @@ class ProgrammeManager():
         self.rightNearOrb = RotatingOrbProgramme(self.ledCount, centre=(100, 0, 25), pathRadius=65, hue=0.1, speed=-1)
         self.rightFarOrb = RotatingOrbProgramme(self.ledCount, centre=(100, 0, 0), pathRadius=30, hue=0.6, speed=2)
         self.whistleGhost = RotatingOrbProgramme(self.ledCount, centre=getCentrePointInSpace(), pathRadius=10, orbRadius=30, hue=0.5, saturation=1, speed=4, shimmerAmount=1)
+        self.secondWhistleGhost = RotatingOrbProgramme(self.ledCount, centre=getCentrePointInSpace(), pathRadius=10, orbRadius=30, hue=0.25, saturation=1, speed=4, shimmerAmount=1)
         self.scanLines = ScanLineProgramme(self.ledCount, shimmerAmount=1, brightness=1)
         self.rain = SpheresProgramme(self.ledCount, shimmerAmount=0.5)
         self.horizontalBands = HorizontalBandsProgramme(self.ledCount)
@@ -87,6 +89,7 @@ class ProgrammeManager():
             self.rightNearOrb,
             self.rightFarOrb,
             self.whistleGhost,
+            self.secondWhistleGhost,
             self.scanLines,
             self.rain,
             self.horizontalBands,
@@ -123,6 +126,13 @@ class ProgrammeManager():
                     self.animator.createAnimation(self.fullColourNoise, "brightness", brightness, ramp)
                     self.animator.createAnimation(self.fullColourNoise, "shimmerAmount", shimmerAmount, ramp)
                     self.animator.createAnimation(self.fullColourNoise, "saturation", saturation, ramp)
+                    if "brightnessScale" in event.params:
+                        self.animator.createAnimation(self.fullColourNoise, "brightnessScale", event.params["brightnessScale"], ramp)
+                    if "hueScale" in event.params:
+                        self.animator.createAnimation(self.fullColourNoise, "hueScale", event.params["hueScale"], ramp)
+                    if "hue" in event.params:
+                        self.animator.createAnimation(self.fullColourNoise, "hue", event.params["hue"], ramp)
+
                 
                 elif event.type == EVENT_TYPES.PROG_HUE_BREATHING:
                     self.generateBreathing(
@@ -186,6 +196,15 @@ class ProgrammeManager():
                     self.animator.createAnimation(self.rain, "brightness", 1, attack)
                     self.animator.createAnimation(self.rain, "brightness", 0, release, event.atTime+duration-release, 1)
                 
+                elif event.type == EVENT_TYPES.PROG_SLOW_RAIN:
+                    duration = event.params["duration"]
+                    attack = event.params["attack"]
+                    release = event.params["release"]
+                    self.rain.brightness = 0
+                    self.rain.startRain(duration, speed=30, life=5, dropFrequency=3)
+                    self.animator.createAnimation(self.rain, "brightness", 1, attack)
+                    self.animator.createAnimation(self.rain, "brightness", 0, release, event.atTime+duration-release, 1)
+                
                 elif event.type == EVENT_TYPES.PROG_ACCELERATE:
                     duration = event.params["duration"]
                     attack = event.params["attack"]
@@ -235,12 +254,14 @@ class ProgrammeManager():
                     for attr in [attr for attr in attributes if attr in event.params]:
                         self.animator.createAnimation(programme, attr, event.params[attr], ramp)
 
-                elif event.type == EVENT_TYPES.PROG_WHISTLE_GHOST_BRIGHTNESS:
+                elif event.type == EVENT_TYPES.PROG_WHISTLE_GHOST_BRIGHTNESS or event.type == EVENT_TYPES.PROG_SECOND_WHISTLE_GHOST_BRIGHTNESS:
+                    programme = self.whistleGhost if event.type == EVENT_TYPES.PROG_WHISTLE_GHOST_BRIGHTNESS else self.secondWhistleGhost
                     brightness = event.params["brightness"]
                     ramp = event.params["ramp"] if "ramp" in event.params else 0
-                    self.animator.createAnimation(self.whistleGhost, "brightness", brightness, ramp)
+                    self.animator.createAnimation(programme, "brightness", brightness, ramp)
 
-                elif event.type == EVENT_TYPES.PROG_WHISTLE_GHOST_POSITION:
+                elif event.type == EVENT_TYPES.PROG_WHISTLE_GHOST_POSITION or event.type == EVENT_TYPES.PROG_SECOND_WHISTLE_GHOST_POSITION:
+                    programme = self.whistleGhost if event.type == EVENT_TYPES.PROG_WHISTLE_GHOST_BRIGHTNESS else self.secondWhistleGhost
                     randomPoint = getRandomPointInSpace()
                     newPosition = (
                         randomPoint[0],

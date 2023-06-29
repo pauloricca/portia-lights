@@ -37,7 +37,7 @@ class EVENT_TYPES:
     WAVE = 'WAVE' # intensity
 
     # Programme events
-    PROG_QUIET_CLOUDS = 'PROG_QUIET_CLOUDS' # (brightness saturation shimmerAmout ramp)
+    PROG_QUIET_CLOUDS = 'PROG_QUIET_CLOUDS' # (brightness hue hueScale brightnessScale saturation shimmerAmout ramp)
     PROG_RUMBLE = 'PROG_RUMBLE'
     PROG_ACCELERATE = 'PROG_ACCELERATE' # high low duration attack release
     PROG_BREATHING = 'PROG_BREATHING' # factor length (count every)
@@ -46,6 +46,7 @@ class EVENT_TYPES:
     PROG_SPEED_CHANGE = 'PROG_SPEED_CHANGE' # factor ramp
     PROG_SCALE_CHANGE = 'PROG_SCALE_CHANGE' # factor ramp
     PROG_RAIN = 'PROG_RAIN' # duration attack release
+    PROG_SLOW_RAIN = 'PROG_SLOW_RAIN' # duration attack release
     PROG_SCAN_LINE = 'PROG_SCAN_LINE'
     PROG_FLASH = 'PROG_FLASH' # centre colour radius life
     PROG_SPARK = 'PROG_SPARK' # centre colour (fadeByDistance fadeByTime propagationSpeed life)
@@ -54,6 +55,8 @@ class EVENT_TYPES:
     PROG_HIDE_ORBS = 'PROG_HIDE_ORBS' # (ramp)
     PROG_WHISTLE_GHOST_BRIGHTNESS = 'PROG_WHISTLE_GHOST_BRIGHTNESS' # brightness (ramp)
     PROG_WHISTLE_GHOST_POSITION = 'PROG_WHISTLE_GHOST_POSITION' # position (ramp)
+    PROG_SECOND_WHISTLE_GHOST_BRIGHTNESS = 'PROG_SECOND_WHISTLE_GHOST_BRIGHTNESS' # brightness (ramp)
+    PROG_SECOND_WHISTLE_GHOST_POSITION = 'PROG_SECOND_WHISTLE_GHOST_POSITION' # position (ramp)
     PROG_BACKGROUND_COLOUR = 'PROG_BACKGROUND_COLOUR' # (hue brightness saturation ramp)
     PROG_HUE_GRADIENT = 'PROG_HUE_GRADIENT' # (brightness hue saturation hueBottom saturationBottom noiseAmount noiseScale noiseSpeed ramp)
     PROG_RGB_GRADIENT = 'PROG_RGB_GRADIENT' # (brightness hue saturation hueBottom saturationBottom noiseAmount noiseScale noiseSpeed ramp)

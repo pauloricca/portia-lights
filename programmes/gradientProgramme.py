@@ -25,7 +25,7 @@ class GradientProgramme(Programme):
             hueBottom=0,
             saturationBottom=1,
             interpolateByHue=False,
-            shimmerAmount=0.3,
+            shimmerAmount=0.5,
             noiseAmount=0,
             noiseScale=0.001,
             noiseSpeed=0.4,
