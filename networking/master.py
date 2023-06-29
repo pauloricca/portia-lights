@@ -73,6 +73,7 @@ class Master:
             for potentialSlaveIp in potentialSlaveIps:
                 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     try:
+                        s.settimeout(SOCKET_TIMEOUT)
                         s.connect((potentialSlaveIp, self.port))
                         # Send clock sync message when discovering potential slaves
                         clockSyncMessage = self.__getJsonEventsArrayMessage([str(Event(type=EVENT_TYPES.CLOCK_SYNC, params={"time": time.time()}))])
@@ -109,6 +110,7 @@ class Master:
                 message = self.__getJsonEventsArrayMessage(messagesToSend)
                 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     try:
+                        s.settimeout(SOCKET_TIMEOUT)
                         s.connect((slave.ip, self.port))
                         self.isVerbose and print("sending message '" + message + "' to " + slave.ip)
                         s.sendall(str.encode(message))

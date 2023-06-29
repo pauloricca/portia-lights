@@ -370,11 +370,12 @@ def eventProgrammer(events: list[Event]):
                         "saturation": saturation,
                         "hueBottom": hueBottom,
                         "saturationBottom": saturationBottom,
+                        "noiseAmount": 0,
                         "ramp": ramp,
                     }
                 ))
 
-        elif event.type == EVENT_TYPES.SYNTH_BANDS:
+        elif event.type == EVENT_TYPES.FIRST_SYNTH_BANDS:
             newEvents.append(Event(
                 type=EVENT_TYPES.PROG_HORIZONTAL_BANDS,
                 atTime=event.atTime,
@@ -477,34 +478,76 @@ def eventProgrammer(events: list[Event]):
             ))
 
         elif event.type == EVENT_TYPES.SECOND_BASS_LINE:
+            # Reset gradient noise
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_HUE_GRADIENT,
+                atTime=event.atTime - 1,
+                params={
+                    "noiseAmount": 0,
+                    "phase": 0,
+                    "noiseScale": 0.001,
+                }
+            ))
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_HUE_GRADIENT,
+                atTime=event.atTime,
+                params={
+                    "noiseAmount": 100,
+                    "ramp":5,
+                }
+            ))
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_HUE_GRADIENT,
+                atTime=event.atTime,
+                params={
+                    "noiseScale": 0.02,
+                    "ramp": 20,
+                }
+            ))
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_HUE_GRADIENT,
+                atTime=event.atTime + 25,
+                params={
+                    "noiseScale": 0.001,
+                    "ramp": 20,
+                }
+            ))
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_HUE_GRADIENT,
+                atTime=event.atTime + 40,
+                params={
+                    "noiseAmount": 0,
+                    "ramp": 10,
+                }
+            ))
             # (timestamp, brightness, (hue,saturation)-top, (hue,saturation)-bottom)
             # If the second number becomes the first, gradient goes up (so should the note)
             steps = [
-                (628.5, 1, (0,1), (0.3,1)),
-                (527.9, .2, (-0.1,1), (0,1)),
-                (531.5, 1, (0.2,1), (0.5,1)),
-                (532.3, .5, (0,1), (0.3,1)),
-                (536.7, .3, (-0.1,1), (0.1,1)),
-                (538.9, .6, (0.2,1), (0.4,1)),
-                (541.1, 1, (0.3,1), (0.5,1)),
-                (544.1, 1, (0.5,1), (0.7,1)),
-                (545.4, 0.2, (0,1), (0.5,1)),
-                (549.9, 0.5, (0.4,1), (0.7,1)),
-                (552.8, 1, (0.8,0.5), (1.2,0.7)),
-                (554.2, 0.1, (0.3,1), (0.4,1)),
-                (558.5, 0.5, (0.5,1), (0.7,1)),
-                (562.9, 0.2, (0.2,1), (0.5,1)),
-                (566.4, 0.4, (0.4,1), (0.6,1)),
-                (567.4, 0.2, (0.2,1), (0.4,1)),
-                (571.6, 0.2, (0,1), (0.2,1)),
-                (573.9, 0.3, (0.2,1), (0.5,1)),
-                (576.0, 0.5, (0.4,1), (0.7,1)),
-                (579.2, 0.6, (0.6,1), (0.9,1)),
-                (580.3, 0.2, (0.3,1), (0.5,1)),
-                (584.7, 0.4, (0.5,1), (0.7,1)),
-                (587.9, 0.8, (0.9,1), (1.2,1)),
-                (589.1, 0.1, (0.4,1), (0.7,1)),
-                (591.1, 0, (0.4,1), (0.7,1)),
+                (628.5, 1,  (0.6,1), (0.7,1)),
+                (632.7, .8, (0.3,1), (0.5,1)),
+                (636.2, 1,  (0.7,1), (0.8,1)),
+                (637.0, 1,  (0.4,1), (0.6,1)),
+                (641.4, 1,  (0.0,1), (0.2,1)),
+                (643.7, .6, (0.2,1), (0.4,1)),
+                (645.9, 1,  (0.5,1), (0.8,1)),
+                (648.8, 1,  (0.8,1), (1.2,1)),
+                (650.1, .4, (0.3,1), (0.5,1)),
+                (645.5, .6, (0.5,1), (0.8,1)),
+                (657.5, 1,  (0.9,1), (1.3,1)),
+                (658.9, .4, (0.3,1), (0.5,1)),
+                (663.4, .6, (0.5,1), (0.8,1)),
+                (667.6, .3, (0.2,1), (0.3,1)),
+                (671.2, .8, (0.7,1), (0.9,1)),
+                (671.9, .6, (0.5,1), (0.8,1)),
+                (676.4, .4, (0.2,1), (0.4,1)),
+                (678.5, .6, (0.4,1), (0.7,1)),
+                (680.7, .8, (0.7,1), (0.9,1)),
+                (683.7, 1,  (1.0,1), (1.3,1)),
+                (685.0, .2, (0.6,1), (0.8,1)),
+                (689.4, .5, (0.8,1), (1.0,1)),
+                (692.4, 1, (0.2,1), (1.3,1)),
+                (693.8, .1, (0.6,1), (0.7,1)),
+                (694.8, 0, (0.6,1), (0.7,1)),
             ]
             ramp = 0.3
             anticipationTime = 0
@@ -519,9 +562,113 @@ def eventProgrammer(events: list[Event]):
                         "saturation": saturation,
                         "hueBottom": hueBottom,
                         "saturationBottom": saturationBottom,
-                        "ramp": ramp,
+                        "ramp": ramp if timestamp < 694 else 8,
                     }
                 ))
+        
+
+
+        elif event.type == EVENT_TYPES.SECOND_SYNTH_BANDS:
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_HORIZONTAL_BANDS,
+                atTime=event.atTime,
+                params={
+                    "brightness": 0.3,
+                    "ratio": 0.3,
+                    "ramp": 5,
+                }
+            ))
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_HORIZONTAL_BANDS,
+                atTime=event.atTime,
+                params={
+                    "speed": 3,
+                    "ramp": 6,
+                }
+            ))
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_HORIZONTAL_BANDS,
+                atTime=event.atTime + 6,
+                params={
+                    "ratio": 0.6,
+                    "ramp": 4,
+                }
+            ))
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_HORIZONTAL_BANDS,
+                atTime=event.atTime + 10,
+                params={
+                    "speed": 3,
+                    "ramp": 6,
+                }
+            ))
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_HORIZONTAL_BANDS,
+                atTime=event.atTime + 12,
+                params={
+                    "ratio": 0.2,
+                    "ramp": 4,
+                }
+            ))
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_HORIZONTAL_BANDS,
+                atTime=event.atTime + 17,
+                params={
+                    "speed": 30,
+                    "ramp": 4,
+                }
+            ))
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_HORIZONTAL_BANDS,
+                atTime=event.atTime + 17,
+                params={
+                    "ratio": 0,
+                    "width": 140,
+                    "ramp": 10,
+                }
+            ))
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_HORIZONTAL_BANDS,
+                atTime=event.atTime + 28,
+                params={
+                    "ratio": 0.3,
+                    "width": 70,
+                    "ramp": 2,
+                }
+            ))
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_HORIZONTAL_BANDS,
+                atTime=event.atTime + 28,
+                params={
+                    "brightness": 0.05,
+                    "ramp": 3,
+                }
+            ))
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_HORIZONTAL_BANDS,
+                atTime=event.atTime + 32,
+                params={
+                    "brightness": 0.4,
+                    "ramp": 2,
+                }
+            ))
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_HORIZONTAL_BANDS,
+                atTime=event.atTime + 35.5,
+                params={
+                    "speed": 3000,
+                    "ratio": 0,
+                    "ramp": 1,
+                }
+            ))
+            newEvents.append(Event(
+                type=EVENT_TYPES.PROG_HORIZONTAL_BANDS,
+                atTime=event.atTime + 35.5,
+                params={
+                    "brightness": 0,
+                    "ramp": 1,
+                }
+            ))
         
         elif event.type == EVENT_TYPES.PIANO:
             lowSpeed = 0.03

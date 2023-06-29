@@ -2,4 +2,4 @@
 
 from app import App
 
-app = App(isMaster=True, isLightController=False, isVerbose=False)
+app = App(isMaster=True, isLightController=False, isVerbose=True)

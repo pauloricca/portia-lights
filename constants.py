@@ -39,6 +39,8 @@ EVENTS_BOUNDING_BOX = [
 # online where future events were sent
 SLAVE_ADVANCE_NOTICE_TIME = 2
 
+SOCKET_TIMEOUT = 2
+
 # Amount of time to delay the start of the sequence, to let slaves connect
 START_SEQUENCE_DELAY = 0 # Paulo
 

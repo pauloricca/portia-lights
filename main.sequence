@@ -56,8 +56,9 @@
 416.8 WAVE intensity=0.2
 422.4 WAVE intensity=0.1
 424.5 WHISTLE
+520 PROG_QUIET_CLOUDS brightness=0 ramp=4
 523.7 FIRST_BASS_LINE
-559 SYNTH_BANDS
+559 FIRST_SYNTH_BANDS
 275.4 BOOM intensity=0.1
 580.6 BOOM intensity=0.2
 587.4 BOOM intensity=0.4
@@ -73,11 +74,13 @@
 619.7 BOOM intensity=0.4
 624.1 BOOM intensity=0.5
 624.6 BOOM intensity=0.4
+625 PROG_QUIET_CLOUDS brightness=0 ramp=4
 628.5 SECOND_BASS_LINE
-#694 HIGH_FREQUENCY_WHISTLE
-# ---- make sure this thunder appears
+# 632 SECOND_SYNTH_BANDS
+699 PROG_QUIET_CLOUDS brightness=0.3 ramp=10
 716.3 THUNDER
 740 PIANO
+# ---  Make rain slower and more sporadic
 890 PROG_RAIN duration=60 attack=25 release=25
 900 PROG_QUIET_CLOUDS
 918 PROG_BREATHING factor=3 every=4.37 count=12 length=1.5

@@ -26,7 +26,8 @@ class EVENT_TYPES:
     FIRST_BASS_LINE = 'FIRST_BASS_LINE'
     SECOND_BASS_LINE = 'SECOND_BASS_LINE'
     PIANO = 'PIANO'
-    SYNTH_BANDS = 'SYNTH_BANDS'
+    FIRST_SYNTH_BANDS = 'FIRST_SYNTH_BANDS'
+    SECOND_SYNTH_BANDS = 'SECOND_SYNTH_BANDS'
 
     # Effects (get translated into programme events)
     FLASHES = 'FLASHES' # duration frequency
@@ -53,8 +54,8 @@ class EVENT_TYPES:
     PROG_WHISTLE_GHOST_BRIGHTNESS = 'PROG_WHISTLE_GHOST_BRIGHTNESS' # brightness (ramp)
     PROG_WHISTLE_GHOST_POSITION = 'PROG_WHISTLE_GHOST_POSITION' # position (ramp)
     PROG_BACKGROUND_COLOUR = 'PROG_BACKGROUND_COLOUR' # (hue brightness saturation ramp)
-    PROG_HUE_GRADIENT = 'PROG_HUE_GRADIENT' # brightness hue saturation hueBottom saturationBottom (ramp)
-    PROG_RGB_GRADIENT = 'PROG_RGB_GRADIENT' # brightness hue saturation hueBottom saturationBottom (ramp)
+    PROG_HUE_GRADIENT = 'PROG_HUE_GRADIENT' # (brightness hue saturation hueBottom saturationBottom noiseAmount noiseScale noiseSpeed ramp)
+    PROG_RGB_GRADIENT = 'PROG_RGB_GRADIENT' # (brightness hue saturation hueBottom saturationBottom noiseAmount noiseScale noiseSpeed ramp)
     PROG_NOISE_THRESHOLD = 'PROG_NOISE_THRESHOLD' # (brightness hue saturation hueSecond saturationSecond phase min1 max1 min2 max2 speed ramp)
     PROG_HORIZONTAL_BANDS = 'PROG_HORIZONTAL_BANDS' # (brightness speed height ratio ramp)
 

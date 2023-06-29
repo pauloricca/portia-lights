@@ -48,12 +48,12 @@ class App:
             isConfigInvalid = True
             ledCount = int(input("LED count:\n"))
 
-        self.printConfigInfo()
-
         self.renderer = LEDRenderer(ledCount) if self.isLightController else VirtualRenderer()
 
         if (isConfigInvalid):
             self.ledCoords = config(self.renderer, ledCount)
+
+        self.printConfigInfo()
 
         self.programmeManager = ProgrammeManager(ledCount, self.isMaster)
         self.eventManager = EventManager(self.isMaster, eventProgrammer)
