@@ -57,4 +57,14 @@ $ sudo crontab -e
 
 Add line:
 
-@reboot /home/admin/spider/start
+@reboot /home/admin/portia-lights/start
+
+# Set manual ip
+
+$ sudo nano /etc/dhcpcd.conf
+
+add:
+interface wlan0
+inform 192.168.0.20X (where X is the raspi number)
+
+Then add the ip to the hosts file on the master

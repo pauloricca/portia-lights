@@ -19,9 +19,9 @@ subprocess.call(('cp', path, backupFilePath))
 config = loadConfig()
 
 for coords in config:
-    coords[0] = coords[0]
-    coords[1] = coords[2] + 20
-    coords[2] = 25
+    coords[0] = -coords[0]
+    # coords[1] = coords[2] + 20
+    # coords[2] = 25
 
 saveConfig(config)
 
