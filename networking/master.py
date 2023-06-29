@@ -54,20 +54,21 @@ class Master:
     def __slaveDiscoveryCycle(self):
         while True:
             self.isVerbose and print("Scanning network...")
-            output = subprocess.check_output(("arp", "-a")).decode("ascii")
-
-            # Output will be in this format, each device on a line:
-            # ? (IP_ADDRESS) at MAC_ADDRESS on en0 ....
-
-            outputLines = output.split('\n')
-
             potentialSlaveIps = [ip for ip in self.manuallyAddedSlaveIps]
-            for outputLine in outputLines:
-                lineParts = outputLine.split(' ')
-                if len(lineParts) >= 4 and lineParts[3].startswith(self.macAddressStartMask):
-                    ip = lineParts[1].replace('(', '').replace(')', '')
-                    if not ip in potentialSlaveIps:
-                        potentialSlaveIps.append(ip)
+    
+            if DISCOVER_SLAVES_AUTOMATICALLY:
+                output = subprocess.check_output(("arp", "-a")).decode("ascii")
+
+                # Output will be in this format, each device on a line:
+                # ? (IP_ADDRESS) at MAC_ADDRESS on en0 ....
+
+                outputLines = output.split('\n')
+                for outputLine in outputLines:
+                    lineParts = outputLine.split(' ')
+                    if len(lineParts) >= 4 and lineParts[3].startswith(self.macAddressStartMask):
+                        ip = lineParts[1].replace('(', '').replace(')', '')
+                        if not ip in potentialSlaveIps:
+                            potentialSlaveIps.append(ip)
 
             # Check potential slaves, add new ones with open port, update lastSeenAt on known ones
             for potentialSlaveIp in potentialSlaveIps:
